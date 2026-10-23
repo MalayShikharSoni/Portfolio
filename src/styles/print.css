@@ -81,6 +81,9 @@
   .line-mask {
     padding-block: 0.08em;
     margin-block: -0.08em;
+    /* masks only need to clip vertically; letters may breathe sideways (hover waves) */
+    overflow-x: visible !important;
+    overflow-y: clip !important;
   }
 
   .line {

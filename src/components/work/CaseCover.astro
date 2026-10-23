@@ -122,6 +122,8 @@ const hasLinks = Boolean(links.live || links.github);
   }
 
   .cover__body {
+    min-width: 0;
+    container-type: inline-size;
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
@@ -137,9 +139,9 @@ const hasLinks = Boolean(links.live || links.github);
   .cover__title {
     --wdth: 62;
     --wght: 900;
-    font-size: clamp(3.5rem, 1rem + 10vw, 10rem);
+    /* sized to its own column, with headroom for the hover wave */
+    font-size: min(clamp(3.25rem, 1rem + 7.5vw, 8.5rem), 16.5cqi);
     line-height: 0.85;
-    overflow-wrap: anywhere;
   }
   .cover__oneliner {
     max-width: 40ch;
@@ -190,7 +192,8 @@ const hasLinks = Boolean(links.live || links.github);
 
   @media (min-width: 1024px) {
     .cover__sleeve {
-      grid-template-columns: 1.1fr 1fr;
+      /* minmax(0, …): the title's hover wave can never resize the columns */
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
     }
     .cover__art {
       aspect-ratio: auto;

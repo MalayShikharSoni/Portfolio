@@ -234,6 +234,8 @@ const todoNext = project.next.every((n) => isTodo(n));
     background: var(--paper-2);
   }
   .nexttape__text {
+    min-width: 0;
+    container-type: inline-size;
     display: grid;
     gap: 0.75rem;
   }
@@ -243,13 +245,9 @@ const todoNext = project.next.every((n) => isTodo(n));
   .nexttape__name {
     --wdth: 62;
     --wght: 900;
-    font-size: clamp(3rem, 1rem + 8vw, 8rem);
+    font-size: min(clamp(3rem, 1rem + 6vw, 7rem), 16cqi);
     line-height: 0.88;
-    transition: --wdth 0.5s var(--ease-out-expo);
-  }
-  .nexttape:hover .nexttape__name,
-  .nexttape:focus-visible .nexttape__name {
-    --wdth: 80;
+    white-space: nowrap;
   }
   .nexttape__go {
     color: var(--blue);
@@ -282,7 +280,7 @@ const todoNext = project.next.every((n) => isTodo(n));
     }
     .nexttape {
       grid-column: 3 / -1;
-      grid-template-columns: 1.3fr 1fr;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
     }
   }
 

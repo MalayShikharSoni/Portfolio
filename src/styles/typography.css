@@ -96,6 +96,15 @@
     display: inline-block;
     font-stretch: calc((var(--wdth) + var(--wave) * 26) * 1%);
   }
+  /*
+   * The wave must never move the layout: lines keep the breaks they had at rest (SplitText
+   * lines and explicit lines), so wider letters can't re-wrap a heading mid-hover. Containers
+   * that hold a rippling heading size their tracks with minmax(0, …) so content can't push them.
+   */
+  .ripple .line,
+  .ripple .word {
+    white-space: nowrap;
+  }
   .ripple:hover .ch {
     animation: wdth-wave 0.7s var(--ease-in-out) calc(var(--i, 0) * 28ms) both;
   }
