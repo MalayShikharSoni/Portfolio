@@ -282,6 +282,11 @@ const todoNext = project.next.every((n) => isTodo(n));
     }
     .case__desktop {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+    /* an odd number of shots: the first one leads, full width */
+    .case__desktop > :global(.screen:first-child:nth-last-child(odd)) {
+      grid-column: 1 / -1;
     }
     .nexttape {
       grid-column: 3 / -1;

@@ -1,8 +1,9 @@
 ---
 /**
  * One screenshot slot: a 16:10 browser frame or a 9:19.5 phone frame.
- * If the real image exists at src/assets/work/<slug>/<file>, it is used automatically
- * (optimised, responsive, lazy). Until then the slot is a designed placeholder: paper-2,
+ * If the real image exists at src/assets/work/<slug>/<file>, it is used automatically, in its
+ * own proportions (optimised, responsive, lazy). Until then the slot is a designed placeholder:
+ * paper-2,
  * a halftone in the project's ink, crop marks, and a spec label with the expected file.
  */
 import { Image } from 'astro:assets';
@@ -47,7 +48,10 @@ const tone = ink === 'orange' || (ink === 'overprint' && !desktop) ? 'orange' : 
     )}
     {!desktop && <div class="screen__notch" aria-hidden="true" />}
 
-    <div class="screen__view">
+    <div
+      class="screen__view"
+      style={image ? `aspect-ratio: ${image.width} / ${image.height}` : undefined}
+    >
       {image ? (
         <Image
           src={image}

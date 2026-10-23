@@ -100,7 +100,10 @@ export const projects: Project[] = [
       'Tailwind CSS',
       'GSAP',
     ],
-    links: { live: '', github: '' }, // TODO(Malay)
+    links: {
+      live: 'https://workwave-six.vercel.app/',
+      github: 'https://github.com/MalayShikharSoni/WorkWave',
+    },
     // (draft) TODO(Malay): revise
     overview: [
       'WorkWave is an employee management system with real-time collaboration, role-based access and gamified analytics.',
@@ -225,29 +228,28 @@ export const projects: Project[] = [
     screens: [
       {
         file: 'screen-01.webp',
-        caption: 'Dashboard view',
-        alt: 'WorkWave dashboard',
+        caption: 'Landing page',
+        alt: 'WorkWave landing page with the animated WorkWave wordmark and a scrolling status ticker',
         kind: 'desktop',
       },
       {
         file: 'screen-02.webp',
-        caption: 'Task board, live updates',
-        alt: 'WorkWave task board with live status updates',
+        caption: 'Assign a task',
+        alt: 'WorkWave admin view for assigning a new task to an employee',
         kind: 'desktop',
       },
       {
         file: 'screen-03.webp',
-        caption: 'Analytics and leaderboard',
-        alt: 'WorkWave analytics dashboard and leaderboard',
+        caption: 'Employee task overview',
+        alt: 'WorkWave admin overview of each employee’s new, active, completed and failed tasks, with priority, status and overdue filters',
         kind: 'desktop',
       },
       {
-        file: 'screen-04.webp',
-        caption: 'Notifications panel',
-        alt: 'WorkWave notifications panel',
-        kind: 'desktop',
+        file: 'mobile-01.webp',
+        caption: 'Employee dashboard',
+        alt: 'WorkWave employee dashboard on a phone, showing new task cards marked overdue and by priority',
+        kind: 'mobile',
       },
-      { file: 'mobile-01.webp', caption: 'Mobile', alt: 'WorkWave on a phone', kind: 'mobile' },
     ],
   },
   {
@@ -272,7 +274,10 @@ export const projects: Project[] = [
       'JWT',
       'Cloudinary',
     ],
-    links: { live: '', github: '' }, // TODO(Malay)
+    links: {
+      live: 'https://farmeasy-10ce.onrender.com/',
+      github: 'https://github.com/MalayShikharSoni/FarmEasy',
+    },
     // (draft) TODO(Malay): revise
     overview: [
       'FarmEasy is an agricultural auction marketplace that connects farmers directly with buyers through live bidding.',
@@ -420,29 +425,28 @@ export const projects: Project[] = [
     screens: [
       {
         file: 'screen-01.webp',
-        caption: 'Live auction room',
-        alt: 'FarmEasy live auction room',
+        caption: 'Marketplace',
+        alt: 'FarmEasy marketplace with search and filters above live auction cards showing the current bid and end date',
         kind: 'desktop',
       },
       {
         file: 'screen-02.webp',
-        caption: 'Listing detail',
-        alt: 'FarmEasy listing detail',
+        caption: 'Farmer profile',
+        alt: 'FarmEasy farmer profile with total auctions, active auctions, completed sales and earnings',
         kind: 'desktop',
       },
       {
         file: 'screen-03.webp',
-        caption: 'Admin moderation queue',
-        alt: 'FarmEasy admin moderation queue',
+        caption: 'My auctions',
+        alt: 'FarmEasy page where a farmer manages their auction listings',
         kind: 'desktop',
       },
       {
-        file: 'screen-04.webp',
-        caption: 'Payment flow',
-        alt: 'FarmEasy payment flow',
-        kind: 'desktop',
+        file: 'mobile-01.webp',
+        caption: 'Landing page',
+        alt: 'FarmEasy landing page on a phone: Sell your harvest at the best prices',
+        kind: 'mobile',
       },
-      { file: 'mobile-01.webp', caption: 'Mobile', alt: 'FarmEasy on a phone', kind: 'mobile' },
     ],
   },
   {
@@ -457,7 +461,10 @@ export const projects: Project[] = [
     years: '2025',
     role: 'TODO(Malay)',
     stack: ['PHP', 'MySQL', 'JavaScript', 'HTML', 'Tailwind CSS', 'GSAP'],
-    links: { live: '', github: '' }, // TODO(Malay)
+    links: {
+      live: 'https://webnexus.rf.gd/',
+      github: 'https://github.com/skavy359/Web-Nexus-Project',
+    },
     // (draft) TODO(Malay): revise
     overview: [
       'Web Nexus is an interactive cybersecurity education platform that simulates the OWASP Top 10 in sandboxed environments.',
@@ -538,29 +545,28 @@ export const projects: Project[] = [
     screens: [
       {
         file: 'screen-01.webp',
-        caption: 'Vulnerability module',
-        alt: 'Web Nexus vulnerability module, vulnerable side',
+        caption: 'Vulnerability catalogue',
+        alt: 'Web Nexus catalogue of OWASP vulnerabilities, including server-side request forgery, cross-site scripting and cryptographic failures',
         kind: 'desktop',
       },
       {
         file: 'screen-02.webp',
-        caption: 'Prevention view',
-        alt: 'Web Nexus prevention view',
+        caption: 'XSS module',
+        alt: 'Web Nexus cross-site scripting module introduction, with its first step: the vulnerable page',
         kind: 'desktop',
       },
       {
         file: 'screen-03.webp',
-        caption: 'Secure simulation',
-        alt: 'Web Nexus secure simulation',
+        caption: 'XSS vulnerable page',
+        alt: 'Web Nexus deliberately vulnerable comment form used to demonstrate an XSS attack',
         kind: 'desktop',
       },
       {
-        file: 'screen-04.webp',
-        caption: 'Code demo',
-        alt: 'Web Nexus syntax-highlighted code demo',
-        kind: 'desktop',
+        file: 'mobile-01.webp',
+        caption: 'Landing page',
+        alt: 'Web Nexus landing page on a phone: Learn and master security tools',
+        kind: 'mobile',
       },
-      { file: 'mobile-01.webp', caption: 'Mobile', alt: 'Web Nexus on a phone', kind: 'mobile' },
     ],
   },
 
