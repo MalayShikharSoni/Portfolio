@@ -64,7 +64,7 @@ export const site: Site = {
     linkedin: 'https://www.linkedin.com/in/malay-shikhar-soni',
     leetcode: 'https://leetcode.com/u/malay_shikhar_soni/',
   },
-  domain: 'https://malayshikharsoni.dev',
+  domain: 'https://malayshikharsoni.vercel.app', // switch to https://malayshikharsoni.dev once it's set up (DEPLOY.md)
   status: 'Open to SDE roles · Class of 2027', // TODO(Malay): confirm (full-time / internship / both)
   resume: '/resume.pdf', // placeholder PDF until Malay provides the real one
   heroMeta: ['B.Tech CSE · LPU · Class of 2027', 'Open to SDE roles', 'Based in India (IST)'],

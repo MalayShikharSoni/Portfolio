@@ -3,7 +3,7 @@ import { defineConfig, fontProviders } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 // keep in sync with `domain` in src/data/site.ts
-const SITE = 'https://malayshikharsoni.dev';
+const SITE = 'https://malayshikharsoni.vercel.app';
 
 export default defineConfig({
   site: SITE,
