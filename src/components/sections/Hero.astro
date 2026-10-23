@@ -1,0 +1,422 @@
+---
+/**
+ * 01 / 06 — Hero. The giant name over a Bauhaus composition, printed in two inks.
+ *
+ * Interactive layer (desktop pointer; touch gets the intro sweep and tap-to-stamp):
+ *  - name letters swell toward the cursor on Archivo's width + weight axes
+ *  - the blue and orange plates trail the cursor's velocity as misregistration fringes
+ *  - click / tap the name to stamp it out of register
+ *  - a halftone lens: the big blue dot screen swells under the cursor
+ *  - shapes drift in parallax; their overlaps (the overprint) shift as they move
+ *  - mono meta labels decrypt on hover; the badge turns with scroll velocity
+ * Under reduced motion all of it is off and the hero is a still print.
+ */
+import CropMarks from '@/components/primitives/CropMarks.astro';
+import RegMark from '@/components/primitives/RegMark.astro';
+import Circle from '@/components/primitives/Circle.astro';
+import Triangle from '@/components/primitives/Triangle.astro';
+import Bar from '@/components/primitives/Bar.astro';
+import Stripes from '@/components/primitives/Stripes.astro';
+import Letters from '@/components/ui/Letters.astro';
+import Button from '@/components/ui/Button.astro';
+import CircularText from '@/components/ui/CircularText.astro';
+import { site } from '@/data/site';
+
+// Key phrases in the positioning line get the riso highlighter.
+const marks = ['auth', 'real-time', 'data'];
+const pattern = new RegExp(`\\b(${marks.join('|')})\\b`, 'g');
+const tagline = site.tagline.split(pattern).map((text) => ({ text, mark: marks.includes(text) }));
+
+const [first = '', middle = '', last = ''] = site.name.toUpperCase().split(' ');
+---
+
+<section class="hero" aria-labelledby="hero-name" data-reveal="print" data-hero>
+  <div class="hero__sheet">
+    <CropMarks offset={10} length={22} />
+
+    <div class="hero__grid page-grid">
+      <div class="hero__top">
+        <span class="label" data-print="type">
+          01 / 06
+        </span>
+        <span class="label hero__role" data-print="type">
+          {site.role}
+        </span>
+        <span class="label hero__hint" aria-hidden="true" data-print="type">
+          Move the cursor · click the name
+        </span>
+        <RegMark size={18} class="hero__reg" />
+      </div>
+
+      <div class="hero__art" data-lens aria-hidden="true">
+        <svg class="art hero__svg" viewBox="0 0 800 800" focusable="false">
+          <g class="overprint" data-plate="blue">
+            <g data-lens-fallback>
+              <Circle cx={480} cy={330} r={250} ink="blue" fill="halftone" />
+            </g>
+            <Stripes
+              x={60}
+              y={470}
+              width={150}
+              height={210}
+              count={6}
+              direction="vertical"
+              ink="blue"
+              ratio={0.42}
+              depth={0.45}
+            />
+            <Circle cx={660} cy={770} r={118} half="top" ink="blue" depth={0.8} />
+          </g>
+          <g class="overprint" data-plate="orange">
+            <Circle cx={320} cy={460} r={196} ink="orange" depth={1} />
+            <Triangle x={598} y={64} width={132} height={120} ink="orange" depth={0.7} />
+            <Bar x={40} y={778} length={720} thickness={16} ink="orange" depth={0.3} />
+          </g>
+        </svg>
+        <div class="hero__lens overprint" data-plate="blue">
+          <canvas data-depth="0.6"></canvas>
+        </div>
+      </div>
+
+      <h1
+        id="hero-name"
+        class="hero__name display"
+        aria-label={site.name}
+        data-print="name"
+        data-pressure
+        data-cursor
+      >
+        <span class="hero__line">
+          <Letters text={first} />
+        </span>
+        <span class="hero__line">
+          <Letters text={middle} offset={first.length} />
+        </span>
+        <span class="hero__line">
+          <Letters text={last} offset={first.length + middle.length} />
+          <span class="ch hero__dot" aria-hidden="true">
+            .
+          </span>
+        </span>
+      </h1>
+
+      <p class="hero__tagline" data-print="words">
+        {tagline.map((part) => (part.mark ? <span class="ink-mark">{part.text}</span> : part.text))}
+      </p>
+
+      <div class="hero__ctas" data-print="fade">
+        <Button href="#work" variant="cta">
+          See selected work
+        </Button>
+        <Button href={site.resume} download>
+          Résumé ↓
+        </Button>
+      </div>
+
+      <div class="hero__foot">
+        <ul class="hero__meta" aria-label="At a glance">
+          {site.heroMeta.map((item) => (
+            <li class="label" data-print="type" data-scramble>
+              {item}
+            </li>
+          ))}
+        </ul>
+
+        <div class="hero__badge" data-print="fade">
+          <CircularText
+            id="hero-badge"
+            text={`${site.status} · ${site.heroMeta[2]} · `.toUpperCase()}
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { pressure, bindScramble, circularSpin, type Pressure } from '@/scripts/text';
+  import { halftoneLens } from '@/scripts/lens';
+  import { drift, prefersReducedMotion } from '@/scripts/motion';
+
+  let cleanups: (() => void)[] = [];
+  let name: Pressure | null = null;
+
+  document.addEventListener('astro:page-load', () => {
+    const hero = document.querySelector<HTMLElement>('[data-hero]');
+    if (!hero) return;
+    const marks = [...hero.querySelectorAll<HTMLElement>('.ink-mark')];
+    bindScramble(hero);
+
+    if (prefersReducedMotion()) {
+      marks.forEach((m) => m.classList.add('is-inked'));
+      return;
+    }
+
+    const canvas = hero.querySelector('canvas');
+    const spin = hero.querySelector<HTMLElement>('[data-spin]');
+    cleanups.push(drift(hero, 16));
+    if (canvas) cleanups.push(halftoneLens(canvas, { spacing: 11, radius: 160 }));
+    if (spin) cleanups.push(circularSpin(spin));
+
+    // The letters only come alive once the print run has finished with them.
+    hero.addEventListener(
+      'printrun:done',
+      () => {
+        const el = hero.querySelector<HTMLElement>('[data-pressure]');
+        if (!el) return;
+        name = pressure(el, { radius: 0.95 });
+        name.sweep(1700);
+        marks.forEach((m, i) =>
+          window.setTimeout(() => m.classList.add('is-inked'), 500 + i * 260),
+        );
+      },
+      { once: true },
+    );
+  });
+
+  document.addEventListener('astro:before-swap', () => {
+    name?.destroy();
+    name = null;
+    cleanups.forEach((stop) => stop());
+    cleanups = [];
+  });
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    overflow-x: clip;
+    padding: clamp(0.75rem, 2vw, 1.5rem) var(--margin) clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .hero__sheet {
+    position: relative;
+    display: flex;
+    max-width: calc(var(--max) - var(--margin) * 2);
+    min-height: calc(100svh - var(--nav-h) - clamp(2.25rem, 5vw, 4rem));
+    margin-inline: auto;
+  }
+
+  .hero__grid {
+    position: relative;
+    isolation: isolate;
+    align-content: space-between;
+    row-gap: clamp(1.25rem, 2.5vw, 2rem);
+    max-width: none;
+    /* the sheet already sits inside the page margin */
+    padding: clamp(1rem, 2.5vw, 2rem) clamp(0.25rem, 1.5vw, 1.5rem);
+  }
+
+  /* ── top row ─────────────────────────────────────────────────────────── */
+  .hero__top {
+    grid-column: 1 / -1;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .hero__role,
+  .hero__hint {
+    display: none;
+  }
+  .hero__hint {
+    color: var(--blue);
+  }
+  .hero__top :global(.hero__reg) {
+    margin-left: auto;
+  }
+
+  /* ── composition ─────────────────────────────────────────────────────── */
+  .hero__art {
+    position: absolute;
+    z-index: 0;
+    top: 3rem;
+    right: -22%;
+    width: min(84vw, 30rem);
+    aspect-ratio: 1;
+    isolation: isolate;
+    pointer-events: none;
+  }
+  .hero__svg {
+    width: 100%;
+    height: 100%;
+  }
+  .hero__lens {
+    position: absolute;
+    left: 28.75%;
+    top: 10%;
+    display: none;
+    width: 62.5%;
+    aspect-ratio: 1;
+  }
+  .hero__lens canvas {
+    width: 100%;
+    height: 100%;
+  }
+  .hero__art:global(.lens-on) .hero__lens {
+    display: block;
+  }
+  .hero__art:global(.lens-on) [data-lens-fallback] {
+    visibility: hidden;
+  }
+
+  /* ── the name ────────────────────────────────────────────────────────── */
+  .hero__name {
+    --wdth: 62;
+    --wght: 860;
+    /* how far the cursor can push each axis */
+    --p-wdth: 28;
+    --p-wght: 40;
+    grid-column: 1 / -1;
+    z-index: 1;
+    align-self: center;
+    margin-top: 7vh;
+    /* as big as the width allows, but the whole hero still fits one screen */
+    font-size: min(var(--step-hero), calc((100svh - var(--nav-h)) * 0.215));
+    line-height: 0.84;
+    letter-spacing: -0.01em;
+    mix-blend-mode: var(--blend);
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    cursor: crosshair;
+    /* the plates trailing the cursor: blue one way, orange the other */
+    text-shadow:
+      calc(var(--tx, 0) * -1px) calc(var(--ty, 0) * -1px) 0 var(--blue),
+      calc(var(--tx, 0) * 1px) calc(var(--ty, 0) * 1px) 0 var(--orange);
+  }
+  .hero__line {
+    display: block;
+    white-space: nowrap;
+  }
+  .hero__name :global(.ch) {
+    --p: 0;
+    display: inline-block;
+    font-stretch: calc((var(--wdth) + var(--p) * var(--p-wdth)) * 1%);
+    font-weight: calc(var(--wght) + var(--p) * var(--p-wght));
+  }
+  .hero__dot {
+    color: var(--orange);
+  }
+
+  /* ── copy, CTAs ──────────────────────────────────────────────────────── */
+  /* set on a paper label, so it reads cleanly wherever the shapes drift */
+  .hero__tagline {
+    grid-column: 1 / -1;
+    z-index: 2;
+    justify-self: start;
+    max-width: 34ch;
+    margin-inline: -0.75rem;
+    padding: 0.6rem 0.75rem 0.7rem;
+    background: var(--paper);
+    font-size: var(--step-1);
+    font-weight: 450;
+    line-height: 1.4;
+  }
+  .hero__ctas {
+    grid-column: 1 / -1;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  /* ── meta + badge ────────────────────────────────────────────────────── */
+  .hero__foot {
+    grid-column: 1 / -1;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .hero__meta {
+    display: grid;
+    min-width: 0;
+    gap: 0.3rem;
+  }
+  .hero__meta li {
+    cursor: default;
+  }
+  .hero__badge {
+    --circ-size: 6rem;
+    flex: none;
+  }
+
+  /* ── tablet ──────────────────────────────────────────────────────────── */
+  @media (min-width: 768px) {
+    .hero__role {
+      display: inline;
+      margin-left: calc(16.66% - 3rem);
+    }
+    .hero__art {
+      top: 0;
+      right: -3%;
+      width: min(62vw, 54rem, 88svh);
+    }
+    .hero__name {
+      --p-wdth: 56;
+      grid-row: 2;
+      margin-top: 4vh;
+    }
+    .hero__tagline {
+      grid-column: 5 / span 7;
+      grid-row: 3;
+    }
+    /* the footer's children join the hero grid directly */
+    .hero__foot {
+      display: contents;
+    }
+    .hero__meta {
+      grid-column: 1 / span 4;
+      grid-row: 4;
+      z-index: 2;
+      align-self: end;
+    }
+    .hero__ctas {
+      grid-column: 5 / span 6;
+      grid-row: 4;
+      align-self: end;
+    }
+    .hero__badge {
+      --circ-size: clamp(7.5rem, 4rem + 4.5vw, 10rem);
+      grid-column: 11 / -1;
+      grid-row: 4;
+      z-index: 2;
+      align-self: end;
+      justify-self: end;
+    }
+  }
+
+  /* ── desktop: the tagline slots in beside the short last line ────────── */
+  @media (min-width: 1280px) {
+    .hero__name {
+      grid-column: 1 / -1;
+      margin-top: 2vh;
+    }
+    .hero__tagline {
+      grid-column: 8 / span 5;
+      grid-row: 2;
+      align-self: end;
+      margin-bottom: 0.6rem;
+    }
+    /* no third row on desktop: the footer moves up */
+    .hero__meta,
+    .hero__ctas,
+    .hero__badge {
+      grid-row: 3;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
+    .hero__hint {
+      display: inline;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero__hint {
+      display: none !important;
+    }
+  }
+</style>

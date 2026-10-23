@@ -1,9 +1,9 @@
 # Malay Shikhar Soni — portfolio ("Two-Ink Print")
 
 A two-colour risograph of a Swiss/Bauhaus poster that came to life. Astro (static) + TypeScript
-strict, Tailwind CSS v4, GSAP (ScrollTrigger, SplitText) and Lenis.
+strict, plain modular CSS, GSAP (ScrollTrigger, SplitText) and Lenis.
 
-> **Status:** design system phase. Review `/styleguide` before the home page sections are built.
+> **Status:** design system + nav + hero. Sections 02–06 follow after review.
 
 ## Run locally
 
@@ -19,16 +19,20 @@ npm run build      # static site in dist/
 
 ## Where things live
 
-| What | Where |
-| --- | --- |
-| All copy and data | `src/data/` — `site.ts`, `projects.ts`, `timeline.ts`, `skills.ts` |
-| Design tokens (inks, type scale, layout) | `src/styles/tokens.css` |
-| Tailwind theme mapping, base styles | `src/styles/global.css` |
-| Paper grain | `src/styles/grain.css` |
-| Geometric primitives (SVG) | `src/components/primitives/` |
-| UI (buttons, links, theme toggle, cursor, proof mode) | `src/components/ui/` |
-| Project tapes | `src/components/work/` |
-| Motion system | `src/scripts/motion.ts` (+ `gsap.ts`, `lenis.ts`, `theme.ts`) |
+| What                                                  | Where                                                              |
+| ----------------------------------------------------- | ------------------------------------------------------------------ |
+| All copy and data                                     | `src/data/` — `site.ts`, `projects.ts`, `timeline.ts`, `skills.ts` |
+| Global CSS entry (cascade-layer order)                | `src/styles/index.css`                                             |
+| Design tokens (inks, type scale, layout)              | `src/styles/tokens.css`                                            |
+| Reset, base, typography + text hovers, grid           | `src/styles/reset.css`, `base.css`, `typography.css`, `layout.css` |
+| Print effects (overprint, grain, misregistration)     | `src/styles/print.css`                                             |
+| Component styles                                      | next to each component, in its scoped `<style>`                    |
+| Geometric primitives (SVG)                            | `src/components/primitives/`                                       |
+| UI (buttons, links, theme toggle, cursor, proof mode) | `src/components/ui/`                                               |
+| Project tapes                                         | `src/components/work/`                                             |
+| Motion system                                         | `src/scripts/motion.ts` (+ `gsap.ts`, `lenis.ts`, `theme.ts`)      |
+| Interactive text (pressure, decrypt, circular badge)  | `src/scripts/text.ts`                                              |
+| Hero halftone lens                                    | `src/scripts/lens.ts`                                              |
 
 Press **P** anywhere to see the plates (grid, baseline, blue/orange separations).
 

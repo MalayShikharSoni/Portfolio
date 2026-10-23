@@ -1,0 +1,290 @@
+---
+/**
+ * Sticky, minimal nav. Hides on scroll down, returns on scroll up.
+ * Desktop: monogram · Work / About / Contact · paper / ink · Résumé ↓
+ * Phones: monogram · paper / ink · Menu → a full-screen poster index.
+ */
+import Monogram from '@/components/ui/Monogram.astro';
+import Roll from '@/components/ui/Roll.astro';
+import ThemeToggle from '@/components/ui/ThemeToggle.astro';
+import Letters from '@/components/ui/Letters.astro';
+import ColorBar from '@/components/primitives/ColorBar.astro';
+import { site } from '@/data/site';
+
+const links = [
+  { href: '/#work', label: 'Work' },
+  { href: '/#about', label: 'About' },
+  { href: '/#contact', label: 'Contact' },
+];
+---
+
+<header class="nav" data-nav>
+  <div class="nav__bar page-grid">
+    <a class="nav__home" href="/" aria-label={`${site.name} — home`}>
+      <Monogram />
+    </a>
+
+    <nav class="nav__links" aria-label="Primary">
+      <ul>
+        {links.map((link, i) => (
+          <li>
+            <a class="nav__link label" href={link.href}>
+              <span class="nav__idx" aria-hidden="true">
+                0{i + 2}
+              </span>
+              <Roll>{link.label}</Roll>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="nav__tools">
+      <ThemeToggle />
+      <a class="nav__resume label" href={site.resume} download>
+        <Roll>Résumé ↓</Roll>
+      </a>
+      <button
+        type="button"
+        class="nav__menu label"
+        aria-expanded="false"
+        aria-controls="nav-panel"
+        data-menu-toggle
+      >
+        <Roll>
+          <span data-menu-label>Menu</span>
+        </Roll>
+      </button>
+    </div>
+  </div>
+
+  <div class="nav__panel" id="nav-panel" hidden data-menu-panel>
+    <nav class="nav__panel-inner page-grid" aria-label="Menu">
+      <ol class="nav__big">
+        {[...links, { href: site.resume, label: 'Résumé' }].map((link, i) => (
+          <li>
+            <a
+              class="nav__big-link"
+              href={link.href}
+              aria-label={link.label}
+              download={link.href === site.resume || undefined}
+            >
+              <span class="label nav__big-idx">0{i + 1}</span>
+              <span class="display ripple">
+                <Letters text={link.label} />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ol>
+      <ColorBar class="nav__panel-bar" />
+    </nav>
+  </div>
+</header>
+
+<script>
+  function initNav() {
+    const nav = document.querySelector<HTMLElement>('[data-nav]');
+    if (!nav || nav.dataset.bound) return;
+    nav.dataset.bound = 'true';
+
+    // ── hide on scroll down, show on scroll up ──
+    let lastY = window.scrollY;
+    let ticking = false;
+    const update = () => {
+      const y = window.scrollY;
+      const open = nav.classList.contains('is-open');
+      nav.classList.toggle('is-scrolled', y > 8);
+      if (!open && Math.abs(y - lastY) > 4) {
+        nav.classList.toggle('is-hidden', y > lastY && y > 120);
+        lastY = y;
+      }
+      ticking = false;
+    };
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true },
+    );
+    nav.addEventListener('focusin', () => nav.classList.remove('is-hidden'));
+    update();
+
+    // ── phone menu ──
+    const toggle = nav.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+    const panel = nav.querySelector<HTMLElement>('[data-menu-panel]');
+    const label = nav.querySelector<HTMLElement>('[data-menu-label]');
+    if (!toggle || !panel) return;
+
+    const setOpen = (open: boolean) => {
+      nav.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      panel.hidden = !open;
+      if (label) label.textContent = open ? 'Close' : 'Menu';
+      document.documentElement.classList.toggle('menu-open', open);
+      if (open) panel.querySelector<HTMLElement>('a')?.focus();
+    };
+
+    toggle.addEventListener('click', () =>
+      setOpen(toggle.getAttribute('aria-expanded') !== 'true'),
+    );
+    panel.addEventListener('click', (event) => {
+      if (event.target instanceof Element && event.target.closest('a')) setOpen(false);
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && nav.classList.contains('is-open')) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    window.matchMedia('(min-width: 768px)').addEventListener('change', (e) => {
+      if (e.matches) setOpen(false);
+    });
+  }
+
+  document.addEventListener('astro:page-load', initNav);
+</script>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--paper);
+    border-bottom: 1px solid transparent;
+    transition:
+      transform 0.5s var(--ease-out-expo),
+      border-color 0.3s;
+  }
+  .nav.is-scrolled {
+    border-bottom-color: var(--rule);
+  }
+  .nav.is-hidden {
+    transform: translateY(-100%);
+  }
+
+  .nav__bar {
+    align-items: center;
+    height: var(--nav-h);
+  }
+
+  .nav__home {
+    grid-column: 1 / span 2;
+    justify-self: start;
+    display: inline-flex;
+    padding-block: 0.5rem;
+  }
+
+  .nav__links {
+    display: none;
+  }
+
+  .nav__tools {
+    grid-column: 3 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1.25rem;
+  }
+
+  .nav__resume {
+    display: none;
+    color: var(--blue);
+  }
+
+  .nav__menu {
+    padding: 0.5rem 0;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  @media (min-width: 768px) {
+    .nav__links {
+      display: block;
+      grid-column: 3 / span 6;
+    }
+    .nav__links ul {
+      display: flex;
+      gap: clamp(1.25rem, 3vw, 2.75rem);
+    }
+    .nav__tools {
+      grid-column: 9 / -1;
+    }
+    .nav__resume {
+      display: inline-flex;
+    }
+    .nav__menu {
+      display: none;
+    }
+  }
+
+  .nav__link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    padding-block: 0.5rem;
+  }
+  .nav__idx {
+    color: var(--blue);
+    font-size: 0.85em;
+    transition: transform 0.45s var(--ease-out-expo);
+  }
+  .nav__link:hover .nav__idx,
+  .nav__link:focus-visible .nav__idx {
+    transform: translateY(-0.2em);
+  }
+
+  /* ── phone menu ── */
+  .nav__panel {
+    position: fixed;
+    inset: var(--nav-h) 0 0;
+    z-index: 49;
+    overflow-y: auto;
+    background: var(--paper);
+    border-top: 1px solid var(--ink);
+  }
+  .nav__panel-inner {
+    align-content: space-between;
+    min-height: 100%;
+    padding-block: 2rem 2.5rem;
+    row-gap: 2rem;
+  }
+  .nav__big {
+    grid-column: 1 / -1;
+  }
+  .nav__big li {
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav__big-link {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: 0.6rem 0.4rem;
+  }
+  .nav__big-idx {
+    color: var(--blue);
+  }
+  .nav__big-link .display {
+    font-size: clamp(3.25rem, 16vw, 6rem);
+    --wdth: 64;
+    --wght: 880;
+    text-transform: uppercase;
+  }
+  .nav__panel-bar {
+    grid-column: 1 / -1;
+  }
+
+  :global(html.menu-open) {
+    overflow: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav {
+      transition: none;
+    }
+  }
+</style>

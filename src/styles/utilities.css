@@ -1,0 +1,26 @@
+/* A deliberately tiny set of helpers. Anything bigger belongs in a component. */
+@layer utilities {
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .text-orange {
+    color: var(--orange);
+  }
+
+  .text-blue {
+    color: var(--blue);
+  }
+
+  .nowrap {
+    white-space: nowrap;
+  }
+}

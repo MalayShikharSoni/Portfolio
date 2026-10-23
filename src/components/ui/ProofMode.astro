@@ -42,6 +42,8 @@
     panel?.querySelectorAll<HTMLButtonElement>('[data-plate-view]').forEach((b) => {
       b.setAttribute('aria-pressed', String(b.dataset.plateView === view));
     });
+    // canvas art (the hero lens) re-reads its ink
+    document.dispatchEvent(new CustomEvent('themechange'));
   }
 
   function setOpen(open: boolean) {

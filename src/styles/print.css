@@ -1,0 +1,128 @@
+/*
+ * Print effects: overprint, paper grain, line masks and misregistration plates.
+ */
+@layer print {
+  /* ── Overprint ───────────────────────────────────────────────────────── */
+  .overprint {
+    mix-blend-mode: var(--blend);
+  }
+
+  /* Illustrations blend only with themselves, never with the page or the grain. */
+  .art {
+    isolation: isolate;
+    overflow: visible;
+  }
+
+  /* ── Paper grain ─────────────────────────────────────────────────────────
+   * One fixed overlay of feTurbulence noise, tinted to the ink of the current theme.
+   * If you can clearly notice it while reading, it's too strong.
+   * Jitters at ~8fps on desktop with a fine pointer only; static on touch + reduced motion. */
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    overflow: hidden;
+    pointer-events: none;
+    contain: strict;
+  }
+
+  .grain::before {
+    content: '';
+    position: absolute;
+    inset: -120px;
+    opacity: var(--grain-opacity, 0.05);
+    background-size: 200px 200px;
+    /* warm-black specks on paper */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.165 0 0 0 0 0.122 0 0 0 0 0.102 0 0 0 1.6 -0.35'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  [data-theme='ink'] .grain::before {
+    --grain-opacity: 0.045;
+    /* paper-coloured specks on ink */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.945 0 0 0 0 0.925 0 0 0 0 0.886 0 0 0 1.6 -0.35'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .grain::before {
+      animation: grain-jitter 1s steps(8) infinite;
+    }
+  }
+
+  @keyframes grain-jitter {
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+    12.5% {
+      transform: translate(-37px, 21px);
+    }
+    25% {
+      transform: translate(53px, -44px);
+    }
+    37.5% {
+      transform: translate(-71px, -12px);
+    }
+    50% {
+      transform: translate(18px, 63px);
+    }
+    62.5% {
+      transform: translate(84px, 9px);
+    }
+    75% {
+      transform: translate(-22px, -79px);
+    }
+    87.5% {
+      transform: translate(-90px, 46px);
+    }
+  }
+
+  /* ── Line masks (SplitText) ──────────────────────────────────────────── */
+  /* A little vertical room so tight display leading never clips. */
+  .line-mask {
+    padding-block: 0.08em;
+    margin-block: -0.08em;
+  }
+
+  .line {
+    position: relative;
+  }
+
+  /* ── Misregistration ─────────────────────────────────────────────────── */
+  /* While the plates are out of register the base text steps aside. */
+  .is-misreg .line {
+    color: transparent;
+  }
+  .is-misreg .line *,
+  .misreg-plate * {
+    color: inherit !important;
+  }
+  .is-misreg .line .misreg-plate--blue {
+    color: var(--blue) !important;
+  }
+  .is-misreg .line .misreg-plate--orange {
+    color: var(--orange) !important;
+  }
+  .is-misreg .line .misreg-plate * {
+    color: inherit !important;
+  }
+  [data-reveal='misreg'] .line,
+  [data-print='name'] .line {
+    transition: color 0.3s linear;
+  }
+
+  /* Plates cloned per line by motion.ts. Hidden in the final state. */
+  .misreg-plate {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    user-select: none;
+    mix-blend-mode: var(--blend);
+    opacity: 0;
+  }
+  .misreg-plate--blue {
+    color: var(--blue);
+  }
+  .misreg-plate--orange {
+    color: var(--orange);
+  }
+}

@@ -1,0 +1,41 @@
+---
+/**
+ * Text roll: on hover/focus of the parent link or button, the label slides up and a fresh
+ * copy rolls in from below. The copy is a text-shadow, so the words exist once in the DOM.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<span class:list={['roll', className]}>
+  <span class="roll__inner">
+    <slot />
+  </span>
+</span>
+
+<style>
+  .roll {
+    --roll-d: 1.7em;
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    padding-block: 0.12em;
+    margin-block: -0.12em;
+  }
+  .roll__inner {
+    display: block;
+    text-shadow: 0 var(--roll-d) currentColor;
+    transition: transform 0.5s var(--ease-out-expo);
+  }
+  :global(:is(a, button, .roll-trigger):is(:hover, :focus-visible)) .roll__inner {
+    transform: translateY(calc(-1 * var(--roll-d)));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .roll__inner {
+      transition: none;
+    }
+  }
+</style>

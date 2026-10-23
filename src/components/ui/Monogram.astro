@@ -1,0 +1,57 @@
+---
+/**
+ * MSS monogram, built from primitives: the M is two bars and a triangle; each S is a pair
+ * of half-discs, one per ink, overprinting where they meet. On hover the plates slip.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<svg
+  class:list={['monogram art', className]}
+  viewBox="0 0 48 24"
+  aria-hidden="true"
+  focusable="false"
+>
+  <g class="monogram__m">
+    <rect x="0" y="0" width="5" height="24"></rect>
+    <rect x="15" y="0" width="5" height="24"></rect>
+    <polygon points="0,0 20,0 10,13"></polygon>
+  </g>
+  <g class="monogram__s monogram__s--blue overprint">
+    <path d="M 30 0 A 6 6 0 0 0 30 12 Z"></path>
+    <path d="M 30 12 A 6 6 0 0 1 30 24 Z"></path>
+  </g>
+  <g class="monogram__s monogram__s--orange overprint">
+    <path d="M 42 0 A 6 6 0 0 0 42 12 Z"></path>
+    <path d="M 42 12 A 6 6 0 0 1 42 24 Z"></path>
+  </g>
+</svg>
+
+<style>
+  .monogram {
+    height: 1.5rem;
+    width: auto;
+  }
+  .monogram__m {
+    fill: var(--ink);
+  }
+  .monogram__s--blue {
+    fill: var(--blue);
+  }
+  .monogram__s--orange {
+    fill: var(--orange);
+  }
+  .monogram__s {
+    transition: transform 0.45s var(--ease-out-expo);
+  }
+  :global(a:is(:hover, :focus-visible)) .monogram__s--blue {
+    transform: translate(-1.5px, 1px);
+  }
+  :global(a:is(:hover, :focus-visible)) .monogram__s--orange {
+    transform: translate(1.5px, -1px);
+  }
+</style>

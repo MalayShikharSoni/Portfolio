@@ -337,8 +337,12 @@ export function printRun(root: HTMLElement, { force = false } = {}): Entry {
   const q = gsap.utils.selector(root);
   gsap.set(root, { autoAlpha: 1 });
 
+  const done = () => root.dispatchEvent(new CustomEvent('printrun:done'));
+
   if (!force && seenThisSession()) {
-    return { anim: gsap.from(root, { autoAlpha: 0, duration: 0.4, ease: 'none' }) };
+    return {
+      anim: gsap.from(root, { autoAlpha: 0, duration: 0.4, ease: 'none', onComplete: done }),
+    };
   }
   if (!force) markSeen();
 
@@ -385,8 +389,18 @@ export function printRun(root: HTMLElement, { force = false } = {}): Entry {
     tl.from(fades, { autoAlpha: 0, y: 10, duration: 0.8, ease: EASE.soft, stagger: 0.08 }, 1.35);
   }
 
-  // Leave clean DOM behind once printed.
-  tl.call(() => splits.forEach((s) => s.revert()));
+  // Word-by-word copy: each word rises out of the baseline.
+  q<HTMLElement>('[data-print="words"]').forEach((el) => {
+    const split = SplitText.create(el, { type: 'words', mask: 'words', wordsClass: 'word' });
+    splits.push(split);
+    tl.from(split.words, { yPercent: 110, duration: 0.8, ease: EASE.reveal, stagger: 0.025 }, 1.25);
+  });
+
+  // Leave clean DOM behind once printed, then tell the page.
+  tl.call(() => {
+    splits.forEach((s) => s.revert());
+    done();
+  });
 
   // Any scroll or key press completes the run instantly.
   const skip = () => {

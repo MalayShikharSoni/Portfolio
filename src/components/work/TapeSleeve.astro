@@ -6,6 +6,7 @@
  */
 import TapeArt from './TapeArt.astro';
 import RegMark from '@/components/primitives/RegMark.astro';
+import Roll from '@/components/ui/Roll.astro';
 import type { Project } from '@/data/projects';
 
 interface Props {
@@ -21,7 +22,7 @@ const specLabel = `Tape ${tapeNo} — ${name} — ${years}`;
 const shellInk = ink === 'orange' ? 'orange' : 'blue';
 ---
 
-<article class:list={['tape', `tape--${ink}`, className]} data-cursor>
+<article class:list={['tape', `tape--${ink}`, className]} data-cursor data-scramble-trigger>
   <div class="tape__cassette" aria-hidden="true">
     <svg class="cassette art" viewBox="0 0 316 200" focusable="false">
       <rect class="cassette__shell" x="1" y="1" width="314" height="198" rx="10"></rect>
@@ -61,7 +62,9 @@ const shellInk = ink === 'orange' ? 'orange' : 'blue';
 
   <div class="tape__sleeve" transition:name={`sleeve-${slug}`}>
     <div class="tape__spec">
-      <span class="label">{specLabel}</span>
+      <span class="label" data-scramble>
+        {specLabel}
+      </span>
       <RegMark size={16} />
     </div>
 
@@ -76,7 +79,7 @@ const shellInk = ink === 'orange' ? 'orange' : 'blue';
       <p class="label tape__tl-label">Tracklist · key features</p>
       <ol class="tape__tracklist">
         {tracklist.map((item, i) => (
-          <li>
+          <li style={`--i: ${i}`}>
             <span class="label tape__track-no">A{i + 1}</span>
             <span>{item}</span>
           </li>
@@ -85,7 +88,8 @@ const shellInk = ink === 'orange' ? 'orange' : 'blue';
 
       <a href={`/work/${slug}/`} class="tape__cta label">
         <span class="tape__cta-text">
-          Read case study<span class="sr-only">: {name}</span>
+          <Roll>Read case study</Roll>
+          <span class="sr-only">: {name}</span>
         </span>
         <span aria-hidden="true" class="tape__arrow">
           →
@@ -211,8 +215,30 @@ const shellInk = ink === 'orange' ? 'orange' : 'blue';
     border-bottom: 1px solid var(--rule);
   }
   .tape__track-no {
+    position: relative;
     padding-top: 0.12em;
     color: var(--blue);
+  }
+  /* hover: rows nudge in one after another, each with an orange tick */
+  .tape__tracklist li {
+    transition: transform 0.45s var(--ease-out-expo) calc(var(--i, 0) * 35ms);
+  }
+  .tape__track-no::before {
+    content: '';
+    position: absolute;
+    top: 0.55em;
+    left: -0.85rem;
+    width: 0.4rem;
+    height: 0.4rem;
+    background: var(--orange);
+    transform: scale(0);
+    transition: transform 0.4s var(--ease-out-expo) calc(var(--i, 0) * 35ms);
+  }
+  .tape:is(:hover, :focus-within) .tape__tracklist li {
+    transform: translateX(0.6rem);
+  }
+  .tape:is(:hover, :focus-within) .tape__track-no::before {
+    transform: scale(1);
   }
 
   .tape__cta {
@@ -225,9 +251,7 @@ const shellInk = ink === 'orange' ? 'orange' : 'blue';
     font-weight: 500;
   }
   .tape__cta-text {
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.3em;
+    border-bottom: 1px solid currentColor;
   }
   .tape__arrow {
     transition: transform var(--dur-hover) var(--ease-out-quart);
@@ -282,6 +306,13 @@ const shellInk = ink === 'orange' ? 'orange' : 'blue';
     }
     .tape:hover .cassette__reel,
     .tape:focus-within .cassette__reel {
+      transform: none;
+    }
+    .tape__tracklist li,
+    .tape__track-no::before {
+      transition: none;
+    }
+    .tape:is(:hover, :focus-within) .tape__tracklist li {
       transform: none;
     }
   }

@@ -1,0 +1,103 @@
+---
+/**
+ * A circular text badge around an orange disc — mono text set on a circle, which turns with
+ * scroll velocity and on hover (scripts/text.ts → circularSpin). Decorative: the text it
+ * carries is also printed plainly elsewhere, so it's hidden from assistive tech.
+ */
+interface Props {
+  text: string;
+  href?: string;
+  id?: string;
+  class?: string;
+}
+
+const { text, href = '#work', id = 'circ', class: className } = Astro.props;
+const R = 74;
+const pathId = `${id}-path`;
+---
+
+<a
+  href={href}
+  class:list={['circ', className]}
+  data-spin-trigger
+  data-cursor
+  aria-hidden="true"
+  tabindex="-1"
+>
+  <svg class="circ__ring" viewBox="0 0 200 200" data-spin focusable="false">
+    <defs>
+      <path
+        id={pathId}
+        d={`M 100 100 m -${R} 0 a ${R} ${R} 0 1 1 ${R * 2} 0 a ${R} ${R} 0 1 1 -${R * 2} 0`}
+      ></path>
+    </defs>
+    <text class="circ__text">
+      <textPath
+        href={`#${pathId}`}
+        textLength={Math.round(2 * Math.PI * R - 6)}
+        lengthAdjust="spacing"
+      >
+        {text}
+      </textPath>
+    </text>
+  </svg>
+  <span class="circ__core">
+    <span class="circ__arrow">↓</span>
+  </span>
+</a>
+
+<style>
+  .circ {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: var(--circ-size, clamp(7.5rem, 5rem + 6vw, 11rem));
+    aspect-ratio: 1;
+    border-radius: 50%;
+    /* a paper sticker, so the ring text reads over any artwork */
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .circ__ring {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .circ__text {
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    letter-spacing: 0.08em;
+    fill: currentColor;
+  }
+
+  .circ__core {
+    display: grid;
+    place-items: center;
+    width: 52%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--orange);
+    mix-blend-mode: var(--blend);
+    transition: transform 0.6s var(--ease-out-expo);
+  }
+
+  .circ__arrow {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 1rem + 1.4vw, 2.4rem);
+    font-weight: 600;
+    line-height: 1;
+    color: var(--paper);
+    transition: transform 0.6s var(--ease-out-expo);
+  }
+
+  .circ:hover .circ__core {
+    transform: scale(1.08);
+  }
+  .circ:hover .circ__arrow {
+    transform: translateY(0.18em);
+  }
+</style>

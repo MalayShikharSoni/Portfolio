@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
-import tailwindcss from '@tailwindcss/vite';
 
 // TODO(Malay): confirm final domain (keep in sync with src/data/site.ts)
 const SITE = 'https://malayshikharsoni.me';
@@ -54,7 +53,4 @@ export default defineConfig({
       },
     },
   ],
-  vite: {
-    plugins: [tailwindcss()],
-  },
 });

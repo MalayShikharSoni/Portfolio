@@ -1,0 +1,161 @@
+/*
+ * Type styles and the text hover vocabulary. All hovers are subtle: 0.2–0.4s, transform /
+ * font-variation / background-size only, and they all switch off under reduced motion.
+ *
+ *   .link       blue link, underline draws in from the left
+ *   <Roll>      label rolls up and a fresh copy rolls in (nav, buttons, CTAs)
+ *   .ripple     display heading: a width wave runs through the letters (needs <Letters>)
+ *   .ink-mark   key phrase: a riso highlighter swipes in behind the words
+ *   .lift       list rows: text nudges right, the marker inks in
+ *   [data-scramble]  mono label decrypts on hover (scripts/text.ts)
+ */
+@layer typography {
+  .label {
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    font-weight: 400;
+    line-height: 1.45;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .display {
+    --wdth: var(--wdth-display);
+    --wght: 860;
+    font-family: var(--font-display);
+    font-weight: var(--wght);
+    font-stretch: calc(var(--wdth) * 1%);
+    line-height: 0.88;
+    letter-spacing: -0.012em;
+  }
+
+  .display--condensed {
+    --wdth: var(--wdth-condensed);
+    --wght: 900;
+  }
+
+  .body-copy {
+    max-width: 65ch;
+    font-size: var(--step-0);
+    line-height: 1.6;
+  }
+  .body-copy > * + * {
+    margin-top: 1em;
+  }
+
+  .small-copy {
+    max-width: 60ch;
+    font-size: var(--step--1);
+    line-height: 1.5;
+  }
+
+  /* ── Width axis on hover ─────────────────────────────────────────────── */
+  .wdth-hover {
+    transition: --wdth 0.45s var(--ease-out-expo);
+  }
+  .wdth-hover:hover,
+  a:hover .wdth-hover,
+  a:focus-visible .wdth-hover {
+    --wdth: var(--wdth-normal);
+  }
+
+  /* ── Links ───────────────────────────────────────────────────────────── */
+  .link {
+    color: var(--blue);
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+    /* the drawn underline: a solid 2px bar painted as a background, so it wraps with text */
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0 calc(100% - 0.02em);
+    background-repeat: no-repeat;
+    background-size: 0% 2px;
+    transition:
+      background-size 0.4s var(--ease-out-expo),
+      text-decoration-color var(--dur-hover);
+  }
+  .link:hover,
+  .link:focus-visible {
+    background-size: 100% 2px;
+    text-decoration-color: transparent;
+  }
+  .link__ext {
+    display: inline-block;
+    margin-left: 0.15em;
+    transition: transform var(--dur-hover) var(--ease-out-quart);
+  }
+  .link:hover .link__ext,
+  .link:focus-visible .link__ext {
+    transform: translate(0.12em, -0.12em);
+  }
+
+  /* ── Ripple: a width wave runs through a heading's letters ───────────── */
+  .ripple .ch {
+    display: inline-block;
+    font-stretch: calc((var(--wdth) + var(--wave) * 26) * 1%);
+  }
+  .ripple:hover .ch {
+    animation: wdth-wave 0.7s var(--ease-in-out) calc(var(--i, 0) * 28ms) both;
+  }
+  @keyframes wdth-wave {
+    0%,
+    100% {
+      --wave: 0;
+    }
+    45% {
+      --wave: 1;
+    }
+  }
+
+  /* ── Ink mark: a riso highlighter swipes in behind key phrases ───────── */
+  .ink-mark {
+    background-image: linear-gradient(
+      color-mix(in srgb, var(--orange) 30%, transparent),
+      color-mix(in srgb, var(--orange) 30%, transparent)
+    );
+    background-position: 0 88%;
+    background-repeat: no-repeat;
+    background-size: 0% 0.42em;
+    transition: background-size 0.55s var(--ease-out-expo);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  .ink-mark:hover,
+  .ink-mark.is-inked {
+    background-size: 100% 0.42em;
+  }
+
+  /* ── Lift: list rows nudge, their marker inks in ─────────────────────── */
+  .lift > li {
+    position: relative;
+    transition: transform 0.35s var(--ease-out-expo);
+  }
+  .lift > li::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -0.9rem;
+    width: 0.45rem;
+    height: 0.45rem;
+    background: var(--orange);
+    transform: translateY(-50%) scale(0);
+    transition: transform 0.35s var(--ease-out-expo);
+  }
+  .lift > li:hover {
+    transform: translateX(0.35rem);
+  }
+  .lift > li:hover::before {
+    transform: translateY(-50%) scale(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ripple:hover .ch {
+      animation: none;
+    }
+    .lift > li:hover {
+      transform: none;
+    }
+  }
+}

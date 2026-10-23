@@ -1,0 +1,40 @@
+---
+/**
+ * Splits text into per-letter spans (.ch, with --i = running index) for letter-level effects:
+ * the heading ripple and the hero's cursor pressure. Words stay unbreakable.
+ *
+ * The letters are aria-hidden — give the parent element aria-label={text}, so screen
+ * readers hear the word, not single letters.
+ */
+interface Props {
+  text: string;
+  /** Starting --i, to continue a stagger across several <Letters>. */
+  offset?: number;
+  class?: string;
+}
+
+const { text, offset = 0, class: className } = Astro.props;
+let i = offset;
+const words = text.split(' ').map((word) => [...word].map((ch) => ({ ch, i: i++ })));
+---
+
+<span class:list={['letters', className]} aria-hidden="true">
+  {words.map((word, w) => (
+    <>
+      <span class="word">
+        {word.map(({ ch, i }) => (
+          <span class="ch" style={`--i: ${i}`}>
+            {ch}
+          </span>
+        ))}
+      </span>
+      {w < words.length - 1 && ' '}
+    </>
+  ))}
+</span>
+
+<style>
+  .word {
+    white-space: nowrap;
+  }
+</style>

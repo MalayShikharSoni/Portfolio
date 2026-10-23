@@ -3,6 +3,8 @@
  * Section header: the mono index ("01 / 06") sits in the margin columns, the title starts at
  * column 3 — the Swiss asymmetry. On mobile the index stacks above the title.
  */
+import Letters from './Letters.astro';
+
 interface Props {
   index: number;
   total: number;
@@ -18,15 +20,24 @@ const { index, total, title, kicker, id, as: Heading = 'h2', class: className } 
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
-<header class:list={['section-head page-grid', className]}>
+<header class:list={['section-head page-grid', className]} data-scramble-trigger>
   <p class="section-head__index label" data-reveal="fade">
     <span>
       {pad(index)} / {pad(total)}
     </span>
-    {kicker && <span class="section-head__kicker">{kicker}</span>}
+    {kicker && (
+      <span class="section-head__kicker" data-scramble>
+        {kicker}
+      </span>
+    )}
   </p>
-  <Heading id={id} class="section-head__title display" data-reveal="misreg">
-    {title}
+  <Heading
+    id={id}
+    class="section-head__title display ripple"
+    aria-label={title}
+    data-reveal="misreg"
+  >
+    <Letters text={title} />
   </Heading>
 </header>
 

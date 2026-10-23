@@ -1,0 +1,38 @@
+/* The Swiss grid: 12 columns (4 on phones), generous section spacing. */
+@layer layout {
+  .page-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    column-gap: var(--gutter);
+    width: 100%;
+    max-width: var(--max);
+    margin-inline: auto;
+    padding-inline: var(--margin);
+  }
+
+  .section {
+    position: relative;
+    padding-block: var(--section-space);
+  }
+
+  /* Common placements: full width, or the asymmetric "content starts at column 3". */
+  .col-full {
+    grid-column: 1 / -1;
+  }
+
+  @media (min-width: 768px) {
+    .col-content {
+      grid-column: 3 / -1;
+    }
+    .col-text {
+      grid-column: 3 / span 7;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .col-content,
+    .col-text {
+      grid-column: 1 / -1;
+    }
+  }
+}

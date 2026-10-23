@@ -1,12 +1,12 @@
 /*
  * Two-Ink Print — design tokens.
- * Every ink value is a real Riso ink. Components never use raw hex; they use these tokens
- * (directly or through the Tailwind theme in global.css).
+ * Every ink value is a real Riso ink. Components never use raw hex; they use these tokens.
  *
  * Themes are scoped by [data-theme], so any element can opt into a theme (the styleguide
  * renders both side by side). <html> gets its theme from the inline script in Base.astro.
  */
 
+/* Registered so the width/weight axes can transition and tween smoothly. */
 @property --wdth {
   syntax: '<number>';
   inherits: true;
@@ -19,72 +19,87 @@
   initial-value: 400;
 }
 
-:root,
-[data-theme='paper'] {
-  color-scheme: light;
-
-  --paper: #f1ece2;
-  --ink: #2a1f1a;
-  --orange: #e8501a;
-  --blue: #3255a4;
-  --overprint: #2f1d13;
-  --rule: #b9b3a6;
-  --paper-2: #e7e0d3;
-
-  /* Overprint mode: multiply on paper. */
-  --blend: multiply;
+/* 0 → 1 → 0 pulse used by the heading ripple. Not inherited: each letter runs its own. */
+@property --wave {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
 }
 
-[data-theme='ink'] {
-  color-scheme: dark;
+@layer tokens {
+  :root,
+  [data-theme='paper'] {
+    color-scheme: light;
 
-  --paper: #17130f;
-  --ink: #f1ece2;
-  --orange: #e8501a;
-  --blue: #62a8e5;
-  --overprint: #2f1d13;
-  --rule: #4a423a;
-  --paper-2: #211b16;
+    --paper: #f1ece2;
+    --ink: #2a1f1a;
+    --orange: #e8501a;
+    --blue: #3255a4;
+    --overprint: #2f1d13;
+    --rule: #b9b3a6;
+    --paper-2: #e7e0d3;
 
-  /* multiply disappears on dark paper, so ink mode overprints with screen. */
-  --blend: screen;
-}
+    /* Overprint mode: multiply on paper. */
+    --blend: multiply;
+  }
 
-:root {
-  /* ── Type scale: fluid, ~1.25 modular, 375px → 1440px ─────────────────────── */
-  --step--2: clamp(0.6875rem, 0.6435rem + 0.1878vw, 0.8125rem); /* 11 → 13  labels */
-  --step--1: clamp(0.875rem, 0.853rem + 0.0939vw, 0.9375rem); /*   14 → 15 */
-  --step-0: clamp(1.0625rem, 1.0405rem + 0.0939vw, 1.125rem); /*   17 → 18  body */
-  --step-1: clamp(1.25rem, 1.162rem + 0.3756vw, 1.5rem); /*        20 → 24 */
-  --step-2: clamp(1.5rem, 1.324rem + 0.7512vw, 2rem); /*           24 → 32 */
-  --step-3: clamp(1.875rem, 1.567rem + 1.3146vw, 2.75rem); /*      30 → 44 */
-  --step-4: clamp(2.375rem, 1.803rem + 2.441vw, 4rem); /*          38 → 64 */
-  --step-5: clamp(3rem, 1.7676rem + 5.258vw, 6.5rem); /*           48 → 104 */
-  --step-6: clamp(3.75rem, 1.373rem + 10.14vw, 10.5rem); /*        60 → 168 */
-  --step-hero: clamp(4.5rem, 18vw, 16.5rem);
+  [data-theme='ink'] {
+    color-scheme: dark;
 
-  /* Display widths (Archivo wdth axis, 62–125). */
-  --wdth-condensed: 62;
-  --wdth-display: 68;
-  --wdth-normal: 100;
-  --wdth-wide: 125;
+    --paper: #17130f;
+    --ink: #f1ece2;
+    --orange: #e8501a;
+    --blue: #62a8e5;
+    --overprint: #2f1d13;
+    --rule: #4a423a;
+    --paper-2: #211b16;
 
-  /* ── Layout ─────────────────────────────────────────────────────────────── */
-  --max: 1680px;
-  --margin: clamp(1rem, 0.25rem + 3.2vw, 4rem);
-  --gutter: clamp(0.75rem, 0.5rem + 0.8vw, 1.5rem);
-  --cols: 4;
-  --section-space: clamp(6rem, 3.5rem + 9vw, 13rem);
-  --nav-h: 3.5rem;
+    /* multiply disappears on dark paper, so ink mode overprints with screen. */
+    --blend: screen;
+  }
 
-  /* ── Motion ─────────────────────────────────────────────────────────────── */
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-  --dur-hover: 0.28s;
-}
-
-@media (min-width: 768px) {
   :root {
-    --cols: 12;
+    /* ── Fonts (the families come from Astro's Fonts API, see astro.config.mjs) ── */
+    --font-sans: var(--font-archivo), sans-serif;
+    --font-display: var(--font-archivo), sans-serif;
+    --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+
+    /* ── Type scale: fluid, ~1.25 modular, 375px → 1440px ───────────────────── */
+    --step--2: clamp(0.6875rem, 0.6435rem + 0.1878vw, 0.8125rem); /* 11 → 13  labels */
+    --step--1: clamp(0.875rem, 0.853rem + 0.0939vw, 0.9375rem); /*   14 → 15 */
+    --step-0: clamp(1.0625rem, 1.0405rem + 0.0939vw, 1.125rem); /*   17 → 18  body */
+    --step-1: clamp(1.25rem, 1.162rem + 0.3756vw, 1.5rem); /*        20 → 24 */
+    --step-2: clamp(1.5rem, 1.324rem + 0.7512vw, 2rem); /*           24 → 32 */
+    --step-3: clamp(1.875rem, 1.567rem + 1.3146vw, 2.75rem); /*      30 → 44 */
+    --step-4: clamp(2.375rem, 1.803rem + 2.441vw, 4rem); /*          38 → 64 */
+    --step-5: clamp(3rem, 1.7676rem + 5.258vw, 6.5rem); /*           48 → 104 */
+    --step-6: clamp(3.75rem, 1.373rem + 10.14vw, 10.5rem); /*        60 → 168 */
+    --step-hero: clamp(4.75rem, 1.5rem + 17vw, 17rem);
+
+    /* Display widths (Archivo wdth axis, 62–125). */
+    --wdth-condensed: 62;
+    --wdth-display: 68;
+    --wdth-normal: 100;
+    --wdth-wide: 125;
+
+    /* ── Layout ─────────────────────────────────────────────────────────────── */
+    --max: 1680px;
+    --margin: clamp(1rem, 0.25rem + 3.2vw, 4rem);
+    --gutter: clamp(0.75rem, 0.5rem + 0.8vw, 1.5rem);
+    --cols: 4;
+    --section-space: clamp(6rem, 3.5rem + 9vw, 13rem);
+    --nav-h: 3.75rem;
+
+    /* ── Motion ─────────────────────────────────────────────────────────────── */
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --dur-hover: 0.3s;
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --cols: 12;
+    }
   }
 }

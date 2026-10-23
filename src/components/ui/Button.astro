@@ -6,6 +6,8 @@
  * - `default`: smaller buttons wipe in an ink fill instead (13.6:1).
  * Renders an <a> when `href` is set, otherwise a <button>.
  */
+import Roll from './Roll.astro';
+
 interface Props {
   href?: string;
   variant?: 'cta' | 'default';
@@ -29,13 +31,17 @@ const classes = ['btn', `btn--${variant}`, className];
 {href ? (
   <a href={href} class:list={classes} download={download || undefined} {...rest}>
     <span class="btn__label">
-      <slot />
+      <Roll>
+        <slot />
+      </Roll>
     </span>
   </a>
 ) : (
   <button type={type} class:list={classes} {...rest}>
     <span class="btn__label">
-      <slot />
+      <Roll>
+        <slot />
+      </Roll>
     </span>
   </button>
 )}
@@ -50,7 +56,8 @@ const classes = ['btn', `btn--${variant}`, className];
     overflow: hidden;
     isolation: isolate;
     border: 1px solid var(--ink);
-    background: transparent;
+    /* buttons are printed on paper, so they stay legible over artwork */
+    background: var(--paper);
     color: var(--ink);
     font-family: var(--font-mono);
     font-weight: 500;

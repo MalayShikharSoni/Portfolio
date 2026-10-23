@@ -1,0 +1,15 @@
+/*
+ * Global stylesheet entry. Plain CSS, split by concern and ordered with cascade layers.
+ * Component styles live next to their components (Astro scoped <style>, unlayered), so they
+ * always win over these globals without specificity fights.
+ */
+@layer reset, tokens, base, typography, layout, print, motion, utilities;
+
+@import './reset.css';
+@import './tokens.css';
+@import './base.css';
+@import './typography.css';
+@import './layout.css';
+@import './print.css';
+@import './motion.css';
+@import './utilities.css';
