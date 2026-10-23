@@ -420,7 +420,7 @@ export function printRun(root: HTMLElement, { force = false } = {}): Entry {
 /**
  * Pointer parallax plus a very slow ambient drift for [data-depth] shapes inside `root`.
  * Desktop with a fine pointer only; paused whenever `root` is off-screen. Each shape moves up
- * to `max` px × its depth, so the overlaps — and the overprint areas — keep changing.
+ * to `max` px × its depth, so the overlaps, and the overprint areas, keep changing.
  */
 export function drift(root: HTMLElement, max = 18): () => void {
   const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;

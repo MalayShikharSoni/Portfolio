@@ -1,5 +1,5 @@
 /*
- * Two-Ink Print — design tokens.
+ * Two-Ink Print: design tokens.
  * Every ink value is a real Riso ink. Components never use raw hex; they use these tokens.
  *
  * Themes are scoped by [data-theme], so any element can opt into a theme (the styleguide

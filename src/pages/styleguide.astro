@@ -1,6 +1,6 @@
 ---
 /**
- * /styleguide — every token, primitive, effect and animation of the Two-Ink Print system.
+ * /styleguide: every token, primitive, effect and animation of the Two-Ink Print system.
  * noindex, and excluded from the sitemap (astro.config.mjs).
  */
 import Base from '@/layouts/Base.astro';
@@ -33,8 +33,8 @@ const TOTAL = 10;
 const tokens = [
   { token: '--paper', light: '#F1ECE2', dark: '#17130F', role: 'Page background' },
   { token: '--ink', light: '#2A1F1A', dark: '#F1ECE2', role: 'Body text, primary lines' },
-  { token: '--orange', light: '#E8501A', dark: '#E8501A', role: 'Spot ink 1 — shapes, display' },
-  { token: '--blue', light: '#3255A4', dark: '#62A8E5', role: 'Spot ink 2 — links, labels' },
+  { token: '--orange', light: '#E8501A', dark: '#E8501A', role: 'Spot ink 1: shapes, display' },
+  { token: '--blue', light: '#3255A4', dark: '#62A8E5', role: 'Spot ink 2: links, labels' },
   { token: '--overprint', light: '#2F1D13', dark: '#2F1D13', role: 'Orange × blue fallback' },
   { token: '--rule', light: '#B9B3A6', dark: '#4A423A', role: 'Hairlines (never text)' },
   { token: '--paper-2', light: '#E7E0D3', dark: '#211B16', role: 'Cards and sleeves' },
@@ -53,7 +53,7 @@ const contrast = [
 const scale = [
   { token: '--step-6', sample: 'Holds.', display: true },
   { token: '--step-5', sample: 'Selected work', display: true },
-  { token: '--step-4', sample: 'Side B — decisions', display: true },
+  { token: '--step-4', sample: 'Side B: decisions', display: true },
   { token: '--step-3', sample: 'Refresh-token rotation', display: true },
   { token: '--step-2', sample: 'Real-time, without polling', display: true },
   { token: '--step-1', sample: 'The parts you don’t see, built to hold.' },
@@ -76,7 +76,7 @@ const fills = ['solid', 'halftone', 'halftone-fine', 'stripes', 'outline'] as co
         <div class="sg-hero__sheet">
           <CropMarks offset={8} length={18} />
           <Label as="p" class="sg-hero__spec">
-            Proof 02 — Styleguide — Two-ink print — v0.2
+            Proof 02 · Styleguide · Two-ink print · v0.2
           </Label>
           <h1
             id="sg-title"
@@ -91,7 +91,7 @@ const fills = ['solid', 'halftone', 'halftone-fine', 'stripes', 'outline'] as co
           <p class="body-copy sg-hero__intro" data-reveal="fade" data-reveal-delay="0.3">
             A two-colour risograph of a Swiss poster that came to life. Orange and blue spot inks,
             their overprint, warm black, paper. Everything on this page is built from the tokens and
-            primitives below — review the look here before any real section is built.
+            primitives below. Review the look here before any real section is built.
           </p>
           <div class="sg-hero__actions">
             <Button href="/">See the hero</Button>
@@ -131,7 +131,7 @@ const fills = ['solid', 'halftone', 'halftone-fine', 'stripes', 'outline'] as co
             </g>
           </svg>
           <figcaption class="label">
-            Fig. 1 — Orange × blue. Multiply on paper, screen on ink: the third colour is the
+            Fig. 1 · Orange × blue. Multiply on paper, screen on ink: the third colour is the
             overprint.
           </figcaption>
         </figure>
@@ -174,7 +174,7 @@ const fills = ['solid', 'halftone', 'halftone-fine', 'stripes', 'outline'] as co
       <SectionHead index={2} total={TOTAL} kicker="Archivo + Plex Mono" title="Type" id="sg-type" />
       <div class="page-grid sg-body">
         <div class="sg-span">
-          <Label as="p">Hero — Archivo 900, wdth 62, --step-hero, leading 0.85</Label>
+          <Label as="p">Hero · Archivo 900, wdth 62, --step-hero, leading 0.85</Label>
           <p class="display display--condensed sg-hero-type" aria-hidden="true">
             Malay
             <br />
@@ -197,7 +197,7 @@ const fills = ['solid', 'halftone', 'halftone-fine', 'stripes', 'outline'] as co
 
         <div class="sg-col-a">
           <Label as="p" class="sg-mb">
-            Body — Archivo 400 · 17–18px · 1.6 · 65ch
+            Body · Archivo 400 · 17–18px · 1.6 · 65ch
           </Label>
           <div class="body-copy">
             {site.bio.map((p) => (
@@ -208,17 +208,17 @@ const fills = ['solid', 'halftone', 'halftone-fine', 'stripes', 'outline'] as co
 
         <div class="sg-col-b">
           <Label as="p" class="sg-mb">
-            Labels — IBM Plex Mono · 11–13px · caps · 0.08em
+            Labels · IBM Plex Mono · 11–13px · caps · 0.08em
           </Label>
           <ul class="sg-labels">
             <li>
-              <Label>Tape 01 — 2025</Label>
+              <Label>Tape 01 · 2025</Label>
             </li>
             <li>
               <Label>Side A / Overview</Label>
             </li>
             <li>
-              <Label tone="blue">Fig. 2 — Request flow</Label>
+              <Label tone="blue">Fig. 2 · Request flow</Label>
             </li>
             <li>
               <Label>01 / 06</Label>
@@ -228,7 +228,7 @@ const fills = ['solid', 'halftone', 'halftone-fine', 'stripes', 'outline'] as co
 
         <div class="sg-span sg-widths">
           <Label as="p" class="sg-mb">
-            Width axis — Archivo wdth 62 → 125
+            Width axis · Archivo wdth 62 → 125
           </Label>
           <ul>
             {widths.map((w) => (
@@ -293,7 +293,7 @@ const fills = ['solid', 'halftone', 'halftone-fine', 'stripes', 'outline'] as co
               </svg>
             ))}
           </div>
-          <p class="label">ht · htf · st — blue 15°, orange 75°, ink 45°</p>
+          <p class="label">ht, htf, st · blue 15°, orange 75°, ink 45°</p>
         </div>
 
         <div class="sg-card sg-col-a">
@@ -377,8 +377,8 @@ const fills = ['solid', 'halftone', 'halftone-fine', 'stripes', 'outline'] as co
             <Bar x={40} y={380} length={720} thickness={1.5} ink="ink" />
           </svg>
           <figcaption class="label">
-            Fig. 2 — Composition with hero drift: move the pointer (desktop). The overlaps — and the
-            overprint — shift with each shape’s depth.
+            Fig. 2 · Composition with hero drift: move the pointer (desktop). The overlaps, and the
+            overprint, shift with each shape’s depth.
           </figcaption>
         </figure>
       </div>
@@ -466,7 +466,7 @@ const fills = ['solid', 'halftone', 'halftone-fine', 'stripes', 'outline'] as co
       <SectionHead index={8} total={TOTAL} kicker="Subtle hovers" title="Text" id="sg-text" />
       <div class="page-grid sg-body">
         <div class="sg-card sg-span">
-          <Label as="h3">Pressure + plate trail — the hero name</Label>
+          <Label as="h3">Pressure + plate trail · the hero name</Label>
           <p class="display sg-pressure" aria-label="Pressure" data-sg-pressure data-cursor>
             <Letters text="PRESSURE" />
           </p>
@@ -478,7 +478,7 @@ const fills = ['solid', 'halftone', 'halftone-fine', 'stripes', 'outline'] as co
         </div>
 
         <div class="sg-card sg-col-a">
-          <Label as="h3">Ripple — display headings</Label>
+          <Label as="h3">Ripple · display headings</Label>
           <p class="display sg-ripple ripple" aria-label="Hover this heading">
             <Letters text="Hover this heading" />
           </p>
@@ -488,7 +488,7 @@ const fills = ['solid', 'halftone', 'halftone-fine', 'stripes', 'outline'] as co
         </div>
 
         <div class="sg-card sg-col-b">
-          <Label as="h3">Roll — nav, buttons, CTAs</Label>
+          <Label as="h3">Roll · nav, buttons, CTAs</Label>
           <ul class="sg-roll-demo">
             <li>
               <a class="label" href="#sg-text">
@@ -512,17 +512,17 @@ const fills = ['solid', 'halftone', 'halftone-fine', 'stripes', 'outline'] as co
         </div>
 
         <div class="sg-card sg-col-a">
-          <Label as="h3">Decrypt — mono labels</Label>
+          <Label as="h3">Decrypt · mono labels</Label>
           <ul class="sg-labels">
             <li>
-              <Label data-scramble>Tape 01 — WorkWave — 2025–26</Label>
+              <Label data-scramble>Tape 01 · WorkWave · 2025–26</Label>
             </li>
             <li>
               <Label data-scramble>Side B / Engineering decisions</Label>
             </li>
             <li>
               <Label tone="blue" data-scramble>
-                Fig. 1 — Request flow
+                Fig. 1 · Request flow
               </Label>
             </li>
           </ul>
@@ -530,17 +530,17 @@ const fills = ['solid', 'halftone', 'halftone-fine', 'stripes', 'outline'] as co
         </div>
 
         <div class="sg-card sg-col-b">
-          <Label as="h3">Ink mark — key phrases</Label>
+          <Label as="h3">Ink mark · key phrases</Label>
           <p class="body-copy">
             I gravitate to the back of the stack: <span class="ink-mark">auth flows</span>,{' '}
             <span class="ink-mark">real-time sync</span> and{' '}
-            <span class="ink-mark">permission models</span> — the code that decides who is allowed
-            to do what.
+            <span class="ink-mark">permission models</span>: the code that decides who is allowed to
+            do what.
           </p>
         </div>
 
         <div class="sg-card sg-span">
-          <Label as="h3">Lift — list rows</Label>
+          <Label as="h3">Lift · list rows</Label>
           <ul class="lift sg-lift">
             <li>Refresh-token rotation with reuse detection</li>
             <li>Refresh tokens hashed at rest (SHA-256)</li>
@@ -579,11 +579,11 @@ const fills = ['solid', 'halftone', 'halftone-fine', 'stripes', 'outline'] as co
               run<span class="text-orange">.</span>
             </p>
             <p class="label" data-print="type">
-              Plate 1 blue — plate 2 orange — in register
+              Plate 1 blue · plate 2 orange · in register
             </p>
           </div>
           <Label as="h3" class="sg-demo-title">
-            Hero print run — 2.2s
+            Hero print run · 2.2s
           </Label>
           <Button data-replay="#demo-print" class="sg-replay">
             Replay
@@ -628,10 +628,10 @@ const fills = ['solid', 'halftone', 'halftone-fine', 'stripes', 'outline'] as co
         <div class="sg-card sg-col-b">
           <Label as="h3">Stagger</Label>
           <ul class="sg-stagger" id="demo-stagger" data-reveal="stagger">
-            <li class="label">A1 — 35+ REST endpoints</li>
-            <li class="label">A2 — Dual-token JWT auth</li>
-            <li class="label">A3 — Socket.io, no polling</li>
-            <li class="label">A4 — Analytics engine</li>
+            <li class="label">A1 · 35+ REST endpoints</li>
+            <li class="label">A2 · Dual-token JWT auth</li>
+            <li class="label">A3 · Socket.io, no polling</li>
+            <li class="label">A4 · Analytics engine</li>
           </ul>
           <Button data-replay="#demo-stagger" class="sg-replay">
             Replay
@@ -683,12 +683,12 @@ const fills = ['solid', 'halftone', 'halftone-fine', 'stripes', 'outline'] as co
         <div class="sg-card sg-span">
           <Label as="h3">Also on this page</Label>
           <ul class="sg-list">
-            <li>Hero drift — Fig. 2 in Primitives (move the pointer)</li>
-            <li>Tape slide + reels + plate slip — Tapes</li>
-            <li>Theme roll — the paper / ink toggle</li>
-            <li>Cursor follower — move the mouse over a link</li>
-            <li>Grain jitter — the paper itself, desktop only</li>
-            <li>Proof mode — press P (1 / 2 / 3 for the plates)</li>
+            <li>Hero drift: Fig. 2 in Primitives (move the pointer)</li>
+            <li>Tape slide + reels + plate slip: Tapes</li>
+            <li>Theme roll: the paper / ink toggle</li>
+            <li>Cursor follower: move the mouse over a link</li>
+            <li>Grain jitter: the paper itself, desktop only</li>
+            <li>Proof mode: press P (1 / 2 / 3 for the plates)</li>
           </ul>
         </div>
       </div>
@@ -708,7 +708,7 @@ const fills = ['solid', 'halftone', 'halftone-fine', 'stripes', 'outline'] as co
           <div class="sg-theme" data-theme={theme}>
             <InkDefs prefix={`${theme}-`} />
             <Label as="p">
-              {theme === 'paper' ? 'Paper — the real print (default)' : 'Ink — dark mode'}
+              {theme === 'paper' ? 'Paper · the real print (default)' : 'Ink · dark mode'}
             </Label>
             <svg class="art sg-theme__art" viewBox="0 0 300 150" aria-hidden="true">
               <g class="overprint">
@@ -745,7 +745,7 @@ const fills = ['solid', 'halftone', 'halftone-fine', 'stripes', 'outline'] as co
 
   <footer class="page-grid sg-foot">
     <ColorBar />
-    <p class="label">Two-ink print — Archivo, IBM Plex Mono — orange, blue, overprint</p>
+    <p class="label">Two-ink print · Archivo, IBM Plex Mono · orange, blue, overprint</p>
   </footer>
 </Base>
 

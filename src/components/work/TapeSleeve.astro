@@ -18,7 +18,7 @@ interface Props {
 const { project, headingLevel: Heading = 'h3', class: className } = Astro.props;
 const { slug, name, tape, ink, years, oneLiner, tracklist } = project;
 const tapeNo = String(tape).padStart(2, '0');
-const specLabel = `Tape ${tapeNo} — ${name} — ${years}`;
+const specLabel = `Tape ${tapeNo} · ${name} · ${years}`;
 const shellInk = ink === 'orange' ? 'orange' : 'blue';
 ---
 

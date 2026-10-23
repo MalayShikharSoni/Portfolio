@@ -2,7 +2,7 @@
 /**
  * Shared SVG pattern library, rendered once per page. Every illustration references these by
  * id: url(#ht-blue), url(#htf-orange), url(#st-ink) …
- * Not display:none — Firefox drops patterns that live in a display:none SVG.
+ * Not display:none, because Firefox drops patterns that live in a display:none SVG.
  *
  * Patterns take their colours from where they are defined, not where they are used. A block
  * that forces its own data-theme renders a prefixed copy inside itself (see the styleguide).

@@ -55,7 +55,7 @@ const { email = site.email, class: className } = Astro.props;
         if (!ok) {
           const address = root.querySelector('.copy-email__address');
           if (address) selectText(address);
-          if (status) status.textContent = 'Email address selected — press Ctrl+C to copy';
+          if (status) status.textContent = 'Email address selected. Press Ctrl+C to copy';
           return;
         }
         root.classList.add('is-copied');

@@ -1,7 +1,7 @@
 export type TimelineKind = 'education' | 'certificate' | 'training' | 'milestone';
 
 export interface TimelineEntry {
-  /** Display date, e.g. "Sep 2026" or "Aug 2023 – present". */
+  /** Display date, e.g. "Sep 2026" or "Aug 2023 to present". */
   date: string;
   title: string;
   issuer?: string;
@@ -27,7 +27,7 @@ export const timeline: TimelineEntry[] = [
     kind: 'milestone',
   },
   {
-    date: 'Jun – Jul 2025',
+    date: 'Jun to Jul 2025',
     title: 'Backend Development training',
     issuer: 'Techvanto Academy',
     detail:
@@ -57,7 +57,7 @@ export const timeline: TimelineEntry[] = [
     credentialUrl: '',
   },
   {
-    date: 'Aug 2023 – present',
+    date: 'Aug 2023 to present',
     title: 'B.Tech CSE',
     issuer: 'Lovely Professional University',
     detail: 'CGPA 9.01.',

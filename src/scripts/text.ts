@@ -38,7 +38,9 @@ export function scramble(el: HTMLElement, duration = 520) {
       for (let i = 0; i < original.length; i++) {
         const c = original[i] ?? '';
         out +=
-          i < resolved || /\s|[—·/.,:]/.test(c) ? c : GLYPHS[(Math.random() * GLYPHS.length) | 0];
+          i < resolved || /\s|[\u2014·/.,:]/.test(c)
+            ? c
+            : GLYPHS[(Math.random() * GLYPHS.length) | 0];
       }
       el.textContent = out;
     }
@@ -126,7 +128,7 @@ export function pressure(root: HTMLElement, opts: PressureOptions = {}): Pressur
       }
     }
 
-    // Read every letter's position first, then write — one layout per frame.
+    // Read every letter's position first, then write: one layout per frame.
     const centers = chars.map((c) => {
       const r = c.getBoundingClientRect();
       return [r.left + r.width / 2, r.top + r.height / 2] as const;

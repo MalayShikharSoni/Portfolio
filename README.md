@@ -1,4 +1,4 @@
-# Malay Shikhar Soni — portfolio ("Two-Ink Print")
+# Malay Shikhar Soni · portfolio ("Two-Ink Print")
 
 A two-colour risograph of a Swiss/Bauhaus poster that came to life. Astro (static) + TypeScript
 strict, plain modular CSS, GSAP (ScrollTrigger, SplitText) and Lenis.

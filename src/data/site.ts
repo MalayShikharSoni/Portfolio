@@ -11,8 +11,13 @@ export interface Site {
   name: string;
   shortName: string;
   role: string;
-  /** Hero positioning line. */
-  tagline: string;
+  /** Hero positioning: a short headline and one supporting sentence. */
+  tagline: {
+    lead: string;
+    body: string;
+    /** Words in `body` that get the riso highlighter. */
+    marks: string[];
+  };
   description: string;
   email: string;
   links: SiteLinks;
@@ -36,10 +41,13 @@ export const site: Site = {
   name: 'Malay Shikhar Soni',
   shortName: 'Malay',
   role: 'Backend-leaning full-stack engineer',
-  tagline:
-    "Backend-leaning full-stack engineer. I build the parts you don't see — auth, real-time, data — and make sure they hold.",
+  tagline: {
+    lead: 'Backend first, full-stack fluent.',
+    body: 'I build the auth, real-time and data layers under a product, and make sure they hold when real users show up.',
+    marks: ['auth', 'real-time', 'data'],
+  },
   description:
-    'Malay Shikhar Soni — backend-leaning full-stack engineer. Auth, real-time and data systems that hold up under real users.',
+    'Malay Shikhar Soni, backend-leaning full-stack engineer. Auth, real-time and data systems that hold up under real users.',
   email: 'malayshikhar2004@gmail.com',
   links: {
     github: 'https://github.com/MalayShikharSoni',
@@ -47,9 +55,9 @@ export const site: Site = {
     leetcode: 'https://leetcode.com/u/TODO_LEETCODE_USERNAME', // TODO(Malay)
   },
   domain: 'https://malayshikharsoni.me', // TODO(Malay): confirm final domain
-  status: 'Open to SDE roles — Class of 2027', // TODO(Malay): confirm (full-time / internship / both)
+  status: 'Open to SDE roles · Class of 2027', // TODO(Malay): confirm (full-time / internship / both)
   resume: '/resume.pdf', // placeholder PDF until Malay provides the real one
-  heroMeta: ['B.Tech CSE — LPU — Class of 2027', 'Open to SDE roles', 'Based in India (IST)'],
+  heroMeta: ['B.Tech CSE · LPU · Class of 2027', 'Open to SDE roles', 'Based in India (IST)'],
   location: 'Printed in Jalandhar, Punjab', // TODO(Malay): confirm the location line
   // (draft) TODO(Malay): revise
   bio: [

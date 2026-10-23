@@ -21,7 +21,7 @@ export interface DiagramNode {
 }
 
 export interface Diagram {
-  /** e.g. "Fig. 1 — Request flow" */
+  /** e.g. "Fig. 1 · Request flow" */
   title: string;
   cols: number;
   rows: number;
@@ -65,7 +65,7 @@ export interface Project {
   role: string;
   stack: string[];
   links: ProjectLinks;
-  /** Side A — overview paragraphs. */
+  /** Side A: overview paragraphs. */
   overview: string[];
   /** Key features ("tracklist"). */
   tracklist: string[];
@@ -84,7 +84,7 @@ export const projects: Project[] = [
     ink: 'blue',
     oneLiner:
       'An employee management system with real-time collaboration, role-based access and gamified analytics.',
-    dates: 'Nov 2025 – Mar 2026',
+    dates: 'Nov 2025 to Mar 2026',
     years: '2025–26',
     role: 'TODO(Malay): solo or team',
     stack: [
@@ -148,7 +148,7 @@ export const projects: Project[] = [
       'Add integration tests around the auth flows.',
     ],
     diagram: {
-      title: 'Fig. 1 — Request flow',
+      title: 'Fig. 1 · Request flow',
       cols: 5,
       rows: 3,
       nodes: [
@@ -258,7 +258,7 @@ export const projects: Project[] = [
     ink: 'orange',
     oneLiner:
       'An agricultural auction marketplace connecting farmers directly with buyers through live bidding.',
-    dates: 'Nov 2025 – Jan 2026',
+    dates: 'Nov 2025 to Jan 2026',
     years: '2025–26',
     role: 'TODO(Malay)',
     stack: [
@@ -319,7 +319,7 @@ export const projects: Project[] = [
     // TODO(Malay): placeholder
     next: ['Add atomic bid updates (conditional writes) and load-test concurrent bidding.'],
     diagram: {
-      title: 'Fig. 1 — Bid flow',
+      title: 'Fig. 1 · Bid flow',
       cols: 5,
       rows: 3,
       nodes: [
@@ -453,7 +453,7 @@ export const projects: Project[] = [
     ink: 'overprint',
     oneLiner:
       'An interactive cybersecurity education platform that simulates the OWASP Top 10 in sandboxed environments.',
-    dates: 'Mar 2025 – Jul 2025',
+    dates: 'Mar 2025 to Jul 2025',
     years: '2025',
     role: 'TODO(Malay)',
     stack: ['PHP', 'MySQL', 'JavaScript', 'HTML', 'Tailwind CSS', 'GSAP'],
@@ -470,7 +470,7 @@ export const projects: Project[] = [
       'Syntax-highlighted code demos and attack visualizations',
       'Secure auth: bcrypt hashing, secure cookies, session-hijacking protection',
     ],
-    // TODO(Malay): placeholder cards — replace with real decisions
+    // TODO(Malay): placeholder cards, replace with real decisions
     decisions: [
       {
         title: 'Isolating vulnerable demos from the real app',
@@ -487,7 +487,7 @@ export const projects: Project[] = [
     ],
     next: ['TODO(Malay)'],
     diagram: {
-      title: 'Fig. 1 — Module flow',
+      title: 'Fig. 1 · Module flow',
       cols: 5,
       rows: 3,
       nodes: [

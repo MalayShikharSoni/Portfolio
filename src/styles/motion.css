@@ -2,7 +2,7 @@
 @layer motion {
   /*
    * Reveal fail-safe: with motion enabled, reveal targets wait for JS. If JS never marks the
-   * page ready, they appear on their own after 2.5s — content is never stuck hidden.
+   * page ready, they appear on their own after 2.5s, so content is never stuck hidden.
    */
   .motion:not(.motion-ready) [data-reveal] {
     opacity: 0;
