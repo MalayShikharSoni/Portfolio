@@ -32,12 +32,11 @@ const profiles = [
 const note = `${site.status.split(' · ').join('. ')}. ${site.heroMeta[2]}.`;
 
 const lines = ['Let’s build', 'something', 'that holds.'];
-const signOff = lines.join(' ');
 let offset = 0;
 const lineLetters = lines.map((line) => {
   const start = offset;
   offset += line.replace(/ /g, '').length;
-  return { text: line.toUpperCase(), start };
+  return { text: line.toUpperCase(), label: line, start };
 });
 ---
 
@@ -68,15 +67,10 @@ const lineLetters = lines.map((line) => {
       <span class="contact__kicker">Contact</span>
     </p>
 
-    <h2
-      id="contact-title"
-      class="contact__title display ripple"
-      aria-label={signOff}
-      data-reveal="misreg"
-    >
+    <h2 id="contact-title" class="contact__title display ripple" data-reveal="misreg">
       {lineLetters.map((line) => (
         <span class="contact__line">
-          <Letters text={line.text} offset={line.start} />
+          <Letters text={line.text} offset={line.start} label={line.label} />
         </span>
       ))}
     </h2>

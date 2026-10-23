@@ -128,9 +128,9 @@ function revealFade(el: HTMLElement, scroll: boolean): Entry {
   return {
     anim: gsap.fromTo(
       el,
-      { autoAlpha: 0, y: 10 },
+      { opacity: 0, y: 10 },
       {
-        autoAlpha: 1,
+        opacity: 1,
         y: 0,
         duration: 0.9,
         ease: EASE.soft,
@@ -142,10 +142,10 @@ function revealFade(el: HTMLElement, scroll: boolean): Entry {
 }
 
 function revealStagger(el: HTMLElement, scroll: boolean): Entry {
-  gsap.set(el, { autoAlpha: 1 });
+  gsap.set(el, { opacity: 1 });
   return {
     anim: gsap.from(el.children, {
-      autoAlpha: 0,
+      opacity: 0,
       y: 12,
       duration: 0.85,
       ease: EASE.soft,
@@ -158,7 +158,7 @@ function revealStagger(el: HTMLElement, scroll: boolean): Entry {
 
 function revealWdth(el: HTMLElement, scroll: boolean): Entry {
   const tl = gsap.timeline({ delay: delayOf(el), scrollTrigger: scroll ? once(el) : undefined });
-  tl.fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: 'none' }, 0)
+  tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'none' }, 0)
     // the width lands on whatever the element's own --wdth is
     .from(el, { '--wdth': 125, duration: 1.1, ease: EASE.reveal }, 0);
   return { anim: tl };
@@ -181,7 +181,7 @@ export function cropTimeline(root: Element, vars: gsap.TimelineVars = {}): gsap.
 }
 
 function revealCrop(el: HTMLElement, scroll: boolean): Entry {
-  gsap.set(el, { autoAlpha: 1 });
+  gsap.set(el, { opacity: 1 });
   return {
     anim: cropTimeline(el, { delay: delayOf(el), scrollTrigger: scroll ? once(el) : undefined }),
   };
@@ -189,7 +189,7 @@ function revealCrop(el: HTMLElement, scroll: boolean): Entry {
 
 /** An illustration's plates print slightly out of register, then settle as it scrolls in. */
 function revealPlates(el: HTMLElement, scroll: boolean): Entry {
-  gsap.set(el, { autoAlpha: 1 });
+  gsap.set(el, { opacity: 1 });
   const q = gsap.utils.selector(el);
   const tl = gsap.timeline({
     delay: delayOf(el),
@@ -198,12 +198,12 @@ function revealPlates(el: HTMLElement, scroll: boolean): Entry {
   tl.add(cropTimeline(el), 0)
     .from(
       q('[data-plate="blue"]'),
-      { autoAlpha: 0, x: -16, y: 10, duration: 1, ease: EASE.reveal },
+      { opacity: 0, x: -16, y: 10, duration: 1, ease: EASE.reveal },
       0.1,
     )
     .from(
       q('[data-plate="orange"]'),
-      { autoAlpha: 0, x: 14, y: -9, duration: 1, ease: EASE.reveal },
+      { opacity: 0, x: 14, y: -9, duration: 1, ease: EASE.reveal },
       0.3,
     );
   return { anim: tl };
@@ -290,12 +290,49 @@ export async function initMotion() {
           ),
       });
     });
-    document.querySelectorAll<HTMLElement>(TARGETS).forEach((el) => {
-      entries.set(el, reveal(el));
-    });
   });
+
+  // What's on (or just below) the screen is set up now; the rest follows in small chunks
+  // that yield to the browser, so page load isn't one long main-thread task. Elements
+  // further down are off-screen while they wait, so nobody sees them pop.
+  const targets = [...document.querySelectorAll<HTMLElement>(TARGETS)];
+  const fold = window.innerHeight * 1.25;
+  const now = targets.filter((el) => el.getBoundingClientRect().top < fold);
+  const later = targets.filter((el) => !now.includes(el));
+
+  ctx.add(() => now.forEach((el) => entries.set(el, reveal(el))));
   root.classList.add('motion-ready');
+
+  const run = generation;
+  for (let i = 0; i < later.length; i += 3) {
+    await yieldToBrowser();
+    if (run !== generation || !ctx) return; // navigated away mid-way
+    ctx.add(() => later.slice(i, i + 3).forEach((el) => entries.set(el, reveal(el))));
+  }
   ScrollTrigger.refresh();
+}
+
+let generation = 0;
+
+/*
+ * Keyboard users never wait for a reveal: if focus lands inside something that hasn't
+ * revealed yet, it finishes at once. (Reveals animate opacity only, never visibility, so
+ * waiting content always stays in the tab order.)
+ */
+document.addEventListener('focusin', (event) => {
+  const target = event.target;
+  if (!(target instanceof Node)) return;
+  for (const [el, entry] of entries) {
+    const anim = entry.anim;
+    if (anim && anim.progress() < 1 && el.contains(target)) anim.progress(1);
+  }
+});
+
+/** Lets the browser paint and handle input before the next chunk of setup work. */
+function yieldToBrowser(): Promise<void> {
+  const scheduler = (globalThis as { scheduler?: { yield?: () => Promise<void> } }).scheduler;
+  if (scheduler?.yield) return scheduler.yield();
+  return new Promise((resolve) => setTimeout(resolve, 0));
 }
 
 /** Run something inside the page's GSAP context so it is cleaned up on navigation. */
@@ -309,6 +346,7 @@ export function inContext<T>(fn: () => T): T {
 }
 
 export function destroyMotion() {
+  generation++;
   ctx?.revert();
   ctx = null;
   entries.clear();
@@ -367,13 +405,19 @@ function markSeen() {
  */
 export function printRun(root: HTMLElement, { force = false } = {}): Entry {
   const q = gsap.utils.selector(root);
-  gsap.set(root, { autoAlpha: 1 });
+  gsap.set(root, { opacity: 1 });
 
   const done = () => root.dispatchEvent(new CustomEvent('printrun:done'));
 
   if (!force && seenThisSession()) {
+    // only the animated parts were held back; the sheet itself is already printed
+    const parts = q('[data-print], [data-plate], [data-crop-line]');
     return {
-      anim: gsap.from(root, { autoAlpha: 0, duration: 0.4, ease: 'none', onComplete: done }),
+      anim: gsap.fromTo(
+        parts,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.4, ease: 'none', onComplete: done },
+      ),
     };
   }
   if (!force) markSeen();
@@ -389,14 +433,14 @@ export function printRun(root: HTMLElement, { force = false } = {}): Entry {
   tl.add(cropTimeline(root), 0)
     .fromTo(
       blue,
-      { autoAlpha: 0, x: -14, y: 9 },
-      { autoAlpha: 1, duration: 0.45, ease: 'power2.out', stagger: 0.06 },
+      { opacity: 0, x: -14, y: 9 },
+      { opacity: 1, duration: 0.45, ease: 'power2.out', stagger: 0.06 },
       0.15,
     )
     .fromTo(
       orange,
-      { autoAlpha: 0, x: 12, y: -8 },
-      { autoAlpha: 1, duration: 0.45, ease: 'power2.out', stagger: 0.06 },
+      { opacity: 0, x: 12, y: -8 },
+      { opacity: 1, duration: 0.45, ease: 'power2.out', stagger: 0.06 },
       0.45,
     )
     .to([...blue, ...orange], { x: 0, y: 0, duration: 0.32, ease: EASE.snap }, 0.92);
@@ -412,13 +456,18 @@ export function printRun(root: HTMLElement, { force = false } = {}): Entry {
     splits.push(split);
     tl.from(
       split.chars,
-      { autoAlpha: 0, duration: 0.01, ease: 'none', stagger: 0.016 },
+      { opacity: 0, duration: 0.01, ease: 'none', stagger: 0.016 },
       1.5 + i * 0.08,
     );
   });
 
   if (fades.length) {
-    tl.from(fades, { autoAlpha: 0, y: 10, duration: 0.8, ease: EASE.soft, stagger: 0.08 }, 1.35);
+    tl.fromTo(
+      fades,
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 0.8, ease: EASE.soft, stagger: 0.08 },
+      1.35,
+    );
   }
 
   // Word-by-word copy: each word rises out of the baseline.

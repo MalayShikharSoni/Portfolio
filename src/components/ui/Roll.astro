@@ -22,6 +22,8 @@ const { class: className } = Astro.props;
     display: inline-block;
     overflow: hidden;
     vertical-align: top;
+    /* the rolling copy sits one line below: a wrapped label would show it */
+    white-space: nowrap;
     padding-block: 0.12em;
     margin-block: -0.12em;
   }

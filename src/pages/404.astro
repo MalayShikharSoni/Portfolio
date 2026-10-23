@@ -1,0 +1,178 @@
+---
+/**
+ * 404: a misprint. The plates slipped badly out of register, and the headline is printed
+ * twice, once per ink, well off target. The crisp ink layer underneath stays readable.
+ */
+import Base from '@/layouts/Base.astro';
+import Nav from '@/components/sections/Nav.astro';
+import Footer from '@/components/sections/Footer.astro';
+import CropMarks from '@/components/primitives/CropMarks.astro';
+import Circle from '@/components/primitives/Circle.astro';
+import Square from '@/components/primitives/Square.astro';
+import Stripes from '@/components/primitives/Stripes.astro';
+import Button from '@/components/ui/Button.astro';
+import Label from '@/components/ui/Label.astro';
+import { featuredProjects } from '@/data/projects';
+
+const headline = 'Side C doesn’t exist.';
+---
+
+<Base title="Misprint (404)" description="This page doesn’t exist." noindex>
+  <Nav />
+  <main id="main" class="misprint">
+    <div class="page-grid">
+      <div class="misprint__sheet">
+        <CropMarks offset={10} length={20} />
+
+        <svg class="misprint__art art" viewBox="0 0 600 600" aria-hidden="true" focusable="false">
+          <g class="overprint misprint__plate--blue">
+            <Circle cx={360} cy={250} r={190} ink="blue" fill="halftone" />
+            <Stripes
+              x={60}
+              y={360}
+              width={160}
+              height={180}
+              count={6}
+              direction="vertical"
+              ink="blue"
+              ratio={0.4}
+            />
+          </g>
+          <g class="overprint misprint__plate--orange">
+            <Square x={160} y={150} size={220} ink="orange" />
+            <Circle cx={470} cy={520} r={90} half="top" ink="orange" />
+          </g>
+        </svg>
+
+        <div class="misprint__text">
+          <Label as="p" class="misprint__code">
+            Error 404 · Proof rejected
+          </Label>
+          <h1 class="misprint__title display" data-text={headline}>
+            {headline}
+          </h1>
+          <p class="misprint__copy">
+            This page didn’t make it off the press. The tape you’re looking for has two sides, and
+            this address isn’t on either.
+          </p>
+          <div class="misprint__actions">
+            <Button href="/" variant="cta">
+              Back home
+            </Button>
+          </div>
+          <nav class="misprint__tapes" aria-label="Case studies">
+            <Label as="p">Or play a tape</Label>
+            <ul>
+              {featuredProjects.map((p) => (
+                <li>
+                  <a class="link" href={`/work/${p.slug}/`}>
+                    Tape {String(p.tape).padStart(2, '0')} · {p.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .misprint {
+    padding-block: clamp(2rem, 5vw, 4rem) clamp(4rem, 8vw, 7rem);
+  }
+
+  .misprint__sheet {
+    position: relative;
+    grid-column: 1 / -1;
+    display: grid;
+    gap: 2rem;
+    padding: clamp(1.25rem, 4vw, 3rem);
+    border: 1px solid var(--rule);
+    overflow: clip;
+    isolation: isolate;
+  }
+
+  /* the slip: each plate landed somewhere it shouldn't */
+  .misprint__art {
+    width: min(100%, 30rem);
+    justify-self: end;
+  }
+  .misprint__plate--blue {
+    transform: translate(-22px, 14px) rotate(-2deg);
+    transform-origin: center;
+  }
+  .misprint__plate--orange {
+    transform: translate(26px, -12px) rotate(1.5deg);
+    transform-origin: center;
+  }
+
+  .misprint__text {
+    display: grid;
+    gap: 1.25rem;
+    align-content: start;
+  }
+  .misprint__code {
+    color: var(--blue);
+  }
+
+  /* the headline, printed twice off target over a crisp ink copy */
+  .misprint__title {
+    position: relative;
+    --wdth: 64;
+    --wght: 900;
+    font-size: clamp(3rem, 1rem + 8vw, 8rem);
+    line-height: 0.88;
+    text-transform: uppercase;
+  }
+  .misprint__title::before,
+  .misprint__title::after {
+    content: attr(data-text);
+    /* empty alt text: the plates are decoration, screen readers hear the headline once */
+    content: attr(data-text) / '';
+    position: absolute;
+    inset: 0;
+    mix-blend-mode: var(--blend);
+    pointer-events: none;
+  }
+  .misprint__title::before {
+    color: var(--blue);
+    transform: translate(-0.045em, 0.03em);
+  }
+  .misprint__title::after {
+    color: var(--orange);
+    transform: translate(0.04em, -0.025em);
+  }
+
+  .misprint__copy {
+    max-width: 44ch;
+    font-size: var(--step-1);
+    line-height: 1.45;
+  }
+  .misprint__actions {
+    margin-top: 0.5rem;
+  }
+  .misprint__tapes {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+  }
+  .misprint__tapes ul {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  @media (min-width: 1024px) {
+    .misprint__sheet {
+      grid-template-columns: 1.2fr 1fr;
+      align-items: center;
+    }
+    .misprint__art {
+      order: 2;
+    }
+  }
+</style>

@@ -9,7 +9,8 @@ export default defineConfig({
   site: SITE,
   output: 'static',
   trailingSlash: 'ignore',
-  build: { format: 'directory' },
+  // inline the CSS: one less render-blocking request on slow mobile connections
+  build: { format: 'directory', inlineStylesheets: 'always' },
   integrations: [
     sitemap({
       filter: (page) => !page.includes('/styleguide'),
@@ -24,8 +25,11 @@ export default defineConfig({
       options: {
         variants: [
           {
-            src: ['@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2'],
-            weight: '100 900',
+            // Fontsource's Archivo (latin, wdth + wght), subset to the glyphs the site uses and
+            // trimmed to weights 400–900: 46 KB instead of 90 KB. Rebuild it with
+            // scripts/subset-font.sh if new characters are needed.
+            src: ['./src/assets/fonts/archivo-subset.woff2'],
+            weight: '400 900',
             stretch: '62% 125%',
             style: 'normal',
           },

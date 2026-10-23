@@ -18,7 +18,7 @@ const { label, title, id } = Astro.props;
   <p class="case-head__label label" data-reveal="fade">
     <span data-scramble>{label}</span>
   </p>
-  <h2 {id} class="case-head__title display ripple" aria-label={title} data-reveal="misreg">
+  <h2 {id} class="case-head__title display ripple" data-reveal="misreg">
     <Letters text={title} />
   </h2>
 </header>

@@ -4,7 +4,9 @@
    * Reveal fail-safe: with motion enabled, reveal targets wait for JS. If JS never marks the
    * page ready, they appear on their own after 2.5s, so content is never stuck hidden.
    */
-  .motion:not(.motion-ready) [data-reveal] {
+  .motion:not(.motion-ready) [data-reveal]:not([data-reveal='print']),
+  /* the hero sheet itself prints at once; only its animated parts wait for the print run */
+  .motion:not(.motion-ready) [data-reveal='print'] :is([data-print], [data-plate], [data-crop-line]) {
     opacity: 0;
     animation: reveal-failsafe 0.3s 2.5s forwards;
   }

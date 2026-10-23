@@ -32,7 +32,12 @@ const nextNo = String(next.tape).padStart(2, '0');
 const todoNext = project.next.every((n) => isTodo(n));
 ---
 
-<Base title={`${project.name} case study`} description={project.oneLiner} type="article">
+<Base
+  title={`${project.name} case study`}
+  description={project.oneLiner}
+  image={`/og/${project.slug}.png`}
+  type="article"
+>
   <Nav />
   <main id="main" class="case">
     <CaseCover project={project} />
@@ -141,7 +146,7 @@ const todoNext = project.next.every((n) => isTodo(n));
       <a href={`/work/${next.slug}/`} class="nexttape" data-cursor>
         <span class="nexttape__text">
           <Label class="nexttape__label">Next tape · Tape {nextNo}</Label>
-          <span class="nexttape__name display ripple" aria-label={next.name}>
+          <span class="nexttape__name display ripple">
             <Letters text={next.name} />
           </span>
           <span class="label nexttape__go">Read case study →</span>

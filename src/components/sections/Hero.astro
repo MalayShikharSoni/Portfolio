@@ -29,6 +29,8 @@ const pattern = new RegExp(`\\b(${marks.join('|')})\\b`, 'g');
 const sentence = body.split(pattern).map((text) => ({ text, mark: marks.includes(text) }));
 
 const [first = '', middle = '', last = ''] = site.name.toUpperCase().split(' ');
+// screen readers hear the name in normal case, not spelled-out capitals
+const [nFirst, nMiddle, nLast] = site.name.split(' ');
 ---
 
 <section class="hero" aria-labelledby="hero-name" data-reveal="print" data-hero>
@@ -79,22 +81,15 @@ const [first = '', middle = '', last = ''] = site.name.toUpperCase().split(' ');
         </div>
       </div>
 
-      <h1
-        id="hero-name"
-        class="hero__name display"
-        aria-label={site.name}
-        data-print="name"
-        data-pressure
-        data-cursor
-      >
+      <h1 id="hero-name" class="hero__name display" data-print="name" data-pressure data-cursor>
         <span class="hero__line">
-          <Letters text={first} />
+          <Letters text={first} label={nFirst} />
         </span>
         <span class="hero__line">
-          <Letters text={middle} offset={first.length} />
+          <Letters text={middle} offset={first.length} label={nMiddle} />
         </span>
         <span class="hero__line hero__line--last">
-          <Letters text={`${last}.`} offset={first.length + middle.length} />
+          <Letters text={`${last}.`} offset={first.length + middle.length} label={`${nLast}.`} />
         </span>
       </h1>
 
@@ -105,10 +100,8 @@ const [first = '', middle = '', last = ''] = site.name.toUpperCase().split(' ');
           <p class="hero__kicker label" data-print="type">
             What I do
           </p>
-          <p class="hero__lead display" data-print="words">
-            {lead}
-          </p>
-          <p class="hero__sentence" data-print="words">
+          <p class="hero__lead display">{lead}</p>
+          <p class="hero__sentence">
             {sentence.map((part) =>
               part.mark ? <span class="ink-mark">{part.text}</span> : part.text,
             )}

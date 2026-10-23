@@ -3,7 +3,7 @@
 A two-colour risograph of a Swiss/Bauhaus poster that came to life. Astro (static) + TypeScript
 strict, plain modular CSS, GSAP (ScrollTrigger, SplitText) and Lenis.
 
-> **Status:** home page and the three case studies are built. Polish (a11y, performance, SEO, 404, OG images) next.
+> **Status:** site complete and polished (Lighthouse mobile 98–99 / 100 / 100 / 100). Deployment docs next.
 
 ## Run locally
 
