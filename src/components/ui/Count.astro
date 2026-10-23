@@ -10,10 +10,20 @@ interface Props {
   prefix?: string;
   suffix?: string;
   delay?: number;
+  /** Width-axis value the numeral lands on (62 condensed → 125 wide). */
+  wdth?: number;
   class?: string;
 }
 
-const { value, decimals = 0, prefix = '', suffix = '', delay, class: className } = Astro.props;
+const {
+  value,
+  decimals = 0,
+  prefix = '',
+  suffix = '',
+  delay,
+  wdth = 100,
+  class: className,
+} = Astro.props;
 const text = `${prefix}${value.toFixed(decimals)}${suffix}`;
 ---
 
@@ -24,6 +34,8 @@ const text = `${prefix}${value.toFixed(decimals)}${suffix}`;
   data-count-prefix={prefix}
   data-count-suffix={suffix}
   data-reveal-delay={delay}
+  data-count-wdth={wdth}
+  style={`--count-wdth: ${wdth}`}
 >
   <span class="count__ghost" aria-hidden="true">
     {text}
@@ -43,7 +55,7 @@ const text = `${prefix}${value.toFixed(decimals)}${suffix}`;
   .count__ghost,
   .count__value {
     grid-area: 1 / 1;
-    --wdth: 100;
+    --wdth: var(--count-wdth, 100);
     font-stretch: calc(var(--wdth) * 1%);
   }
   .count__ghost {

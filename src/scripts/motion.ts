@@ -7,6 +7,7 @@
  *   data-reveal="stagger"  children fade + rise one after another
  *   data-reveal="wdth"     short single-line type lands from wide to its set width
  *   data-reveal="crop"     crop marks inside draw in
+ *   data-reveal="plates"   an illustration's [data-plate] groups slide into register
  *   data-count="600"       numerals count up once (see Count.astro)
  *   data-reveal-delay="0.2"
  *
@@ -120,16 +121,23 @@ function revealLines(el: HTMLElement, misreg: boolean, scroll: boolean): Entry {
 
 // ── Simple reveals ───────────────────────────────────────────────────────────
 
+// Reveal targets are held at opacity 0 by the CSS fail-safe until the page is ready, so a
+// plain from() would read that as its end state. Tweens on the element itself use fromTo().
+
 function revealFade(el: HTMLElement, scroll: boolean): Entry {
   return {
-    anim: gsap.from(el, {
-      autoAlpha: 0,
-      y: 10,
-      duration: 0.9,
-      ease: EASE.soft,
-      delay: delayOf(el),
-      scrollTrigger: scroll ? once(el, 'top 92%') : undefined,
-    }),
+    anim: gsap.fromTo(
+      el,
+      { autoAlpha: 0, y: 10 },
+      {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.9,
+        ease: EASE.soft,
+        delay: delayOf(el),
+        scrollTrigger: scroll ? once(el, 'top 92%') : undefined,
+      },
+    ),
   };
 }
 
@@ -149,16 +157,11 @@ function revealStagger(el: HTMLElement, scroll: boolean): Entry {
 }
 
 function revealWdth(el: HTMLElement, scroll: boolean): Entry {
-  return {
-    anim: gsap.from(el, {
-      '--wdth': 125,
-      autoAlpha: 0,
-      duration: 1.1,
-      ease: EASE.reveal,
-      delay: delayOf(el),
-      scrollTrigger: scroll ? once(el) : undefined,
-    }),
-  };
+  const tl = gsap.timeline({ delay: delayOf(el), scrollTrigger: scroll ? once(el) : undefined });
+  tl.fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: 'none' }, 0)
+    // the width lands on whatever the element's own --wdth is
+    .from(el, { '--wdth': 125, duration: 1.1, ease: EASE.reveal }, 0);
+  return { anim: tl };
 }
 
 export function cropTimeline(root: Element, vars: gsap.TimelineVars = {}): gsap.core.Timeline {
@@ -184,6 +187,28 @@ function revealCrop(el: HTMLElement, scroll: boolean): Entry {
   };
 }
 
+/** An illustration's plates print slightly out of register, then settle as it scrolls in. */
+function revealPlates(el: HTMLElement, scroll: boolean): Entry {
+  gsap.set(el, { autoAlpha: 1 });
+  const q = gsap.utils.selector(el);
+  const tl = gsap.timeline({
+    delay: delayOf(el),
+    scrollTrigger: scroll ? once(el, 'top 80%') : undefined,
+  });
+  tl.add(cropTimeline(el), 0)
+    .from(
+      q('[data-plate="blue"]'),
+      { autoAlpha: 0, x: -16, y: 10, duration: 1, ease: EASE.reveal },
+      0.1,
+    )
+    .from(
+      q('[data-plate="orange"]'),
+      { autoAlpha: 0, x: 14, y: -9, duration: 1, ease: EASE.reveal },
+      0.3,
+    );
+  return { anim: tl };
+}
+
 // ── Numbers ─────────────────────────────────────────────────────────────────
 
 function countUp(el: HTMLElement, scroll: boolean): Entry {
@@ -205,7 +230,12 @@ function countUp(el: HTMLElement, scroll: boolean): Entry {
   });
   tl.to(state, { v: target, duration: 1.6, ease: 'power4.out', onUpdate: render })
     // the width axis opens up as the number lands
-    .fromTo(value, { '--wdth': 62 }, { '--wdth': 100, duration: 0.7, ease: EASE.reveal }, 0.85);
+    .fromTo(
+      value,
+      { '--wdth': 62 },
+      { '--wdth': Number(el.dataset.countWdth ?? 100), duration: 0.7, ease: EASE.reveal },
+      0.85,
+    );
   return { anim: tl };
 }
 
@@ -224,6 +254,8 @@ function reveal(el: HTMLElement, scroll = true): Entry {
       return revealWdth(el, scroll);
     case 'crop':
       return revealCrop(el, scroll);
+    case 'plates':
+      return revealPlates(el, scroll);
     case 'fade':
       return revealFade(el, scroll);
     default:

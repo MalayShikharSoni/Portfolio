@@ -30,11 +30,19 @@ export interface Site {
   location: string;
   bio: string[];
   currently: { label: string; value: string }[];
-  /** Static fallbacks for the build-time live stats (see src/lib/stats.ts). */
+  /**
+   * Numbers strip. LeetCode values are refreshed at build time when possible
+   * (src/lib/stats.ts); these are the fallbacks and the static facts.
+   */
   stats: {
+    cgpa: number;
     leetcodeSolved: number;
     leetcodeTopPercent: number;
+    nptelTopPercent: number;
+    workwaveEndpoints: number;
   };
+  /** GitHub username for the build-time public repo count. */
+  githubUser: string;
 }
 
 export const site: Site = {
@@ -71,7 +79,11 @@ export const site: Site = {
     { label: 'Building', value: 'this site' },
   ],
   stats: {
+    cgpa: 9.01,
     leetcodeSolved: 600,
     leetcodeTopPercent: 10,
+    nptelTopPercent: 5,
+    workwaveEndpoints: 35,
   },
+  githubUser: 'MalayShikharSoni',
 };

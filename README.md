@@ -3,7 +3,7 @@
 A two-colour risograph of a Swiss/Bauhaus poster that came to life. Astro (static) + TypeScript
 strict, plain modular CSS, GSAP (ScrollTrigger, SplitText) and Lenis.
 
-> **Status:** design system + nav + hero. Sections 02–06 follow after review.
+> **Status:** home page complete (hero, work, about, numbers, toolbox, contact, footer). Case studies next.
 
 ## Run locally
 
@@ -33,6 +33,8 @@ npm run build      # static site in dist/
 | Motion system                                         | `src/scripts/motion.ts` (+ `gsap.ts`, `lenis.ts`, `theme.ts`)      |
 | Interactive text (pressure, decrypt, circular badge)  | `src/scripts/text.ts`                                              |
 | Hero halftone lens                                    | `src/scripts/lens.ts`                                              |
+| Build-time LeetCode / GitHub stats (with fallbacks)   | `src/lib/stats.ts` (optional `GITHUB_TOKEN` env var)               |
+| Home page sections                                    | `src/components/sections/`                                         |
 
 Press **P** anywhere to see the plates (grid, baseline, blue/orange separations).
 

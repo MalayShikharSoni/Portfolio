@@ -1,0 +1,238 @@
+---
+/**
+ * 06 / 06 · Contact. The poster's sign-off in giant type over a rising orange sun, the email
+ * as a big link with a copy button, and the profile links. No phone number, anywhere.
+ */
+import Label from '@/components/ui/Label.astro';
+import Letters from '@/components/ui/Letters.astro';
+import CopyEmail from '@/components/ui/CopyEmail.astro';
+import Link from '@/components/ui/Link.astro';
+import Circle from '@/components/primitives/Circle.astro';
+import Stripes from '@/components/primitives/Stripes.astro';
+import { site } from '@/data/site';
+import { getStats } from '@/lib/stats';
+
+const stats = await getStats();
+
+const handle = (url: string) => {
+  const last = url.split('/').filter(Boolean).pop() ?? '';
+  return last.includes('TODO') ? 'Profile' : last;
+};
+
+const profiles = [
+  { name: 'LinkedIn', href: site.links.linkedin, note: '' },
+  {
+    name: 'GitHub',
+    href: site.links.github,
+    note: stats.githubRepos ? `${stats.githubRepos} public repos` : '',
+  },
+  { name: 'LeetCode', href: site.links.leetcode, note: `${stats.leetcodeSolved}+ solved` },
+];
+
+const note = `${site.status.split(' · ').join('. ')}. ${site.heroMeta[2]}.`;
+
+const lines = ['Let’s build', 'something', 'that holds.'];
+const signOff = lines.join(' ');
+let offset = 0;
+const lineLetters = lines.map((line) => {
+  const start = offset;
+  offset += line.replace(/ /g, '').length;
+  return { text: line.toUpperCase(), start };
+});
+---
+
+<section id="contact" class="section contact" aria-labelledby="contact-title">
+  <div class="contact__art" data-reveal="plates" aria-hidden="true">
+    <svg class="art" viewBox="0 0 600 600" focusable="false">
+      <g class="overprint" data-plate="blue">
+        <Stripes
+          x={360}
+          y={20}
+          width={220}
+          height={150}
+          count={6}
+          direction="horizontal"
+          ink="blue"
+          ratio={0.38}
+        />
+      </g>
+      <g class="overprint" data-plate="orange">
+        <Circle cx={280} cy={330} r={240} ink="orange" />
+      </g>
+    </svg>
+  </div>
+
+  <div class="page-grid contact__grid">
+    <p class="contact__index label" data-reveal="fade">
+      <span>06 / 06</span>
+      <span class="contact__kicker">Contact</span>
+    </p>
+
+    <h2
+      id="contact-title"
+      class="contact__title display ripple"
+      aria-label={signOff}
+      data-reveal="misreg"
+    >
+      {lineLetters.map((line) => (
+        <span class="contact__line">
+          <Letters text={line.text} offset={line.start} />
+        </span>
+      ))}
+    </h2>
+
+    <div class="contact__reach">
+      <Label as="p" class="contact__sub">
+        Write to me
+      </Label>
+      <CopyEmail class="contact__email" />
+      <p class="small-copy contact__note">{note}</p>
+    </div>
+
+    <ul class="contact__profiles" role="list" data-reveal="stagger">
+      {profiles.map((p) => (
+        <li class="contact__profile">
+          <span class="label contact__platform">{p.name}</span>
+          <Link href={p.href} class="contact__handle">
+            {handle(p.href)}
+          </Link>
+          {p.note && <span class="label contact__pnote">{p.note}</span>}
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .contact {
+    overflow: clip;
+    /* keeps the artwork's negative z-index inside this section */
+    isolation: isolate;
+    padding-bottom: clamp(5rem, 10vw, 9rem);
+  }
+
+  /* the sun sits behind the sign-off, so the headline overprints it */
+  .contact__art {
+    position: absolute;
+    z-index: -1;
+    top: 6.5rem;
+    right: -24%;
+    width: min(62vw, 38rem);
+    pointer-events: none;
+  }
+  @media (min-width: 768px) {
+    .contact__art {
+      top: clamp(5rem, 8vw, 7.5rem);
+      right: -4%;
+      width: min(52vw, 38rem);
+    }
+  }
+  .contact__art svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .contact__grid {
+    row-gap: clamp(2rem, 4vw, 3rem);
+    align-items: start;
+  }
+
+  .contact__index {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 1rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--ink);
+  }
+  .contact__kicker {
+    color: var(--blue);
+  }
+
+  .contact__title {
+    grid-column: 1 / -1;
+    --wdth: 64;
+    --wght: 900;
+    font-size: clamp(3.25rem, 0.75rem + 11vw, 12rem);
+    line-height: 0.84;
+    mix-blend-mode: var(--blend);
+  }
+  .contact__line {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .contact__reach {
+    grid-column: 1 / -1;
+  }
+  .contact__sub,
+  .contact__profiles {
+    color: var(--ink);
+  }
+  .contact__sub {
+    margin-bottom: 0.75rem;
+    color: var(--blue);
+  }
+  .contact__reach :global(.contact__email) {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 0.5rem + 2.3vw, 2.75rem);
+    font-weight: 700;
+    font-stretch: 78%;
+    line-height: 1.1;
+  }
+  .contact__note {
+    margin-top: 1rem;
+  }
+
+  .contact__profiles {
+    grid-column: 1 / -1;
+    background: var(--paper);
+  }
+  .contact__profile {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    align-items: baseline;
+    gap: 0.2rem 1rem;
+    padding-block: 0.85rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .contact__profile:first-child {
+    border-top: 1px solid var(--ink);
+  }
+  .contact__handle {
+    justify-self: start;
+    font-size: var(--step-1);
+    font-weight: 500;
+  }
+  .contact__pnote {
+    grid-column: 2;
+    opacity: 0.8;
+  }
+
+  @media (min-width: 768px) {
+    .contact__index {
+      grid-column: 1 / span 2;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .contact__title {
+      grid-column: 3 / -1;
+      margin-top: -0.06em;
+    }
+    .contact__reach {
+      grid-column: 3 / span 6;
+    }
+    .contact__profiles {
+      grid-column: 3 / span 5;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .contact__reach {
+      grid-column: 3 / span 6;
+    }
+    .contact__profiles {
+      grid-column: 9 / -1;
+      margin-top: 2.2rem;
+    }
+  }
+</style>

@@ -1,0 +1,137 @@
+---
+/**
+ * 02 / 06 · Selected work. The featured projects as tapes, set asymmetrically on the grid,
+ * then a plain "Also built" list for anything in projects.ts marked featured: false.
+ */
+import SectionHead from '@/components/ui/SectionHead.astro';
+import Label from '@/components/ui/Label.astro';
+import Link from '@/components/ui/Link.astro';
+import TapeSleeve from '@/components/work/TapeSleeve.astro';
+import { featuredProjects, otherProjects } from '@/data/projects';
+---
+
+<section id="work" class="section work" aria-labelledby="work-title">
+  <SectionHead index={2} total={6} kicker="Three tapes" title="Selected work" id="work-title" />
+
+  <div class="page-grid work__body">
+    <p class="work__intro small-copy" data-reveal="fade">
+      Each project is pressed as a tape. The tracklist is the feature list; pull one out for the
+      full case study.
+    </p>
+
+    <ul class="work__tapes" role="list">
+      {featuredProjects.map((project) => (
+        <li>
+          <TapeSleeve project={project} />
+        </li>
+      ))}
+    </ul>
+
+    {otherProjects.length > 0 && (
+      <div class="work__also">
+        <Label as="h3" class="work__also-title">
+          Also built
+        </Label>
+        <ul class="work__also-list lift" role="list">
+          {otherProjects.map((project) => (
+            <li class="work__row">
+              <span class="work__row-name">{project.name}</span>
+              <span class="work__row-line">{project.oneLiner}</span>
+              <span class="work__row-stack label">{project.stack.join(' · ')}</span>
+              <span class="work__row-links label">
+                {project.links.live && <Link href={project.links.live}>Live</Link>}
+                {project.links.github && <Link href={project.links.github}>GitHub</Link>}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .work__body {
+    row-gap: clamp(2.5rem, 5vw, 4rem);
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .work__intro {
+    grid-column: 1 / -1;
+  }
+
+  .work__tapes {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(3rem, 6vw, 4rem) var(--gutter);
+  }
+
+  @media (min-width: 768px) {
+    .work__intro {
+      grid-column: 3 / span 5;
+    }
+    .work__tapes {
+      grid-column: 3 / -1;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      /* the cassette tops already add air above the row */
+      margin-top: -1.5rem;
+    }
+    /* Swiss asymmetry: the second tape hangs lower */
+    .work__tapes > li:nth-child(2) {
+      margin-top: clamp(3rem, 8vw, 7rem);
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .work__tapes {
+      grid-column: 1 / -1;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: clamp(1.5rem, 2.5vw, 2.75rem);
+    }
+    .work__tapes > li:nth-child(3) {
+      margin-top: clamp(1.5rem, 4vw, 3.5rem);
+    }
+  }
+
+  /* ── also built ── */
+  .work__also {
+    grid-column: 1 / -1;
+  }
+  .work__also-title {
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--ink);
+  }
+  .work__row {
+    display: grid;
+    gap: 0.25rem 1.5rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .work__row-name {
+    font-weight: 700;
+  }
+  .work__row-line {
+    font-size: var(--step--1);
+  }
+  .work__row-links {
+    display: flex;
+    gap: 1rem;
+  }
+  @media (min-width: 768px) {
+    .work__also {
+      grid-column: 3 / -1;
+    }
+    .work__row {
+      grid-template-columns: 12rem 1fr auto;
+      align-items: baseline;
+    }
+    .work__row-stack {
+      grid-column: 2;
+    }
+    .work__row-links {
+      grid-column: 3;
+      grid-row: 1;
+    }
+  }
+</style>

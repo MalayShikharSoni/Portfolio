@@ -1,0 +1,163 @@
+---
+/**
+ * 03 / 06 · About. A geometric "portrait" stands in for a photo: an abstract Bauhaus figure,
+ * not a face. Orange is this section's ink. Then the bio and a mono "Currently" box.
+ */
+import SectionHead from '@/components/ui/SectionHead.astro';
+import Label from '@/components/ui/Label.astro';
+import CropMarks from '@/components/primitives/CropMarks.astro';
+import Circle from '@/components/primitives/Circle.astro';
+import Square from '@/components/primitives/Square.astro';
+import Stripes from '@/components/primitives/Stripes.astro';
+import Bar from '@/components/primitives/Bar.astro';
+import Triangle from '@/components/primitives/Triangle.astro';
+import { site } from '@/data/site';
+
+const [lead, ...rest] = site.bio;
+---
+
+<section id="about" class="section about" aria-labelledby="about-title">
+  <SectionHead index={3} total={6} kicker="The person" title="About" id="about-title" />
+
+  <div class="page-grid about__body">
+    <figure class="about__portrait" data-reveal="plates">
+      <CropMarks offset={10} length={18} />
+      <svg class="art" viewBox="0 0 400 500" aria-hidden="true" focusable="false">
+        <g class="overprint" data-plate="blue">
+          <Stripes
+            x={40}
+            y={60}
+            width={86}
+            height={300}
+            count={6}
+            direction="vertical"
+            ink="blue"
+            ratio={0.4}
+          />
+          <Square x={238} y={214} size={84} ink="blue" />
+          <Bar x={40} y={470} length={320} thickness={3} ink="blue" />
+        </g>
+        <g class="overprint" data-plate="orange">
+          <Circle cx={214} cy={150} r={92} ink="orange" />
+          <Circle cx={214} cy={470} r={170} half="top" ink="orange" fill="halftone" />
+          <Triangle x={300} y={40} width={70} height={64} point="corner-tr" ink="orange" />
+        </g>
+      </svg>
+      <figcaption class="label">Fig. 3 · Portrait, abstracted. No photo, by design.</figcaption>
+    </figure>
+
+    <div class="about__text">
+      <p class="about__lead" data-reveal="fade" set:html={lead} />
+      <div class="body-copy about__rest" data-reveal="fade" data-reveal-delay="0.1">
+        {rest.map((p) => (
+          <p set:html={p} />
+        ))}
+      </div>
+
+      <div class="currently" data-reveal="fade" data-reveal-delay="0.2">
+        <div class="currently__head">
+          <Label as="h3" class="currently__title" id="currently-title">
+            Currently
+          </Label>
+          <span class="currently__dot" aria-hidden="true"></span>
+        </div>
+        <dl aria-labelledby="currently-title">
+          {site.currently.map((item) => (
+            <div class="currently__row">
+              <dt class="label">{item.label}</dt>
+              <dd class="label">{item.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about__body {
+    row-gap: clamp(2.5rem, 5vw, 4rem);
+    margin-top: clamp(2rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+
+  .about__portrait {
+    position: relative;
+    grid-column: 1 / -1;
+    max-width: 26rem;
+    padding: clamp(0.75rem, 2vw, 1.25rem);
+  }
+  .about__portrait svg {
+    width: 100%;
+    height: auto;
+  }
+  .about__portrait figcaption {
+    margin-top: 1rem;
+  }
+
+  .about__text {
+    grid-column: 1 / -1;
+  }
+  .about__lead {
+    max-width: 36ch;
+    font-size: var(--step-1);
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+  .about__rest {
+    margin-top: 1.5rem;
+  }
+
+  /* ── currently ── */
+  .currently {
+    margin-top: 2.5rem;
+    max-width: 30rem;
+    border: 1px solid var(--ink);
+    background: var(--paper-2);
+  }
+  .currently__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0.9rem;
+    border-bottom: 1px solid var(--ink);
+  }
+  .currently__title {
+    font-weight: 500;
+  }
+  .currently__dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--orange);
+  }
+  .currently__row {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: 1rem;
+    padding: 0.55rem 0.9rem;
+  }
+  .currently__row + .currently__row {
+    border-top: 1px solid var(--rule);
+  }
+  .currently__row dt {
+    color: var(--blue);
+  }
+
+  @media (min-width: 768px) {
+    .about__portrait {
+      grid-column: 3 / span 4;
+    }
+    .about__text {
+      grid-column: 7 / -1;
+    }
+  }
+  @media (min-width: 1280px) {
+    .about__text {
+      grid-column: 8 / span 5;
+      padding-top: 1rem;
+    }
+  }
+</style>

@@ -1,0 +1,145 @@
+---
+/**
+ * Footer: colophon, a live IST clock, the location line, the proof-mode hint and ©.
+ */
+import ColorBar from '@/components/primitives/ColorBar.astro';
+import Label from '@/components/ui/Label.astro';
+import Roll from '@/components/ui/Roll.astro';
+import Monogram from '@/components/ui/Monogram.astro';
+import { site } from '@/data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="page-grid footer__grid">
+    <ColorBar class="footer__bar" />
+
+    <a class="footer__mono" href="#top" aria-label="Back to top">
+      <Monogram />
+    </a>
+
+    <div class="footer__col footer__colophon">
+      <Label as="h2" class="footer__head">
+        Colophon
+      </Label>
+      <p class="small-copy">
+        Set in Archivo and IBM Plex Mono. Printed in two inks, orange and blue, plus their
+        overprint. Built with Astro, GSAP and Lenis.
+      </p>
+      <p class="label footer__hint">Press P to see the plates</p>
+    </div>
+
+    <div class="footer__col footer__clock">
+      <Label as="h2" class="footer__head">
+        Local time
+      </Label>
+      <p class="footer__time" aria-live="off">
+        <time data-clock>IST</time>
+      </p>
+      <p class="label">Asia/Kolkata · IST, UTC+5:30</p>
+    </div>
+
+    <div class="footer__col footer__place">
+      <Label as="h2" class="footer__head">
+        Imprint
+      </Label>
+      <p class="label">{site.location}</p>
+      <p class="label">
+        © {year} {site.name}
+      </p>
+      <a class="label footer__top" href="#top">
+        <Roll>Back to top ↑</Roll>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const format = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Kolkata',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  });
+  let timer = 0;
+
+  function startClock() {
+    window.clearInterval(timer);
+    const el = document.querySelector<HTMLTimeElement>('[data-clock]');
+    if (!el) return;
+    const tick = () => {
+      const now = new Date();
+      el.textContent = format.format(now);
+      el.dateTime = now.toISOString();
+    };
+    tick();
+    timer = window.setInterval(tick, 1000);
+  }
+
+  document.addEventListener('astro:page-load', startClock);
+</script>
+
+<style>
+  .footer {
+    padding-block: 0 clamp(2.5rem, 5vw, 4rem);
+  }
+  .footer__grid {
+    row-gap: 2.5rem;
+  }
+  .footer__grid :global(.footer__bar) {
+    grid-column: 1 / -1;
+  }
+
+  .footer__mono {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+  .footer__mono :global(.monogram) {
+    height: 2.25rem;
+  }
+
+  .footer__col {
+    grid-column: 1 / -1;
+    display: grid;
+    align-content: start;
+    gap: 0.6rem;
+  }
+  .footer__head {
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule);
+    color: var(--blue);
+  }
+  .footer__hint {
+    color: var(--blue);
+  }
+  .footer__time {
+    font-family: var(--font-mono);
+    font-size: var(--step-3);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .footer__top {
+    justify-self: start;
+    margin-top: 0.5rem;
+    color: var(--blue);
+  }
+
+  @media (min-width: 768px) {
+    .footer__mono {
+      grid-column: 1 / span 2;
+    }
+    .footer__colophon {
+      grid-column: 3 / span 4;
+    }
+    .footer__clock {
+      grid-column: 7 / span 3;
+    }
+    .footer__place {
+      grid-column: 10 / -1;
+    }
+  }
+</style>

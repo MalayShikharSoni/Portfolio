@@ -2,33 +2,23 @@
 import Base from '@/layouts/Base.astro';
 import Nav from '@/components/sections/Nav.astro';
 import Hero from '@/components/sections/Hero.astro';
-import Label from '@/components/ui/Label.astro';
-import Link from '@/components/ui/Link.astro';
+import Work from '@/components/sections/Work.astro';
+import About from '@/components/sections/About.astro';
+import Numbers from '@/components/sections/Numbers.astro';
+import Toolbox from '@/components/sections/Toolbox.astro';
+import Contact from '@/components/sections/Contact.astro';
+import Footer from '@/components/sections/Footer.astro';
 ---
 
 <Base>
   <Nav />
   <main id="main">
     <Hero />
-
-    <!-- Sections 02–06 are built after the styleguide review. -->
-    <section id="work" class="section page-grid proof-note">
-      <div class="col-content">
-        <Label as="p">02 / 06 · Selected work · in progress</Label>
-        <p class="small-copy">
-          The rest of the poster is still on the press. Meanwhile, the full system is on the
-          <Link href="/styleguide">styleguide</Link>.
-        </p>
-      </div>
-    </section>
+    <Work />
+    <About />
+    <Numbers />
+    <Toolbox />
+    <Contact />
   </main>
+  <Footer />
 </Base>
-
-<style>
-  .proof-note {
-    padding-block: 4rem 6rem;
-  }
-  .proof-note .small-copy {
-    margin-top: 0.75rem;
-  }
-</style>

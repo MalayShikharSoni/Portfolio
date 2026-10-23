@@ -8,11 +8,14 @@ interface Props {
 }
 
 const { email = site.email, class: className } = Astro.props;
+// if the address has to wrap, it breaks cleanly after the @
+const [local, domain] = email.split('@');
 ---
 
 <div class:list={['copy-email', className]} data-copy-email>
   <a href={`mailto:${email}`} class="copy-email__address link">
-    {email}
+    {local}@<wbr />
+    {domain}
   </a>
   <button type="button" class="copy-email__btn label" data-copy-value={email}>
     <span class="copy-email__idle">Copy email</span>
@@ -81,7 +84,7 @@ const { email = site.email, class: className } = Astro.props;
   }
 
   .copy-email__address {
-    overflow-wrap: anywhere;
+    overflow-wrap: normal;
   }
 
   .copy-email__btn {

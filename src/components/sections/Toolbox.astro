@@ -1,0 +1,201 @@
+---
+/**
+ * 05 / 06 · Toolbox and timeline. Skills grouped by what they're used for (ruled rows, no tag
+ * soup, no progress bars), beside a vertical timeline, newest first.
+ */
+import SectionHead from '@/components/ui/SectionHead.astro';
+import Label from '@/components/ui/Label.astro';
+import Link from '@/components/ui/Link.astro';
+import { skills } from '@/data/skills';
+import { timeline } from '@/data/timeline';
+---
+
+<section id="toolbox" class="section toolbox" aria-labelledby="toolbox-title">
+  <SectionHead index={5} total={6} kicker="Skills + timeline" title="Toolbox" id="toolbox-title" />
+
+  <div class="page-grid toolbox__body">
+    <div class="toolbox__skills">
+      <Label as="h3" class="toolbox__sub">
+        What I reach for
+      </Label>
+      <dl class="skills lift" data-reveal="fade">
+        {skills.map((group) => (
+          <div class="skills__row">
+            <dt class="label skills__group">{group.group}</dt>
+            <dd class="skills__items">
+              {group.items.map((item, i) => (
+                <>
+                  <span class="skills__item">{item}</span>
+                  {i < group.items.length - 1 && (
+                    <span class="skills__sep" aria-hidden="true">
+                      /
+                    </span>
+                  )}
+                </>
+              ))}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+
+    <div class="toolbox__timeline">
+      <Label as="h3" class="toolbox__sub">
+        Timeline · newest first
+      </Label>
+      <ol class="timeline" data-reveal="stagger">
+        {timeline.map((entry) => (
+          <li class:list={['timeline__item', `timeline__item--${entry.kind}`]}>
+            <span class="timeline__mark" aria-hidden="true" />
+            <p class="label timeline__date">{entry.date}</p>
+            <p class="timeline__title">{entry.title}</p>
+            {entry.issuer && <p class="label timeline__issuer">{entry.issuer}</p>}
+            {entry.detail && <p class="timeline__detail">{entry.detail}</p>}
+            {entry.credentialUrl && (
+              <Link href={entry.credentialUrl} class="label timeline__cred">
+                Credential
+              </Link>
+            )}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .toolbox__body {
+    row-gap: clamp(3rem, 6vw, 4.5rem);
+    margin-top: clamp(2rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+
+  .toolbox__skills,
+  .toolbox__timeline {
+    grid-column: 1 / -1;
+  }
+
+  .toolbox__sub {
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--ink);
+    color: var(--blue);
+  }
+
+  /* ── skills ── */
+  .skills {
+    padding-left: 1rem;
+    margin-left: -1rem;
+  }
+  .skills__row {
+    display: grid;
+    gap: 0.35rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .skills__group {
+    font-weight: 500;
+  }
+  .skills__items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 0.5rem;
+    font-size: var(--step-1);
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .skills__sep {
+    color: var(--rule);
+    font-weight: 400;
+  }
+
+  /* ── timeline ── */
+  .timeline {
+    position: relative;
+    margin-top: 1.5rem;
+    padding-left: 1.75rem;
+  }
+  /* the vertical rule the entries hang from */
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 0.4rem;
+    bottom: 0.4rem;
+    left: 0.3rem;
+    width: 1px;
+    background: var(--rule);
+  }
+  .timeline__item {
+    position: relative;
+    display: grid;
+    gap: 0.2rem;
+    padding-bottom: 1.75rem;
+  }
+  .timeline__item:last-child {
+    padding-bottom: 0;
+  }
+  .timeline__mark {
+    position: absolute;
+    top: 0.3rem;
+    left: -1.75rem;
+    width: 0.6rem;
+    height: 0.6rem;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+  }
+  /* shape (not just colour) tells the kinds apart: square = certificate, filled = degree */
+  .timeline__item--education .timeline__mark {
+    background: var(--orange);
+    border-color: var(--orange);
+  }
+  .timeline__item--milestone .timeline__mark {
+    border-radius: 50%;
+    background: var(--blue);
+    border-color: var(--blue);
+  }
+  .timeline__item--training .timeline__mark {
+    transform: rotate(45deg);
+  }
+  .timeline__date {
+    color: var(--blue);
+  }
+  .timeline__title {
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .timeline__issuer {
+    opacity: 0.85;
+  }
+  .timeline__detail {
+    max-width: 48ch;
+    margin-top: 0.2rem;
+    font-size: var(--step--1);
+    line-height: 1.5;
+  }
+  .timeline__cred {
+    justify-self: start;
+    margin-top: 0.3rem;
+  }
+
+  @media (min-width: 768px) {
+    .skills__row {
+      grid-template-columns: 9rem 1fr;
+      align-items: baseline;
+      gap: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .toolbox__skills {
+      grid-column: 3 / span 6;
+    }
+    .toolbox__timeline {
+      grid-column: 9 / -1;
+    }
+  }
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .toolbox__skills,
+    .toolbox__timeline {
+      grid-column: 3 / -1;
+    }
+  }
+</style>

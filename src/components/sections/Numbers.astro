@@ -1,0 +1,174 @@
+---
+/**
+ * 04 / 06 · In numbers. A full-bleed strip printed in blue, numerals in paper. Each numeral
+ * counts up once in view and opens its width axis as it lands. LeetCode figures come from a
+ * build-time fetch with static fallbacks (src/lib/stats.ts).
+ */
+import SectionHead from '@/components/ui/SectionHead.astro';
+import Count from '@/components/ui/Count.astro';
+import ColorBar from '@/components/primitives/ColorBar.astro';
+import Circle from '@/components/primitives/Circle.astro';
+import { site } from '@/data/site';
+import { getStats, formatDate } from '@/lib/stats';
+
+const stats = await getStats();
+
+const items = [
+  { value: site.stats.cgpa, decimals: 2, label: 'CGPA', note: 'B.Tech CSE, LPU' },
+  {
+    value: stats.leetcodeSolved,
+    suffix: '+',
+    label: 'LeetCode problems',
+    note: 'Solved, and counting',
+  },
+  {
+    value: site.stats.workwaveEndpoints,
+    suffix: '+',
+    label: 'API endpoints shipped',
+    note: 'WorkWave',
+  },
+  {
+    value: stats.leetcodeTopPercent,
+    prefix: 'Top ',
+    suffix: '%',
+    label: 'LeetCode contests',
+    note: 'Contest rating percentile',
+  },
+  {
+    value: site.stats.nptelTopPercent,
+    prefix: 'Top ',
+    suffix: '%',
+    label: 'NPTEL',
+    note: 'IIT Kharagpur, Elite certificate',
+  },
+];
+---
+
+<section id="numbers" class="numbers" aria-labelledby="numbers-title">
+  <div class="numbers__ink">
+    <svg class="numbers__art art" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
+      <g class="overprint">
+        <Circle cx={250} cy={150} r={210} ink="orange" />
+      </g>
+    </svg>
+
+    <SectionHead index={4} total={6} kicker="Proof of work" title="In numbers" id="numbers-title" />
+
+    <div class="page-grid">
+      <ul class="numbers__list" role="list">
+        {items.map((item, i) => (
+          <li class="numbers__item">
+            <span class="label numbers__idx">{String(i + 1).padStart(2, '0')}</span>
+            <Count
+              value={item.value}
+              decimals={item.decimals ?? 0}
+              prefix={item.prefix ?? ''}
+              suffix={item.suffix ?? ''}
+              delay={i * 0.08}
+              wdth={78}
+              class="numbers__num"
+            />
+            <span class="numbers__label">
+              <span class="label">{item.label}</span>
+              <span class="label numbers__note">{item.note}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="numbers__foot page-grid">
+      <p class="label numbers__updated">Updated {formatDate(stats.updated)}</p>
+      <ColorBar class="numbers__bar" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .numbers {
+    position: relative;
+    overflow: hidden;
+    background: var(--blue);
+    isolation: isolate;
+  }
+
+  /* Inside the strip the paper prints on blue: re-point the tokens for this subtree. */
+  .numbers__ink {
+    --ink: var(--paper);
+    --rule: color-mix(in srgb, var(--paper) 35%, transparent);
+    --blue: var(--paper);
+    /* blue paper is light enough in both themes for multiply */
+    --blend: multiply;
+    position: relative;
+    padding-block: clamp(4.5rem, 9vw, 8.5rem) clamp(2.5rem, 5vw, 4rem);
+    color: var(--ink);
+  }
+
+  .numbers__art {
+    position: absolute;
+    z-index: -1;
+    top: -52%;
+    right: -24%;
+    width: min(70vw, 46rem);
+    height: auto;
+    pointer-events: none;
+  }
+
+  .numbers__list {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: clamp(2rem, 4vw, 3rem) var(--gutter);
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .numbers__item {
+    display: grid;
+    gap: 0.6rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .numbers__item :global(.numbers__num) {
+    --wght: 900;
+    font-size: clamp(3.5rem, 1.25rem + 8.5vw, 8.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+  }
+
+  .numbers__label {
+    display: grid;
+    gap: 0.1rem;
+  }
+  .numbers__note {
+    opacity: 0.78;
+  }
+
+  .numbers__foot {
+    row-gap: 1rem;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+  }
+  .numbers__updated,
+  .numbers__foot :global(.numbers__bar) {
+    grid-column: 1 / -1;
+  }
+
+  /* Tablet up: three across, then the two percentiles wide. */
+  @media (min-width: 768px) {
+    .numbers__list {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      grid-column: 3 / -1;
+    }
+    .numbers__item {
+      grid-column: span 2;
+    }
+    .numbers__item:nth-child(n + 4) {
+      grid-column: span 3;
+    }
+    .numbers__item :global(.numbers__num) {
+      font-size: clamp(3.5rem, 7vw, 8.5rem);
+    }
+    .numbers__updated {
+      grid-column: 3 / -1;
+    }
+  }
+</style>
