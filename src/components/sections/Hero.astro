@@ -45,8 +45,8 @@ const [nFirst, nMiddle, nLast] = site.name.split(' ');
         <span class="label hero__role" data-print="type">
           {site.role}
         </span>
-        <span class="label hero__hint" aria-hidden="true" data-print="type">
-          Move the cursor · click the name
+        <span class="label hero__focus" data-print="type">
+          Focus: {marks.join(' · ')}
         </span>
         <RegMark size={18} class="hero__reg" />
       </div>
@@ -227,10 +227,10 @@ const [nFirst, nMiddle, nLast] = site.name.split(' ');
     gap: 1.5rem;
   }
   .hero__role,
-  .hero__hint {
+  .hero__focus {
     display: none;
   }
-  .hero__hint {
+  .hero__focus {
     color: var(--blue);
   }
   .hero__top :global(.hero__reg) {
@@ -469,14 +469,9 @@ const [nFirst, nMiddle, nLast] = site.name.split(' ');
     }
   }
 
-  @media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
-    .hero__hint {
+  @media (min-width: 1024px) {
+    .hero__focus {
       display: inline;
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .hero__hint {
-      display: none !important;
     }
   }
 </style>

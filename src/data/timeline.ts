@@ -18,7 +18,7 @@ export const timeline: TimelineEntry[] = [
     title: 'Oracle AI Database Certified Foundations Associate',
     issuer: 'Oracle',
     kind: 'certificate',
-    credentialUrl: '',
+    credentialUrl: 'https://drive.google.com/file/d/1UJPH5zUD6i_YpCzu-okT12y4Z5aMvxDq/view',
   },
   {
     date: 'Jun 2026',
