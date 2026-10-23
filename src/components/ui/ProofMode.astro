@@ -1,0 +1,175 @@
+---
+/**
+ * Easter egg: press P for "proof mode" — the 12-column grid, the baseline grid and the colour
+ * separations (blue plate only / orange plate only). Esc or P again closes it.
+ */
+---
+
+<div class="proof" data-proof hidden transition:persist="proof">
+  <div class="proof__cols page-grid" aria-hidden="true">
+    {Array.from({ length: 12 }, () => (
+      <span />
+    ))}
+  </div>
+  <div class="proof__baseline" aria-hidden="true"></div>
+  <div class="proof__panel label" role="region" aria-label="Proof mode">
+    <span class="proof__title">Proof mode</span>
+    <div class="proof__views" role="group" aria-label="Plate">
+      <button type="button" data-plate-view="composite" aria-pressed="true">
+        1 Composite
+      </button>
+      <button type="button" data-plate-view="blue" aria-pressed="false">
+        2 Blue plate
+      </button>
+      <button type="button" data-plate-view="orange" aria-pressed="false">
+        3 Orange plate
+      </button>
+    </div>
+    <button type="button" data-proof-close>
+      Esc Close
+    </button>
+  </div>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const panel = document.querySelector<HTMLElement>('[data-proof]');
+  type View = 'composite' | 'blue' | 'orange';
+
+  function setView(view: View) {
+    if (view === 'composite') delete root.dataset.plateView;
+    else root.dataset.plateView = view;
+    panel?.querySelectorAll<HTMLButtonElement>('[data-plate-view]').forEach((b) => {
+      b.setAttribute('aria-pressed', String(b.dataset.plateView === view));
+    });
+  }
+
+  function setOpen(open: boolean) {
+    if (!panel) return;
+    panel.hidden = !open;
+    root.classList.toggle('is-proofing', open);
+    if (!open) setView('composite');
+  }
+
+  const typing = (target: EventTarget | null) =>
+    target instanceof HTMLElement &&
+    (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName));
+
+  document.addEventListener('keydown', (event) => {
+    if (event.metaKey || event.ctrlKey || event.altKey || typing(event.target)) return;
+    const open = Boolean(panel && !panel.hidden);
+    const key = event.key.toLowerCase();
+    if (key === 'p') setOpen(!open);
+    else if (open && key === 'escape') setOpen(false);
+    else if (open && key === '1') setView('composite');
+    else if (open && key === '2') setView('blue');
+    else if (open && key === '3') setView('orange');
+  });
+
+  panel?.addEventListener('click', (event) => {
+    const target = event.target instanceof Element ? event.target.closest('button') : null;
+    if (!target) return;
+    if (target.hasAttribute('data-proof-close')) setOpen(false);
+    const view = target.getAttribute('data-plate-view');
+    if (view === 'composite' || view === 'blue' || view === 'orange') setView(view);
+  });
+
+  // A styleguide button can open it too.
+  document.addEventListener('proof:open', () => setOpen(true));
+</script>
+
+<style>
+  .proof {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    pointer-events: none;
+  }
+  .proof[hidden] {
+    display: none;
+  }
+
+  .proof__cols {
+    position: absolute;
+    inset: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .proof__cols span {
+    background: color-mix(in srgb, var(--orange) 9%, transparent);
+    border-inline: 1px solid color-mix(in srgb, var(--orange) 45%, transparent);
+  }
+  .proof__cols span:nth-child(n + 5) {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .proof__cols span:nth-child(n + 5) {
+      display: block;
+    }
+  }
+
+  /* 8px baseline grid */
+  .proof__baseline {
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--blue) 22%, transparent) 0 1px,
+      transparent 1px 8px
+    );
+  }
+
+  .proof__panel {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    max-width: max-content;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    pointer-events: auto;
+  }
+  .proof__title {
+    font-weight: 500;
+  }
+  .proof__views {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+  .proof__panel button {
+    padding: 0.3rem 0.45rem;
+    border: 1px solid var(--rule);
+    text-transform: inherit;
+    letter-spacing: inherit;
+    cursor: pointer;
+  }
+  .proof__panel button[aria-pressed='true'] {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  /*
+   * Colour separations. The warm black is the overprint of both inks, so it prints on both
+   * plates: on the blue plate everything "ink" is blue and orange drops out, and vice versa.
+   */
+  :global(html[data-plate-view='blue']),
+  :global(html[data-plate-view='blue'] [data-theme]) {
+    --ink: var(--blue);
+    --orange: transparent;
+    --overprint: var(--blue);
+  }
+  :global(html[data-plate-view='orange']),
+  :global(html[data-plate-view='orange'] [data-theme]) {
+    --ink: var(--orange);
+    --blue: transparent;
+    --overprint: var(--orange);
+  }
+</style>

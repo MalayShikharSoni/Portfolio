@@ -1,0 +1,108 @@
+---
+/**
+ * Rectangular button: 1px ink border, mono uppercase label.
+ * - `cta`: the large call to action. Orange fill wipes in from the left and the label turns
+ *   paper. Its label is set at 24px+ so paper-on-orange (3.2:1) still passes as large text.
+ * - `default`: smaller buttons wipe in an ink fill instead (13.6:1).
+ * Renders an <a> when `href` is set, otherwise a <button>.
+ */
+interface Props {
+  href?: string;
+  variant?: 'cta' | 'default';
+  type?: 'button' | 'submit';
+  download?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  href,
+  variant = 'default',
+  type = 'button',
+  download,
+  class: className,
+  ...rest
+} = Astro.props;
+const classes = ['btn', `btn--${variant}`, className];
+---
+
+{href ? (
+  <a href={href} class:list={classes} download={download || undefined} {...rest}>
+    <span class="btn__label">
+      <slot />
+    </span>
+  </a>
+) : (
+  <button type={type} class:list={classes} {...rest}>
+    <span class="btn__label">
+      <slot />
+    </span>
+  </button>
+)}
+
+<style>
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6em;
+    overflow: hidden;
+    isolation: isolate;
+    border: 1px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color var(--dur-hover) var(--ease-out-quart);
+  }
+
+  .btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.34s var(--ease-out-expo);
+  }
+
+  .btn:hover::before,
+  .btn:focus-visible::before {
+    transform: scaleX(1);
+  }
+
+  .btn:hover,
+  .btn:focus-visible {
+    color: var(--paper);
+  }
+
+  .btn--default {
+    min-height: 2.75rem;
+    padding: 0.85rem 1.1rem;
+    font-size: var(--step--2);
+  }
+  .btn--default::before {
+    background: var(--ink);
+  }
+
+  .btn--cta {
+    min-height: 4rem;
+    padding: 1.1rem 1.6rem;
+    font-size: max(1.5rem, var(--step-1));
+    letter-spacing: 0.04em;
+  }
+  .btn--cta::before {
+    background: var(--orange);
+  }
+  .btn__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+  }
+</style>

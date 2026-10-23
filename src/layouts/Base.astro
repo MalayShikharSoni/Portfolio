@@ -1,0 +1,82 @@
+---
+import '@/styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import { Font } from 'astro:assets';
+import Head from '@/components/Head.astro';
+import InkDefs from '@/components/primitives/InkDefs.astro';
+import Cursor from '@/components/ui/Cursor.astro';
+import ProofMode from '@/components/ui/ProofMode.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+  type?: 'website' | 'article';
+}
+
+const props = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-theme="paper">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      Theme + motion flags before first paint (no flash of the wrong theme).
+      Re-applied after every view-transition swap, which replaces <html> attributes.
+    -->
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        const apply = () => {
+          let theme = null;
+          try {
+            theme = localStorage.getItem('theme');
+          } catch {
+            /* storage blocked */
+          }
+          if (theme !== 'paper' && theme !== 'ink') {
+            theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'ink' : 'paper';
+          }
+          root.dataset.theme = theme;
+          root.classList.add('js');
+          if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            root.classList.add('motion');
+          }
+        };
+        apply();
+        document.addEventListener('astro:after-swap', apply);
+      })();
+    </script>
+    <Font cssVariable="--font-archivo" preload />
+    <Font cssVariable="--font-plex-mono" />
+    <Head {...props} />
+    <ClientRouter />
+  </head>
+  <body>
+    <a class="skip-link label" href="#main">
+      Skip to content
+    </a>
+    <InkDefs />
+    <slot />
+    <div class="grain" aria-hidden="true" transition:persist="grain"></div>
+    <Cursor />
+    <ProofMode />
+
+    <script>
+      import { initMotion, destroyMotion } from '@/scripts/motion';
+      import { startLenis, stopLenis } from '@/scripts/lenis';
+
+      document.addEventListener('astro:page-load', () => {
+        startLenis();
+        void initMotion();
+      });
+      document.addEventListener('astro:before-swap', () => {
+        destroyMotion();
+        stopLenis();
+      });
+    </script>
+  </body>
+</html>

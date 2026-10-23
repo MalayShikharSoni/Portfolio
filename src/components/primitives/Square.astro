@@ -1,0 +1,25 @@
+---
+/** Square (or rectangle, with width/height). Render inside an <svg>. */
+import { paint, type ShapeProps } from './paint';
+
+interface Props extends ShapeProps {
+  x: number;
+  y: number;
+  size?: number;
+  width?: number;
+  height?: number;
+  /** Rotation in degrees around the centre. */
+  rotate?: number;
+}
+
+const { x, y, size = 100, width, height, rotate, transform, ...rest } = Astro.props;
+const w = width ?? size;
+const h = height ?? size;
+const rotation = rotate ? `rotate(${rotate} ${x + w / 2} ${y + h / 2})` : undefined;
+const attrs = paint({
+  ...rest,
+  transform: [transform, rotation].filter(Boolean).join(' ') || undefined,
+});
+---
+
+<rect x={x} y={y} width={w} height={h} {...attrs} />

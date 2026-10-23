@@ -1,0 +1,43 @@
+---
+/** Registration mark (⌖): a target circle with a crosshair. Decorative. */
+interface Props {
+  size?: number;
+  ink?: 'ink' | 'blue' | 'orange';
+  class?: string;
+}
+
+const { size = 22, ink = 'ink', class: className } = Astro.props;
+---
+
+<svg
+  class:list={['regmark', className]}
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  aria-hidden="true"
+  focusable="false"
+  style={`--reg-ink: var(--${ink})`}
+>
+  <circle cx="12" cy="12" r="6.5"></circle>
+  <circle cx="12" cy="12" r="2.6" class="regmark__dot"></circle>
+  <line x1="0" y1="12" x2="24" y2="12"></line>
+  <line x1="12" y1="0" x2="12" y2="24"></line>
+</svg>
+
+<style>
+  .regmark {
+    flex: none;
+    overflow: visible;
+  }
+  .regmark circle,
+  .regmark line {
+    fill: none;
+    stroke: var(--reg-ink);
+    stroke-width: 1px;
+    vector-effect: non-scaling-stroke;
+  }
+  .regmark .regmark__dot {
+    fill: var(--reg-ink);
+    stroke: none;
+  }
+</style>

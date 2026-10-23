@@ -1,0 +1,24 @@
+---
+import Base from '@/layouts/Base.astro';
+import Label from '@/components/ui/Label.astro';
+import Link from '@/components/ui/Link.astro';
+import { site } from '@/data/site';
+---
+
+<Base>
+  <main id="main" class="section page-grid">
+    <div class="col-span-full md:col-start-3 md:col-span-8">
+      <Label as="p">Proof copy — site in progress</Label>
+      <h1 class="display display--condensed mt-6 text-5xl" data-reveal="misreg">
+        {site.name}
+        <span class="text-orange">.</span>
+      </h1>
+      <p class="body-copy mt-8" data-reveal="fade">
+        {site.tagline}
+      </p>
+      <p class="mt-8">
+        <Link href="/styleguide">Review the styleguide</Link>
+      </p>
+    </div>
+  </main>
+</Base>

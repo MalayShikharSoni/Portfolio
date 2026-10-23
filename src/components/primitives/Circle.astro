@@ -1,0 +1,27 @@
+---
+/**
+ * Circle or semicircle. Render inside an <svg>.
+ * `half` keeps one half of the circle: `top` keeps the upper half, and so on.
+ */
+import { paint, type ShapeProps } from './paint';
+
+interface Props extends ShapeProps {
+  cx: number;
+  cy: number;
+  r: number;
+  half?: 'top' | 'bottom' | 'left' | 'right';
+}
+
+const { cx, cy, r, half, ...rest } = Astro.props;
+const attrs = paint(rest);
+
+const HALVES = {
+  top: `M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx + r} ${cy} Z`,
+  bottom: `M ${cx - r} ${cy} A ${r} ${r} 0 0 0 ${cx + r} ${cy} Z`,
+  left: `M ${cx} ${cy - r} A ${r} ${r} 0 0 0 ${cx} ${cy + r} Z`,
+  right: `M ${cx} ${cy - r} A ${r} ${r} 0 0 1 ${cx} ${cy + r} Z`,
+};
+const halfPath = half ? HALVES[half] : undefined;
+---
+
+{halfPath ? <path d={halfPath} {...attrs} /> : <circle cx={cx} cy={cy} r={r} {...attrs} />}

@@ -1,0 +1,118 @@
+---
+/**
+ * Printer's colour bar: swatches of both inks (solid + tints), their overprint and the ink
+ * black, followed by a hairline. Used as a decorative divider.
+ */
+import RegMark from './RegMark.astro';
+
+interface Props {
+  /** Show the tiny swatch codes underneath. */
+  labels?: boolean;
+  /** Extend a hairline to fill the remaining width. */
+  rule?: boolean;
+  /** Pattern id prefix when used inside a scoped InkDefs copy. */
+  prefix?: string;
+  class?: string;
+}
+
+const { labels = false, rule = true, prefix = '', class: className } = Astro.props;
+
+const swatches = [
+  { code: 'O100', fill: 'fill: var(--orange)' },
+  { code: 'O60', fill: `url(#${prefix}t60-orange)` },
+  { code: 'O30', fill: `url(#${prefix}t30-orange)` },
+  { code: 'B100', fill: 'fill: var(--blue)' },
+  { code: 'B60', fill: `url(#${prefix}t60-blue)` },
+  { code: 'B30', fill: `url(#${prefix}t30-blue)` },
+  { code: 'O+B', overprint: true },
+  { code: 'K', fill: 'fill: var(--ink)' },
+];
+const S = 16;
+---
+
+<div class:list={['colorbar', className]} aria-hidden="true">
+  <RegMark size={16} />
+  <div class="colorbar__swatches">
+    <svg
+      class="art"
+      width={swatches.length * S}
+      height={S}
+      viewBox={`0 0 ${swatches.length * S} ${S}`}
+      focusable="false"
+    >
+      {swatches.map((s, i) =>
+        s.overprint ? (
+          <g>
+            <rect x={i * S} y="0" width={S} height={S} style="fill: var(--orange)" />
+            <rect
+              x={i * S}
+              y="0"
+              width={S}
+              height={S}
+              class="overprint"
+              style="fill: var(--blue)"
+            />
+          </g>
+        ) : s.fill?.startsWith('url') ? (
+          <rect x={i * S} y="0" width={S} height={S} fill={s.fill} />
+        ) : (
+          <rect x={i * S} y="0" width={S} height={S} style={s.fill} />
+        ),
+      )}
+      <rect
+        x="0.5"
+        y="0.5"
+        width={swatches.length * S - 1}
+        height={S - 1}
+        class="colorbar__frame"
+      />
+    </svg>
+    {labels && (
+      <div class="colorbar__codes label">
+        {swatches.map((s) => (
+          <span>{s.code}</span>
+        ))}
+      </div>
+    )}
+  </div>
+  {rule && <span class="colorbar__rule"></span>}
+</div>
+
+<style>
+  .colorbar {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    width: 100%;
+  }
+  .colorbar :global(.regmark) {
+    margin-top: 0;
+  }
+  .colorbar__swatches {
+    flex: none;
+  }
+  .colorbar__frame {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1px;
+  }
+  .colorbar__codes {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 16px;
+    margin-top: 0.35rem;
+    font-size: 0.5rem;
+    letter-spacing: 0;
+  }
+  .colorbar__codes span {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    justify-self: center;
+  }
+  .colorbar__rule {
+    flex: 1;
+    height: 1px;
+    margin-top: 7.5px;
+    background: var(--rule);
+  }
+</style>

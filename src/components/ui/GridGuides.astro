@@ -1,0 +1,36 @@
+---
+/** Visible column guides that match .page-grid — the poster showing its construction. */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={['guides page-grid', className]} aria-hidden="true">
+  {Array.from({ length: 12 }, () => (
+    <span />
+  ))}
+</div>
+
+<style>
+  .guides {
+    position: absolute;
+    inset: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+  .guides span {
+    border-inline: 1px solid var(--rule);
+    opacity: 0.55;
+  }
+  .guides span:nth-child(n + 5) {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .guides span:nth-child(n + 5) {
+      display: block;
+    }
+  }
+</style>

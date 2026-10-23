@@ -1,0 +1,64 @@
+---
+/**
+ * Section header: the mono index ("01 / 06") sits in the margin columns, the title starts at
+ * column 3 — the Swiss asymmetry. On mobile the index stacks above the title.
+ */
+interface Props {
+  index: number;
+  total: number;
+  title: string;
+  /** Small mono kicker after the index, e.g. "Selected work". */
+  kicker?: string;
+  id?: string;
+  as?: 'h1' | 'h2';
+  class?: string;
+}
+
+const { index, total, title, kicker, id, as: Heading = 'h2', class: className } = Astro.props;
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<header class:list={['section-head page-grid', className]}>
+  <p class="section-head__index label" data-reveal="fade">
+    <span>
+      {pad(index)} / {pad(total)}
+    </span>
+    {kicker && <span class="section-head__kicker">{kicker}</span>}
+  </p>
+  <Heading id={id} class="section-head__title display" data-reveal="misreg">
+    {title}
+  </Heading>
+</header>
+
+<style>
+  .section-head {
+    row-gap: 1rem;
+    align-items: start;
+  }
+  .section-head__index {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 1rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--ink);
+  }
+  .section-head__kicker {
+    color: var(--blue);
+  }
+  .section-head__title {
+    grid-column: 1 / -1;
+    font-size: var(--step-5);
+  }
+
+  @media (min-width: 768px) {
+    .section-head__index {
+      grid-column: 1 / span 2;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .section-head__title {
+      grid-column: 3 / -1;
+      margin-top: -0.06em;
+    }
+  }
+</style>

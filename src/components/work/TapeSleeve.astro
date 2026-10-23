@@ -1,0 +1,288 @@
+---
+/**
+ * A featured project as a cassette in its sleeve. The cassette peeks out of the top; on
+ * hover or focus it slides further out and its reels turn briefly. The whole card is one
+ * link ("Read case study →"), so it's a single tab stop.
+ */
+import TapeArt from './TapeArt.astro';
+import RegMark from '@/components/primitives/RegMark.astro';
+import type { Project } from '@/data/projects';
+
+interface Props {
+  project: Project;
+  headingLevel?: 'h2' | 'h3';
+  class?: string;
+}
+
+const { project, headingLevel: Heading = 'h3', class: className } = Astro.props;
+const { slug, name, tape, ink, years, oneLiner, tracklist } = project;
+const tapeNo = String(tape).padStart(2, '0');
+const specLabel = `Tape ${tapeNo} — ${name} — ${years}`;
+const shellInk = ink === 'orange' ? 'orange' : 'blue';
+---
+
+<article class:list={['tape', `tape--${ink}`, className]} data-cursor>
+  <div class="tape__cassette" aria-hidden="true">
+    <svg class="cassette art" viewBox="0 0 316 200" focusable="false">
+      <rect class="cassette__shell" x="1" y="1" width="314" height="198" rx="10"></rect>
+      <rect
+        class="cassette__label overprint"
+        x="16"
+        y="14"
+        width="284"
+        height="52"
+        style={`fill: var(--${shellInk})`}
+      ></rect>
+      {ink === 'overprint' && (
+        <rect class="overprint" x="16" y="14" width="150" height="52" style="fill: var(--orange)" />
+      )}
+      <text class="cassette__text" x="28" y="46">
+        A · {name.toUpperCase()}
+      </text>
+      <rect class="cassette__window" x="74" y="82" width="168" height="58" rx="29"></rect>
+      {[108, 208].map((cx) => (
+        <g class="cassette__reel" style={`transform-origin: ${cx}px 111px`}>
+          <circle cx={cx} cy="111" r="22" class="cassette__hub" />
+          {[0, 60, 120, 180, 240, 300].map((a) => (
+            <rect
+              x={cx - 2.5}
+              y={92}
+              width="5"
+              height="9"
+              transform={`rotate(${a} ${cx} 111)`}
+              class="cassette__tooth"
+            />
+          ))}
+        </g>
+      ))}
+      <path class="cassette__foot" d="M 64 199 L 80 160 L 236 160 L 252 199"></path>
+    </svg>
+  </div>
+
+  <div class="tape__sleeve" transition:name={`sleeve-${slug}`}>
+    <div class="tape__spec">
+      <span class="label">{specLabel}</span>
+      <RegMark size={16} />
+    </div>
+
+    <div class="tape__art">
+      <TapeArt ink={ink} />
+    </div>
+
+    <div class="tape__body">
+      <Heading class="tape__title display">{name}</Heading>
+      <p class="tape__oneliner">{oneLiner}</p>
+
+      <p class="label tape__tl-label">Tracklist · key features</p>
+      <ol class="tape__tracklist">
+        {tracklist.map((item, i) => (
+          <li>
+            <span class="label tape__track-no">A{i + 1}</span>
+            <span>{item}</span>
+          </li>
+        ))}
+      </ol>
+
+      <a href={`/work/${slug}/`} class="tape__cta label">
+        <span class="tape__cta-text">
+          Read case study<span class="sr-only">: {name}</span>
+        </span>
+        <span aria-hidden="true" class="tape__arrow">
+          →
+        </span>
+      </a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .tape {
+    --room: 36%;
+    position: relative;
+    padding-top: var(--room);
+  }
+
+  /* ── cassette ─────────────────────────────────────────────────────────── */
+  .tape__cassette {
+    position: absolute;
+    top: 0;
+    left: 7%;
+    width: 86%;
+    z-index: 0;
+    transform: translateY(38%);
+    transition: transform 0.7s var(--ease-out-expo);
+  }
+  .cassette {
+    width: 100%;
+    height: auto;
+  }
+  .cassette__shell {
+    fill: var(--paper-2);
+    stroke: var(--ink);
+    stroke-width: 1.5px;
+  }
+  .cassette__window,
+  .cassette__foot {
+    fill: var(--paper);
+    stroke: var(--ink);
+    stroke-width: 1.5px;
+  }
+  .cassette__text {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    fill: var(--paper);
+  }
+  .cassette__hub {
+    fill: var(--paper-2);
+    stroke: var(--ink);
+    stroke-width: 1.5px;
+  }
+  .cassette__tooth {
+    fill: var(--ink);
+  }
+  .cassette__reel {
+    transition: transform 1.1s var(--ease-out-expo);
+  }
+
+  /* ── sleeve ───────────────────────────────────────────────────────────── */
+  .tape__sleeve {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--ink);
+    background: var(--paper-2);
+  }
+
+  .tape__spec {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem 0.9rem;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .tape__art {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-bottom: 1px solid var(--ink);
+    background: var(--paper);
+  }
+
+  .tape__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 1.1rem 0.9rem 1rem;
+  }
+
+  .tape__title {
+    font-size: var(--step-4);
+    white-space: nowrap;
+    --wdth: var(--wdth-condensed);
+    --wght: 900;
+    transition: --wdth 0.45s var(--ease-out-expo);
+  }
+
+  .tape__oneliner {
+    margin-top: 0.6rem;
+    font-size: var(--step--1);
+    line-height: 1.5;
+  }
+
+  .tape__tl-label {
+    margin-top: 1.4rem;
+    padding-bottom: 0.45rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .tape__tracklist {
+    margin-bottom: 1.4rem;
+    font-size: var(--step--1);
+    line-height: 1.45;
+  }
+  .tape__tracklist li {
+    display: grid;
+    grid-template-columns: 2.2rem 1fr;
+    gap: 0.5rem;
+    padding-block: 0.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .tape__track-no {
+    padding-top: 0.12em;
+    color: var(--blue);
+  }
+
+  .tape__cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 0.2rem;
+    color: var(--blue);
+    font-weight: 500;
+  }
+  .tape__cta-text {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.3em;
+  }
+  .tape__arrow {
+    transition: transform var(--dur-hover) var(--ease-out-quart);
+  }
+
+  /* the whole card is the link */
+  .tape__cta::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+  }
+  .tape__cta:focus-visible {
+    outline: none;
+  }
+  .tape__cta:focus-visible::after {
+    outline: 2px solid var(--orange);
+    outline-offset: 3px;
+  }
+
+  /* ── hover / focus: slide out, reels turn, plates slip ───────────────── */
+  .tape:hover .tape__cassette,
+  .tape:focus-within .tape__cassette {
+    transform: translateY(0);
+  }
+  .tape:hover .cassette__reel,
+  .tape:focus-within .cassette__reel {
+    transform: rotate(-240deg);
+  }
+  .tape:hover .tape__title,
+  .tape:focus-within .tape__title {
+    --wdth: 82;
+  }
+  .tape:hover .tape__arrow,
+  .tape:focus-within .tape__arrow {
+    transform: translateX(0.35em);
+  }
+  .tape:hover :global(.plate--blue),
+  .tape:focus-within :global(.plate--blue) {
+    transform: translate(-4px, 3px);
+  }
+  .tape:hover :global(.plate--orange),
+  .tape:focus-within :global(.plate--orange) {
+    transform: translate(4px, -2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tape__cassette,
+    .cassette__reel,
+    .tape__title {
+      transition: none;
+    }
+    .tape:hover .cassette__reel,
+    .tape:focus-within .cassette__reel {
+      transform: none;
+    }
+  }
+</style>

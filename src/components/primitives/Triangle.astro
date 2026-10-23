@@ -1,0 +1,72 @@
+---
+/**
+ * Triangle inside the box (x, y, width, height). Render inside an <svg>.
+ * `point` is the direction the apex faces; `corner-*` draws a right triangle with the right
+ * angle in that corner.
+ */
+import { paint, type ShapeProps } from './paint';
+
+type Point =
+  'up' | 'down' | 'left' | 'right' | 'corner-tl' | 'corner-tr' | 'corner-bl' | 'corner-br';
+
+interface Props extends ShapeProps {
+  x: number;
+  y: number;
+  width?: number;
+  height?: number;
+  point?: Point;
+}
+
+const { x, y, width = 100, height = 100, point = 'up', ...rest } = Astro.props;
+const [l, t, r, b] = [x, y, x + width, y + height];
+const mx = x + width / 2;
+const my = y + height / 2;
+
+const POINTS: Record<Point, [number, number][]> = {
+  up: [
+    [mx, t],
+    [r, b],
+    [l, b],
+  ],
+  down: [
+    [l, t],
+    [r, t],
+    [mx, b],
+  ],
+  left: [
+    [l, my],
+    [r, t],
+    [r, b],
+  ],
+  right: [
+    [l, t],
+    [r, my],
+    [l, b],
+  ],
+  'corner-tl': [
+    [l, t],
+    [r, t],
+    [l, b],
+  ],
+  'corner-tr': [
+    [l, t],
+    [r, t],
+    [r, b],
+  ],
+  'corner-bl': [
+    [l, t],
+    [r, b],
+    [l, b],
+  ],
+  'corner-br': [
+    [r, t],
+    [r, b],
+    [l, b],
+  ],
+};
+
+const points = POINTS[point].map(([px, py]) => `${px},${py}`).join(' ');
+const attrs = paint(rest);
+---
+
+<polygon points={points} {...attrs} />

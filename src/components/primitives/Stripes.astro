@@ -1,0 +1,45 @@
+---
+/** A block of parallel bars filling (x, y, width, height). Render inside an <svg>. */
+import { paint, type ShapeProps } from './paint';
+
+interface Props extends ShapeProps {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  count?: number;
+  direction?: 'horizontal' | 'vertical';
+  /** Fraction of each band that is inked (0–1). */
+  ratio?: number;
+}
+
+const {
+  x,
+  y,
+  width,
+  height,
+  count = 6,
+  direction = 'horizontal',
+  ratio = 0.5,
+  plate,
+  depth,
+  class: className,
+  transform,
+  ...rest
+} = Astro.props;
+
+const horizontal = direction === 'horizontal';
+const band = (horizontal ? height : width) / count;
+const bars = Array.from({ length: count }, (_, i) =>
+  horizontal
+    ? { x, y: y + i * band, width, height: band * ratio }
+    : { x: x + i * band, y, width: band * ratio, height },
+);
+const attrs = paint(rest);
+---
+
+<g class={className} transform={transform} data-plate={plate} data-depth={depth}>
+  {bars.map((bar) => (
+    <rect {...bar} {...attrs} />
+  ))}
+</g>

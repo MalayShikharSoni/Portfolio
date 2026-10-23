@@ -1,0 +1,328 @@
+@import 'tailwindcss';
+@import './tokens.css';
+@import './grain.css';
+
+/*
+ * Tailwind theme → design tokens. The default palette is wiped so components can only use
+ * the two inks, ink, paper and rule.
+ */
+@theme inline {
+  --color-*: initial;
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-ink: var(--ink);
+  --color-orange: var(--orange);
+  --color-blue: var(--blue);
+  --color-overprint: var(--overprint);
+  --color-rule: var(--rule);
+
+  --font-*: initial;
+  --font-sans: var(--font-archivo), sans-serif;
+  --font-display: var(--font-archivo), sans-serif;
+  --font-mono: var(--font-plex-mono), monospace;
+
+  --text-*: initial;
+  --text-label: var(--step--2);
+  --text-label--line-height: 1.45;
+  --text-label--letter-spacing: 0.08em;
+  --text-sm: var(--step--1);
+  --text-sm--line-height: 1.5;
+  --text-base: var(--step-0);
+  --text-base--line-height: 1.6;
+  --text-lg: var(--step-1);
+  --text-lg--line-height: 1.35;
+  --text-xl: var(--step-2);
+  --text-xl--line-height: 1.15;
+  --text-2xl: var(--step-3);
+  --text-2xl--line-height: 1;
+  --text-3xl: var(--step-4);
+  --text-3xl--line-height: 0.9;
+  --text-4xl: var(--step-5);
+  --text-4xl--line-height: 0.88;
+  --text-5xl: var(--step-6);
+  --text-5xl--line-height: 0.86;
+  --text-hero: var(--step-hero);
+  --text-hero--line-height: 0.85;
+
+  --ease-expo: var(--ease-out-expo);
+  --ease-quart: var(--ease-out-quart);
+
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 100rem;
+}
+
+@layer base {
+  html {
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-padding-top: calc(var(--nav-h) + 1rem);
+  }
+
+  body {
+    overflow-x: clip;
+    min-height: 100dvh;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--step-0);
+    line-height: 1.6;
+    font-weight: 400;
+    font-kerning: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Any element can carry its own theme (used by the styleguide). */
+  [data-theme] {
+    background-color: var(--paper);
+    color: var(--ink);
+  }
+
+  ::selection {
+    background: var(--blue);
+    color: var(--paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--orange);
+    outline-offset: 3px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 800;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  img,
+  svg,
+  video {
+    display: block;
+  }
+
+  hr {
+    border: 0;
+    border-top: 1px solid var(--rule);
+  }
+}
+
+@layer components {
+  /* ── Type ──────────────────────────────────────────────────────────────── */
+  .label {
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    font-weight: 400;
+    line-height: 1.45;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .display {
+    --wdth: var(--wdth-display);
+    --wght: 860;
+    font-family: var(--font-display);
+    font-weight: var(--wght);
+    font-stretch: calc(var(--wdth) * 1%);
+    line-height: 0.88;
+    letter-spacing: -0.012em;
+    font-kerning: normal;
+  }
+
+  .display--condensed {
+    --wdth: var(--wdth-condensed);
+    --wght: 900;
+  }
+
+  /* Width axis as a hover tool — sparingly. */
+  .wdth-hover {
+    transition: --wdth var(--dur-hover) var(--ease-out-quart);
+  }
+  .wdth-hover:hover,
+  a:hover .wdth-hover,
+  a:focus-visible .wdth-hover {
+    --wdth: var(--wdth-normal);
+  }
+
+  .body-copy {
+    max-width: 65ch;
+    font-size: var(--step-0);
+    line-height: 1.6;
+  }
+  .body-copy > * + * {
+    margin-top: 1em;
+  }
+
+  /* ── Links: blue, underline draws in on hover ──────────────────────────── */
+  .link {
+    color: var(--blue);
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+    /* the drawn underline is a solid 2px bar, positioned as a background */
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0 calc(100% - 0.02em);
+    background-repeat: no-repeat;
+    background-size: 0% 2px;
+    transition:
+      background-size var(--dur-hover) var(--ease-out-quart),
+      text-decoration-color var(--dur-hover);
+  }
+  .link:hover,
+  .link:focus-visible {
+    background-size: 100% 2px;
+    text-decoration-color: transparent;
+  }
+  .link__ext {
+    display: inline-block;
+    margin-left: 0.15em;
+    transition: transform var(--dur-hover) var(--ease-out-quart);
+  }
+  .link:hover .link__ext {
+    transform: translate(0.12em, -0.12em);
+  }
+
+  /* ── Layout ────────────────────────────────────────────────────────────── */
+  .page-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    column-gap: var(--gutter);
+    width: 100%;
+    max-width: var(--max);
+    margin-inline: auto;
+    padding-inline: var(--margin);
+  }
+
+  .section {
+    position: relative;
+    padding-block: var(--section-space);
+  }
+
+  /* ── Print ─────────────────────────────────────────────────────────────── */
+  .overprint {
+    mix-blend-mode: var(--blend);
+  }
+
+  /* Illustrations blend only with themselves, never with the page or the grain. */
+  .art {
+    isolation: isolate;
+    overflow: visible;
+  }
+
+  .skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 100;
+    padding: 0.6rem 0.9rem;
+    background: var(--ink);
+    color: var(--paper);
+    transform: translateY(-200%);
+  }
+  .skip-link:focus-visible {
+    transform: none;
+  }
+}
+
+/*
+ * Reveal fail-safe: with motion enabled, reveal targets wait for JS. If JS never marks the
+ * page ready, they appear on their own after 2.5s — content is never stuck hidden.
+ */
+.motion:not(.motion-ready) [data-reveal] {
+  opacity: 0;
+  animation: reveal-failsafe 0.3s 2.5s forwards;
+}
+@keyframes reveal-failsafe {
+  to {
+    opacity: 1;
+  }
+}
+
+/* SplitText line masks get a little vertical room so tight display leading never clips. */
+.line-mask {
+  padding-block: 0.08em;
+  margin-block: -0.08em;
+}
+
+.line {
+  position: relative;
+}
+
+/* Misregistration: while plates are out of register the base text steps aside. */
+.is-misreg .line {
+  color: transparent;
+}
+.is-misreg .line *,
+.misreg-plate * {
+  color: inherit !important;
+}
+.is-misreg .line .misreg-plate--blue {
+  color: var(--blue) !important;
+}
+.is-misreg .line .misreg-plate--orange {
+  color: var(--orange) !important;
+}
+.is-misreg .line .misreg-plate * {
+  color: inherit !important;
+}
+[data-reveal='misreg'] .line,
+[data-print='name'] .line {
+  transition: color 0.3s linear;
+}
+
+/* Misregistration plates, cloned per line by motion.ts. Hidden in the final state. */
+.misreg-plate {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  user-select: none;
+  mix-blend-mode: var(--blend);
+  opacity: 0;
+}
+.misreg-plate--blue {
+  color: var(--blue);
+}
+.misreg-plate--orange {
+  color: var(--orange);
+}
+
+/* Theme switch: the new ink rolls down over the old page, like a fresh pass of the drum. */
+html.theme-wipe::view-transition-old(root),
+html.theme-wipe::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+html.theme-wipe::view-transition-new(root) {
+  animation: theme-roll 0.75s var(--ease-out-expo) both;
+}
+@keyframes theme-roll {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.15s !important;
+    scroll-behavior: auto !important;
+  }
+}

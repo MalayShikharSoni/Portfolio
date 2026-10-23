@@ -1,0 +1,94 @@
+---
+/**
+ * "paper / ink" theme switch: two pressed-state buttons. The active plate is printed as a
+ * solid ink block that slides between the two words.
+ */
+---
+
+<div class="theme-toggle label" role="group" aria-label="Colour theme">
+  <span class="theme-toggle__mark" aria-hidden="true"></span>
+  <button type="button" class="theme-toggle__opt" data-theme-set="paper" aria-pressed="true">
+    paper
+  </button>
+  <span class="theme-toggle__slash" aria-hidden="true">
+    /
+  </span>
+  <button type="button" class="theme-toggle__opt" data-theme-set="ink" aria-pressed="false">
+    ink
+  </button>
+</div>
+
+<script>
+  import '@/scripts/theme';
+</script>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
+  }
+
+  /* half-paper / half-ink disc; turns over with the theme */
+  .theme-toggle__mark {
+    position: relative;
+    width: 0.8rem;
+    height: 0.8rem;
+    margin-right: 0.35rem;
+    overflow: hidden;
+    border: 1px solid var(--ink);
+    border-radius: 50%;
+    transition: transform 0.5s var(--ease-out-expo);
+  }
+  .theme-toggle__mark::after {
+    content: '';
+    position: absolute;
+    inset: 0 50% 0 0;
+    background: var(--ink);
+  }
+  :global(html[data-theme='ink']) .theme-toggle__mark {
+    transform: rotate(180deg);
+  }
+
+  .theme-toggle__opt {
+    position: relative;
+    padding: 0.35rem 0.4rem;
+    color: var(--ink);
+    text-transform: inherit;
+    letter-spacing: inherit;
+    cursor: pointer;
+    transition: color var(--dur-hover) var(--ease-out-quart);
+  }
+  .theme-toggle__opt::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.34s var(--ease-out-expo);
+  }
+  .theme-toggle__opt[data-theme-set='ink']::before {
+    transform-origin: right center;
+  }
+
+  /* Active state comes from <html data-theme>, so it is right before JS runs. */
+  :global(html:not([data-theme='ink'])) .theme-toggle__opt[data-theme-set='paper'],
+  :global(html[data-theme='ink']) .theme-toggle__opt[data-theme-set='ink'] {
+    color: var(--paper);
+  }
+  :global(html:not([data-theme='ink'])) .theme-toggle__opt[data-theme-set='paper']::before,
+  :global(html[data-theme='ink']) .theme-toggle__opt[data-theme-set='ink']::before {
+    transform: scaleX(1);
+  }
+
+  .theme-toggle__opt {
+    isolation: isolate;
+  }
+
+  .theme-toggle__opt:not([aria-pressed='true']):hover {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+</style>

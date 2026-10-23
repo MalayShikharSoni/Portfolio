@@ -1,0 +1,22 @@
+---
+/** A bar: a long rectangle starting at (x, y), optionally rotated around its start. Render inside an <svg>. */
+import { paint, type ShapeProps } from './paint';
+
+interface Props extends ShapeProps {
+  x: number;
+  y: number;
+  length: number;
+  thickness?: number;
+  /** Degrees; 0 = horizontal, 90 = vertical (downwards). */
+  angle?: number;
+}
+
+const { x, y, length, thickness = 12, angle = 0, transform, ...rest } = Astro.props;
+const rotation = angle ? `rotate(${angle} ${x} ${y})` : undefined;
+const attrs = paint({
+  ...rest,
+  transform: [transform, rotation].filter(Boolean).join(' ') || undefined,
+});
+---
+
+<rect x={x} y={y - thickness / 2} width={length} height={thickness} {...attrs} />

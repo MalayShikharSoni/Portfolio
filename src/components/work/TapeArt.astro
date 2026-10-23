@@ -1,0 +1,94 @@
+---
+/**
+ * Sleeve artwork for a project: a Bauhaus composition in the project's ink combination.
+ * Shapes are grouped by plate so hover can knock the plates slightly out of register.
+ * Shared by the tape sleeve and the case-study cover (view transition morph).
+ */
+import Circle from '@/components/primitives/Circle.astro';
+import Square from '@/components/primitives/Square.astro';
+import Triangle from '@/components/primitives/Triangle.astro';
+import Bar from '@/components/primitives/Bar.astro';
+import Stripes from '@/components/primitives/Stripes.astro';
+import type { InkCombo } from '@/data/projects';
+
+interface Props {
+  ink: InkCombo;
+  class?: string;
+}
+
+const { ink, class: className } = Astro.props;
+---
+
+<svg
+  class:list={['tape-art art', className]}
+  viewBox="0 0 400 300"
+  preserveAspectRatio="xMidYMid slice"
+  aria-hidden="true"
+  focusable="false"
+>
+  {ink === 'blue' && (
+    <>
+      <g class="plate plate--blue overprint" data-plate="blue">
+        <Stripes x={36} y={40} width={150} height={74} count={5} ink="blue" ratio={0.42} />
+        <Circle cx={258} cy={146} r={112} ink="blue" fill="halftone" />
+        <Square x={36} y={150} size={112} ink="blue" />
+      </g>
+      <g class="plate plate--orange overprint" data-plate="orange">
+        <Bar x={128} y={218} length={236} thickness={16} ink="orange" />
+        <Circle cx={92} cy={206} r={22} ink="orange" />
+      </g>
+    </>
+  )}
+  {ink === 'orange' && (
+    <>
+      <g class="plate plate--orange overprint" data-plate="orange">
+        <Circle cx={200} cy={212} r={124} half="top" ink="orange" />
+        <Stripes x={36} y={226} width={328} height={56} count={4} ink="orange" ratio={0.5} />
+        <Square x={36} y={36} size={64} ink="orange" fill="halftone" />
+      </g>
+      <g class="plate plate--blue overprint" data-plate="blue">
+        <Triangle x={262} y={44} width={92} height={92} point="up" ink="blue" />
+        <Bar x={36} y={212} length={328} thickness={3} ink="blue" />
+      </g>
+    </>
+  )}
+  {ink === 'overprint' && (
+    <>
+      <g class="plate plate--orange overprint" data-plate="orange">
+        <Square x={66} y={46} size={168} ink="orange" />
+        <Triangle
+          x={36}
+          y={196}
+          width={86}
+          height={72}
+          point="corner-bl"
+          ink="orange"
+          fill="halftone"
+        />
+      </g>
+      <g class="plate plate--blue overprint" data-plate="blue">
+        <Circle cx={246} cy={166} r={104} ink="blue" />
+        <Stripes
+          x={318}
+          y={36}
+          width={46}
+          height={92}
+          count={4}
+          direction="vertical"
+          ink="blue"
+          ratio={0.5}
+        />
+      </g>
+    </>
+  )}
+</svg>
+
+<style>
+  .tape-art {
+    width: 100%;
+    height: 100%;
+  }
+  .tape-art .plate {
+    transition: transform 0.45s var(--ease-out-expo);
+  }
+</style>

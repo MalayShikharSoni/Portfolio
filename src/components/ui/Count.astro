@@ -1,0 +1,52 @@
+---
+/**
+ * A big condensed numeral that counts up once in view, opening its width axis as it lands.
+ * The final value is in the HTML, so it reads correctly with no JS, under reduced motion and
+ * for screen readers. A hidden ghost reserves the final width so nothing shifts.
+ */
+interface Props {
+  value: number;
+  decimals?: number;
+  prefix?: string;
+  suffix?: string;
+  delay?: number;
+  class?: string;
+}
+
+const { value, decimals = 0, prefix = '', suffix = '', delay, class: className } = Astro.props;
+const text = `${prefix}${value.toFixed(decimals)}${suffix}`;
+---
+
+<span
+  class:list={['count display', className]}
+  data-count={value}
+  data-count-decimals={decimals}
+  data-count-prefix={prefix}
+  data-count-suffix={suffix}
+  data-reveal-delay={delay}
+>
+  <span class="count__ghost" aria-hidden="true">
+    {text}
+  </span>
+  <span class="count__value" data-count-value aria-hidden="true">
+    {text}
+  </span>
+  <span class="sr-only">{text}</span>
+</span>
+
+<style>
+  .count {
+    display: inline-grid;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .count__ghost,
+  .count__value {
+    grid-area: 1 / 1;
+    --wdth: 100;
+    font-stretch: calc(var(--wdth) * 1%);
+  }
+  .count__ghost {
+    visibility: hidden;
+  }
+</style>

@@ -1,0 +1,140 @@
+---
+/** Big mailto link with a copy button that confirms with a "copied" state. */
+import { site } from '@/data/site';
+
+interface Props {
+  email?: string;
+  class?: string;
+}
+
+const { email = site.email, class: className } = Astro.props;
+---
+
+<div class:list={['copy-email', className]} data-copy-email>
+  <a href={`mailto:${email}`} class="copy-email__address link">
+    {email}
+  </a>
+  <button type="button" class="copy-email__btn label" data-copy-value={email}>
+    <span class="copy-email__idle">Copy email</span>
+    <span class="copy-email__done" aria-hidden="true">
+      Copied ✓
+    </span>
+  </button>
+  <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+</div>
+
+<script>
+  async function copy(text: string): Promise<boolean> {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /** No clipboard access (old browser, insecure context): select the address instead. */
+  function selectText(el: Element) {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  }
+
+  function bind() {
+    document.querySelectorAll<HTMLElement>('[data-copy-email]').forEach((root) => {
+      const button = root.querySelector<HTMLButtonElement>('[data-copy-value]');
+      const status = root.querySelector<HTMLElement>('[data-copy-status]');
+      if (!button || button.dataset.bound) return;
+      button.dataset.bound = 'true';
+      let timer: number | undefined;
+
+      button.addEventListener('click', async () => {
+        const ok = await copy(button.dataset.copyValue ?? '');
+        if (!ok) {
+          const address = root.querySelector('.copy-email__address');
+          if (address) selectText(address);
+          if (status) status.textContent = 'Email address selected — press Ctrl+C to copy';
+          return;
+        }
+        root.classList.add('is-copied');
+        if (status) status.textContent = 'Email address copied to clipboard';
+        window.clearTimeout(timer);
+        timer = window.setTimeout(() => {
+          root.classList.remove('is-copied');
+          if (status) status.textContent = '';
+        }, 2200);
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', bind);
+</script>
+
+<style>
+  .copy-email {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.75rem 1.25rem;
+  }
+
+  .copy-email__address {
+    overflow-wrap: anywhere;
+  }
+
+  .copy-email__btn {
+    position: relative;
+    display: inline-grid;
+    min-height: 2.75rem;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    cursor: pointer;
+    overflow: hidden;
+    isolation: isolate;
+    transition: color var(--dur-hover) var(--ease-out-quart);
+  }
+  .copy-email__btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.34s var(--ease-out-expo);
+  }
+  .copy-email__btn:hover,
+  .copy-email__btn:focus-visible,
+  .is-copied .copy-email__btn {
+    color: var(--paper);
+  }
+  .copy-email__btn:hover::before,
+  .copy-email__btn:focus-visible::before,
+  .is-copied .copy-email__btn::before {
+    transform: scaleX(1);
+  }
+
+  /* both labels share one grid cell so the button never changes size */
+  .copy-email__idle,
+  .copy-email__done {
+    grid-area: 1 / 1;
+    transition:
+      opacity 0.2s,
+      transform 0.3s var(--ease-out-expo);
+  }
+  .copy-email__done {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  .is-copied .copy-email__idle {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  .is-copied .copy-email__done {
+    opacity: 1;
+    transform: none;
+  }
+</style>

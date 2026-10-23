@@ -1,0 +1,32 @@
+---
+/**
+ * A halftone dot <pattern> in one ink. Render inside <defs>; shapes reference it with
+ * fill="url(#id)". The pattern uses the referencing SVG's user units.
+ */
+import type { Ink } from './paint';
+
+interface Props {
+  id: string;
+  ink: Ink;
+  /** Distance between dot centres. */
+  spacing?: number;
+  /** Dot radius as a fraction of spacing (0.5 = touching). */
+  dot?: number;
+  /** Screen angle in degrees. */
+  angle?: number;
+}
+
+const { id, ink, spacing = 10, dot = 0.3, angle = 45 } = Astro.props;
+const r = spacing * dot;
+const style = `fill: var(--${ink})`;
+---
+
+<pattern
+  id={id}
+  width={spacing}
+  height={spacing}
+  patternUnits="userSpaceOnUse"
+  patternTransform={`rotate(${angle})`}
+>
+  <circle cx={spacing / 2} cy={spacing / 2} r={r} style={style}></circle>
+</pattern>

@@ -1,0 +1,33 @@
+---
+/**
+ * Text link: blue, underline draws in on hover. External links open in a new tab and get ↗.
+ */
+import { site } from '@/data/site';
+
+interface Props {
+  href: string;
+  external?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { href, external, class: className, ...rest } = Astro.props;
+const isExternal = external ?? (/^https?:\/\//.test(href) && !href.startsWith(site.domain));
+---
+
+<a
+  href={href}
+  class:list={['link', className]}
+  {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+  {...rest}
+>
+  <slot />
+  {isExternal && (
+    <>
+      <span class="link__ext" aria-hidden="true">
+        ↗
+      </span>
+      <span class="sr-only"> (opens in a new tab)</span>
+    </>
+  )}
+</a>

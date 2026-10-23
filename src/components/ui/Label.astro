@@ -1,0 +1,17 @@
+---
+/** Mono "spec sheet" label: IBM Plex Mono, uppercase, 0.08em tracking. */
+import type { HTMLTag } from 'astro/types';
+
+interface Props {
+  as?: HTMLTag;
+  tone?: 'ink' | 'blue';
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { as: Tag = 'span', tone = 'ink', class: className, ...rest } = Astro.props;
+---
+
+<Tag class:list={['label', tone === 'blue' && 'text-blue', className]} {...rest}>
+  <slot />
+</Tag>

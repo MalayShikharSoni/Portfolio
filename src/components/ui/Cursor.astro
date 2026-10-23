@@ -1,0 +1,102 @@
+---
+/**
+ * A small ink dot that follows the pointer with a slight lag. Over links and buttons it grows
+ * and overprints in orange. Desktop with a fine pointer only; never under reduced motion.
+ * The native cursor is always kept.
+ */
+---
+
+<div class="cursor" aria-hidden="true" transition:persist="cursor">
+  <span class="cursor__dot"></span>
+</div>
+
+<script>
+  const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const el = document.querySelector<HTMLElement>('.cursor');
+  const INTERACTIVE = 'a, button, [role="button"], label, summary, [data-cursor]';
+
+  if (el && fine.matches && !reduced.matches) {
+    let x = -100;
+    let y = -100;
+    let tx = x;
+    let ty = y;
+    let frame = 0;
+
+    const tick = () => {
+      x += (tx - x) * 0.22;
+      y += (ty - y) * 0.22;
+      el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      frame = Math.abs(tx - x) + Math.abs(ty - y) > 0.1 ? requestAnimationFrame(tick) : 0;
+    };
+
+    window.addEventListener(
+      'pointermove',
+      (event) => {
+        if (event.pointerType !== 'mouse') return;
+        tx = event.clientX;
+        ty = event.clientY;
+        if (!el.classList.contains('is-visible')) {
+          x = tx;
+          y = ty;
+          el.classList.add('is-visible');
+        }
+        if (!frame) frame = requestAnimationFrame(tick);
+      },
+      { passive: true },
+    );
+
+    document.addEventListener('pointerover', (event) => {
+      const target = event.target instanceof Element ? event.target.closest(INTERACTIVE) : null;
+      el.classList.toggle('is-hover', Boolean(target));
+    });
+
+    document.documentElement.addEventListener('pointerleave', () =>
+      el.classList.remove('is-visible'),
+    );
+    document.addEventListener('astro:after-swap', () => el.classList.remove('is-hover'));
+  }
+</script>
+
+<style>
+  .cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 80;
+    pointer-events: none;
+    opacity: 0;
+    mix-blend-mode: var(--blend);
+    transition: opacity 0.2s;
+  }
+  .cursor.is-visible {
+    opacity: 1;
+  }
+
+  .cursor__dot {
+    display: block;
+    width: 10px;
+    height: 10px;
+    margin: -5px 0 0 -5px;
+    border-radius: 50%;
+    background: var(--ink);
+    transition:
+      transform 0.3s var(--ease-out-expo),
+      background-color 0.25s;
+  }
+  .cursor.is-hover .cursor__dot {
+    transform: scale(4.4);
+    background: var(--orange);
+  }
+
+  @media not ((hover: hover) and (pointer: fine)) {
+    .cursor {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cursor {
+      display: none;
+    }
+  }
+</style>

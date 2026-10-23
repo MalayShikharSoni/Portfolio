@@ -1,0 +1,99 @@
+---
+/**
+ * Printer's crop marks on the four corners of the nearest positioned parent.
+ * Marks sit on the extensions of the trim edges, `offset` px outside the box.
+ * `data-crop-line` is the hook for the draw-in animation.
+ */
+interface Props {
+  /** Gap between the trim corner and the mark, in px. Negative values pull marks inside. */
+  offset?: number;
+  /** Mark length in px. */
+  length?: number;
+  tone?: 'ink' | 'rule' | 'blue';
+  class?: string;
+}
+
+const { offset = 10, length = 20, tone = 'ink', class: className } = Astro.props;
+
+const corners = ['tl', 'tr', 'bl', 'br'] as const;
+---
+
+<span
+  class:list={['crop', className]}
+  style={`--crop-o: ${offset}px; --crop-l: ${length}px; --crop-color: var(--${tone})`}
+  aria-hidden="true"
+  data-crop
+>
+  {corners.map((c) => (
+    <>
+      <span class={`crop__line crop__line--h crop--${c}`} data-crop-line="h" />
+      <span class={`crop__line crop__line--v crop--${c}`} data-crop-line="v" />
+    </>
+  ))}
+</span>
+
+<style>
+  .crop {
+    /* never reach past the page margin (phones have a 16px gutter) */
+    --crop-offset: min(var(--crop-o), calc(var(--margin) * 0.3));
+    --crop-len: min(var(--crop-l), calc(var(--margin) * 0.6));
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .crop__line {
+    position: absolute;
+    display: block;
+    background: var(--crop-color);
+  }
+
+  .crop__line--h {
+    width: var(--crop-len);
+    height: 1px;
+  }
+  .crop__line--v {
+    width: 1px;
+    height: var(--crop-len);
+  }
+
+  /* horizontal marks: on the top/bottom edge lines, outside left/right */
+  .crop__line--h.crop--tl,
+  .crop__line--h.crop--bl {
+    right: calc(100% + var(--crop-offset));
+    transform-origin: right center;
+  }
+  .crop__line--h.crop--tr,
+  .crop__line--h.crop--br {
+    left: calc(100% + var(--crop-offset));
+    transform-origin: left center;
+  }
+  .crop__line--h.crop--tl,
+  .crop__line--h.crop--tr {
+    top: -0.5px;
+  }
+  .crop__line--h.crop--bl,
+  .crop__line--h.crop--br {
+    bottom: -0.5px;
+  }
+
+  /* vertical marks: on the left/right edge lines, outside top/bottom */
+  .crop__line--v.crop--tl,
+  .crop__line--v.crop--tr {
+    bottom: calc(100% + var(--crop-offset));
+    transform-origin: center bottom;
+  }
+  .crop__line--v.crop--bl,
+  .crop__line--v.crop--br {
+    top: calc(100% + var(--crop-offset));
+    transform-origin: center top;
+  }
+  .crop__line--v.crop--tl,
+  .crop__line--v.crop--bl {
+    left: -0.5px;
+  }
+  .crop__line--v.crop--tr,
+  .crop__line--v.crop--br {
+    right: -0.5px;
+  }
+</style>

@@ -1,0 +1,57 @@
+---
+/**
+ * Shared SVG pattern library, rendered once per page. Every illustration references these by
+ * id: url(#ht-blue), url(#htf-orange), url(#st-ink) …
+ * Not display:none — Firefox drops patterns that live in a display:none SVG.
+ *
+ * Patterns take their colours from where they are defined, not where they are used. A block
+ * that forces its own data-theme renders a prefixed copy inside itself (see the styleguide).
+ */
+import HalftoneFill from './HalftoneFill.astro';
+import type { Ink } from './paint';
+
+interface Props {
+  /** Id prefix for a scoped copy, e.g. "paper-" → url(#paper-ht-blue). */
+  prefix?: string;
+}
+
+const { prefix = '' } = Astro.props;
+
+const inks: { ink: Ink; angle: number }[] = [
+  { ink: 'blue', angle: 15 },
+  { ink: 'orange', angle: 75 },
+  { ink: 'ink', angle: 45 },
+  { ink: 'paper', angle: 45 },
+];
+---
+
+<svg class="ink-defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    {inks.map(({ ink, angle }) => (
+      <>
+        <HalftoneFill id={`${prefix}ht-${ink}`} ink={ink} spacing={10} dot={0.34} angle={angle} />
+        <HalftoneFill id={`${prefix}htf-${ink}`} ink={ink} spacing={6} dot={0.24} angle={angle} />
+        <HalftoneFill id={`${prefix}t60-${ink}`} ink={ink} spacing={3} dot={0.4} angle={angle} />
+        <HalftoneFill id={`${prefix}t30-${ink}`} ink={ink} spacing={3} dot={0.25} angle={angle} />
+        <pattern
+          id={`${prefix}st-${ink}`}
+          width="8"
+          height="8"
+          patternUnits="userSpaceOnUse"
+          patternTransform="rotate(45)"
+        >
+          <rect width="3.2" height="8" style={`fill: var(--${ink})`} />
+        </pattern>
+      </>
+    ))}
+  </defs>
+</svg>
+
+<style>
+  .ink-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+</style>
