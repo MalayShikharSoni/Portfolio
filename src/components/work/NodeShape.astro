@@ -1,0 +1,21 @@
+---
+/** A diagram node's primitive, centred on 0,0: service = square, store = circle, external = triangle. */
+import type { DiagramNodeKind } from '@/data/projects';
+
+interface Props {
+  kind: DiagramNodeKind;
+  size: number;
+  class: string;
+  fill?: string;
+}
+
+const { kind, size, class: className, fill } = Astro.props;
+const s = size / 2;
+const triangle = `0,${-s} ${s * 1.08},${s * 0.9} ${-s * 1.08},${s * 0.9}`;
+---
+
+{kind === 'store' && <circle r={s} class={className} fill={fill} />}
+{kind === 'external' && <polygon points={triangle} class={className} fill={fill} />}
+{kind === 'service' && (
+  <rect x={-s} y={-s} width={size} height={size} class={className} fill={fill} />
+)}

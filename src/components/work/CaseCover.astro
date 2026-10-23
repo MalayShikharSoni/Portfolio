@@ -1,0 +1,202 @@
+---
+/**
+ * Case-study cover: the tape's sleeve, opened up. Shares its view-transition name with the
+ * sleeve on the home page, so clicking a tape morphs the card into this cover.
+ */
+import TapeArt from './TapeArt.astro';
+import Tbd from './Tbd.astro';
+import CropMarks from '@/components/primitives/CropMarks.astro';
+import RegMark from '@/components/primitives/RegMark.astro';
+import Letters from '@/components/ui/Letters.astro';
+import Link from '@/components/ui/Link.astro';
+import Roll from '@/components/ui/Roll.astro';
+import { isTodo } from '@/lib/todo';
+import type { Project } from '@/data/projects';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const { slug, name, tape, years, ink, oneLiner, dates, role, stack, links } = project;
+const tapeNo = String(tape).padStart(2, '0');
+const hasLinks = Boolean(links.live || links.github);
+---
+
+<section class="cover" aria-labelledby="cover-title">
+  <div class="page-grid cover__top">
+    <a href="/#work" class="label cover__back">
+      <Roll>← All work</Roll>
+    </a>
+    <p class="label cover__spec" data-scramble>
+      Tape {tapeNo} · {name} · {years}
+    </p>
+  </div>
+
+  <div class="page-grid">
+    <div class="cover__sleeve" transition:name={`sleeve-${slug}`}>
+      <CropMarks offset={10} length={20} />
+
+      <div class="cover__art" data-reveal="plates">
+        <TapeArt ink={ink} />
+      </div>
+
+      <div class="cover__body">
+        <div class="cover__head">
+          <span class="label">Case study</span>
+          <RegMark size={16} />
+        </div>
+        <h1
+          id="cover-title"
+          class="cover__title display ripple"
+          aria-label={name}
+          data-reveal="misreg"
+        >
+          <Letters text={name} />
+        </h1>
+        <p class="cover__oneliner">{oneLiner}</p>
+
+        <dl class="cover__meta">
+          <div>
+            <dt class="label">Dates</dt>
+            <dd>{dates}</dd>
+          </div>
+          <div>
+            <dt class="label">Role</dt>
+            <dd>{isTodo(role) ? <Tbd label="To be confirmed" /> : role}</dd>
+          </div>
+          <div class="cover__meta-wide">
+            <dt class="label">Stack</dt>
+            <dd class="cover__stack">
+              {stack.map((s) => (
+                <span>{s}</span>
+              ))}
+            </dd>
+          </div>
+          <div class="cover__meta-wide">
+            <dt class="label">Links</dt>
+            <dd class="cover__links">
+              {links.live && <Link href={links.live}>Live</Link>}
+              {links.github && <Link href={links.github}>GitHub</Link>}
+              {!hasLinks && <Tbd label="Coming soon" />}
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cover {
+    padding-block: clamp(1.5rem, 4vw, 3rem) clamp(3rem, 7vw, 6rem);
+  }
+
+  .cover__top {
+    align-items: center;
+    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  .cover__back {
+    grid-column: 1 / span 2;
+    justify-self: start;
+    color: var(--blue);
+  }
+  .cover__spec {
+    grid-column: 3 / -1;
+    justify-self: end;
+  }
+
+  .cover__sleeve {
+    position: relative;
+    grid-column: 1 / -1;
+    display: grid;
+    border: 1px solid var(--ink);
+    background: var(--paper-2);
+  }
+
+  .cover__art {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-bottom: 1px solid var(--ink);
+    background: var(--paper);
+  }
+
+  .cover__body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: clamp(1rem, 3vw, 2rem);
+  }
+  .cover__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid var(--ink);
+  }
+  .cover__title {
+    --wdth: 62;
+    --wght: 900;
+    font-size: clamp(3.5rem, 1rem + 10vw, 10rem);
+    line-height: 0.85;
+    overflow-wrap: anywhere;
+  }
+  .cover__oneliner {
+    max-width: 40ch;
+    font-size: var(--step-1);
+    font-weight: 450;
+    line-height: 1.4;
+  }
+
+  .cover__meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: auto;
+    border-top: 1px solid var(--ink);
+  }
+  .cover__meta > div {
+    display: grid;
+    gap: 0.3rem;
+    padding-block: 0.8rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .cover__meta > div:nth-child(2) {
+    padding-left: 1rem;
+    border-left: 1px solid var(--rule);
+  }
+  .cover__meta-wide {
+    grid-column: 1 / -1;
+  }
+  .cover__meta dt {
+    color: var(--blue);
+  }
+  .cover__meta dd {
+    font-size: var(--step--1);
+    line-height: 1.5;
+  }
+  .cover__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 0.4rem;
+  }
+  .cover__stack span:not(:last-child)::after {
+    content: ' /';
+    color: var(--rule);
+  }
+  .cover__links {
+    display: flex;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 1024px) {
+    .cover__sleeve {
+      grid-template-columns: 1.1fr 1fr;
+    }
+    .cover__art {
+      aspect-ratio: auto;
+      min-height: 100%;
+      border-bottom: 0;
+      border-right: 1px solid var(--ink);
+    }
+  }
+</style>

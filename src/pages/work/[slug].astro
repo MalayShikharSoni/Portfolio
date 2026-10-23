@@ -1,0 +1,24 @@
+---
+import CaseStudy from '@/layouts/CaseStudy.astro';
+import { featuredProjects, type Project } from '@/data/projects';
+
+export function getStaticPaths() {
+  return featuredProjects.map((project, i) => ({
+    params: { slug: project.slug },
+    props: {
+      project,
+      // the next tape wraps around to the first
+      next: featuredProjects[(i + 1) % featuredProjects.length],
+    },
+  }));
+}
+
+interface Props {
+  project: Project;
+  next: Project;
+}
+
+const { project, next } = Astro.props;
+---
+
+<CaseStudy project={project} next={next} />

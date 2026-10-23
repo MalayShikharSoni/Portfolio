@@ -3,7 +3,7 @@
 A two-colour risograph of a Swiss/Bauhaus poster that came to life. Astro (static) + TypeScript
 strict, plain modular CSS, GSAP (ScrollTrigger, SplitText) and Lenis.
 
-> **Status:** home page complete (hero, work, about, numbers, toolbox, contact, footer). Case studies next.
+> **Status:** home page and the three case studies are built. Polish (a11y, performance, SEO, 404, OG images) next.
 
 ## Run locally
 
@@ -35,6 +35,8 @@ npm run build      # static site in dist/
 | Hero halftone lens                                    | `src/scripts/lens.ts`                                              |
 | Build-time LeetCode / GitHub stats (with fallbacks)   | `src/lib/stats.ts` (optional `GITHUB_TOKEN` env var)               |
 | Home page sections                                    | `src/components/sections/`                                         |
+| Case-study template                                   | `src/layouts/CaseStudy.astro`, blocks in `src/components/work/`    |
+| Project screenshots (auto-detected)                   | `src/assets/work/<slug>/screen-01.webp` … `mobile-01.webp`         |
 
 Press **P** anywhere to see the plates (grid, baseline, blue/orange separations).
 

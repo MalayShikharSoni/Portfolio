@@ -43,6 +43,8 @@ export interface Site {
   };
   /** GitHub username for the build-time public repo count. */
   githubUser: string;
+  /** Refresh the LeetCode figures from LeetCode at build time. Off: the static stats are used. */
+  liveLeetCode: boolean;
 }
 
 export const site: Site = {
@@ -60,7 +62,7 @@ export const site: Site = {
   links: {
     github: 'https://github.com/MalayShikharSoni',
     linkedin: 'https://www.linkedin.com/in/malay-shikhar-soni',
-    leetcode: 'https://leetcode.com/u/TODO_LEETCODE_USERNAME', // TODO(Malay)
+    leetcode: 'https://leetcode.com/u/malay_shikhar_soni/',
   },
   domain: 'https://malayshikharsoni.me', // TODO(Malay): confirm final domain
   status: 'Open to SDE roles · Class of 2027', // TODO(Malay): confirm (full-time / internship / both)
@@ -86,4 +88,5 @@ export const site: Site = {
     workwaveEndpoints: 35,
   },
   githubUser: 'MalayShikharSoni',
+  liveLeetCode: false,
 };

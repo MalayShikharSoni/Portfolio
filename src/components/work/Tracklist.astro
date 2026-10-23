@@ -1,0 +1,40 @@
+---
+/** Key features as a numbered "tracklist": A1, A2 … in mono, the feature in body type. */
+interface Props {
+  items: string[];
+}
+
+const { items } = Astro.props;
+---
+
+<ol class="tracklist lift" data-reveal="fade">
+  {items.map((item, i) => (
+    <li class="tracklist__row">
+      <span class="label tracklist__no">A{i + 1}</span>
+      <span class="tracklist__text">{item}</span>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .tracklist {
+    border-top: 1px solid var(--ink);
+  }
+  .tracklist__row {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 1rem;
+    align-items: baseline;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .tracklist__no {
+    color: var(--blue);
+  }
+  .tracklist__text {
+    max-width: 60ch;
+    font-size: var(--step-1);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+</style>

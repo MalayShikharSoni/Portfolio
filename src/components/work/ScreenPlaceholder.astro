@@ -1,0 +1,197 @@
+---
+/**
+ * One screenshot slot: a 16:10 browser frame or a 9:19.5 phone frame.
+ * If the real image exists at src/assets/work/<slug>/<file>, it is used automatically
+ * (optimised, responsive, lazy). Until then the slot is a designed placeholder: paper-2,
+ * a halftone in the project's ink, crop marks, and a spec label with the expected file.
+ */
+import { Image } from 'astro:assets';
+import CropMarks from '@/components/primitives/CropMarks.astro';
+import type { ImageMetadata } from 'astro';
+import type { InkCombo, Screen } from '@/data/projects';
+
+interface Props {
+  slug: string;
+  screen: Screen;
+  number: number;
+  ink: InkCombo;
+}
+
+const { slug, screen, number, ink } = Astro.props;
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/work/*/*.{webp,png,jpg,jpeg,avif}',
+  { eager: true },
+);
+const base = screen.file.replace(/\.[a-z0-9]+$/i, '');
+const key = Object.keys(images).find((k) => k.startsWith(`/src/assets/work/${slug}/${base}.`));
+const image = key ? images[key]?.default : undefined;
+
+const desktop = screen.kind === 'desktop';
+const no = String(number).padStart(2, '0');
+const spec = `${desktop ? 'Screen' : 'Mobile'} ${no} · ${screen.caption}`;
+const size = desktop ? '1600×1000' : '780×1688';
+const path = `src/assets/work/${slug}/${screen.file}`;
+const tone = ink === 'orange' || (ink === 'overprint' && !desktop) ? 'orange' : 'blue';
+---
+
+<figure class:list={['screen', `screen--${screen.kind}`]}>
+  <div class="screen__frame">
+    {desktop && (
+      <div class="screen__chrome" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <i />
+      </div>
+    )}
+    {!desktop && <div class="screen__notch" aria-hidden="true" />}
+
+    <div class="screen__view">
+      {image ? (
+        <Image
+          src={image}
+          alt={screen.alt}
+          widths={desktop ? [480, 800, 1200, 1600] : [390, 780]}
+          sizes={
+            desktop
+              ? '(min-width: 1280px) 34vw, (min-width: 768px) 45vw, 92vw'
+              : '(min-width: 768px) 20vw, 60vw'
+          }
+          loading="lazy"
+          class="screen__img"
+        />
+      ) : (
+        <div class="screen__placeholder">
+          <svg
+            class="art screen__tone"
+            viewBox="0 0 400 400"
+            preserveAspectRatio="xMidYMid slice"
+            aria-hidden="true"
+          >
+            <circle
+              cx={desktop ? 300 : 200}
+              cy={desktop ? 220 : 250}
+              r={desktop ? 150 : 170}
+              fill={`url(#ht-${tone})`}
+            />
+            <rect
+              x={desktop ? 48 : 60}
+              y={desktop ? 118 : 120}
+              width={desktop ? 150 : 120}
+              height={desktop ? 18 : 14}
+              style="fill: var(--ink)"
+            />
+          </svg>
+          <CropMarks offset={-14} length={14} tone="ink" />
+          <div class="screen__spec">
+            <span class="label">{size}</span>
+            <span class="label screen__path">{path}</span>
+          </div>
+          <span class="sr-only">Screenshot coming soon: {screen.alt}</span>
+        </div>
+      )}
+    </div>
+  </div>
+  <figcaption class="label screen__caption">{spec}</figcaption>
+</figure>
+
+<style>
+  .screen {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .screen__frame {
+    overflow: hidden;
+    border: 1.5px solid var(--ink);
+    background: var(--paper-2);
+  }
+  .screen--mobile .screen__frame {
+    border-radius: 1.6rem;
+    padding: 0.5rem;
+  }
+
+  .screen__chrome {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    height: 1.9rem;
+    padding-inline: 0.75rem;
+    border-bottom: 1.5px solid var(--ink);
+  }
+  .screen__chrome span {
+    width: 0.55rem;
+    height: 0.55rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 50%;
+  }
+  .screen__chrome i {
+    flex: 1;
+    height: 0.75rem;
+    margin-left: 0.75rem;
+    max-width: 55%;
+    border: 1.5px solid var(--ink);
+    border-radius: 1rem;
+  }
+  .screen__notch {
+    width: 32%;
+    height: 0.45rem;
+    margin: 0.15rem auto 0.45rem;
+    border-radius: 1rem;
+    background: var(--ink);
+  }
+
+  .screen__view {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+  .screen--mobile .screen__view {
+    aspect-ratio: 9 / 19.5;
+    border-radius: 1.1rem;
+  }
+  .screen__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .screen__placeholder {
+    position: absolute;
+    inset: 0;
+    background: var(--paper-2);
+  }
+  .screen__tone {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .screen__spec {
+    position: absolute;
+    left: 1.25rem;
+    right: 1.25rem;
+    bottom: 1.1rem;
+    display: grid;
+    gap: 0.15rem;
+  }
+  .screen__spec .label {
+    justify-self: start;
+    padding: 0.1rem 0.3rem;
+    background: var(--paper-2);
+  }
+  .screen--mobile .screen__spec {
+    left: 0.8rem;
+    right: 0.8rem;
+  }
+  .screen__path {
+    color: var(--blue);
+    overflow-wrap: anywhere;
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+  .screen__caption {
+    color: var(--ink);
+  }
+</style>

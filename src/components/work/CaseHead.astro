@@ -1,0 +1,50 @@
+---
+/**
+ * Case-study block header: a mono label in the margin ("Side A", "Fig. 1"), the title from
+ * column 3. Pairs every metaphor with a plain title.
+ */
+import Letters from '@/components/ui/Letters.astro';
+
+interface Props {
+  label: string;
+  title: string;
+  id: string;
+}
+
+const { label, title, id } = Astro.props;
+---
+
+<header class="case-head page-grid" data-scramble-trigger>
+  <p class="case-head__label label" data-reveal="fade">
+    <span data-scramble>{label}</span>
+  </p>
+  <h2 {id} class="case-head__title display ripple" aria-label={title} data-reveal="misreg">
+    <Letters text={title} />
+  </h2>
+</header>
+
+<style>
+  .case-head {
+    row-gap: 0.75rem;
+    align-items: start;
+  }
+  .case-head__label {
+    grid-column: 1 / -1;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--ink);
+    color: var(--blue);
+  }
+  .case-head__title {
+    grid-column: 1 / -1;
+    font-size: var(--step-4);
+  }
+  @media (min-width: 768px) {
+    .case-head__label {
+      grid-column: 1 / span 2;
+    }
+    .case-head__title {
+      grid-column: 3 / -1;
+      margin-top: -0.04em;
+    }
+  }
+</style>

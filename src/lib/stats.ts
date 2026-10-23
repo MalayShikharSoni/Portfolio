@@ -31,6 +31,7 @@ async function fetchJson<T>(url: string, init: RequestInit = {}): Promise<T | nu
 
 /** The username is the last path segment of the profile link; placeholders are skipped. */
 function leetcodeUser(): string | null {
+  if (!site.liveLeetCode) return null;
   const user = site.links.leetcode.split('/').filter(Boolean).pop() ?? '';
   return user && !user.includes('TODO') ? user : null;
 }

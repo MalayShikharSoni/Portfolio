@@ -1,0 +1,79 @@
+---
+/** Side B card: one engineering decision as context → decision → trade-off. */
+import Tbd from './Tbd.astro';
+import { isTodo } from '@/lib/todo';
+import type { Decision } from '@/data/projects';
+
+interface Props {
+  decision: Decision;
+  index: number;
+}
+
+const { decision, index } = Astro.props;
+const rows = [
+  { key: 'Context', value: decision.context },
+  { key: 'Decision', value: decision.decision },
+  { key: 'Trade-off', value: decision.tradeoff },
+];
+---
+
+<article class="decision">
+  <header class="decision__head">
+    <span class="label decision__no">B{index + 1}</span>
+    <h3 class="decision__title">{decision.title}</h3>
+  </header>
+  <dl class="decision__rows">
+    {rows.map((row, i) => (
+      <div class="decision__row">
+        <dt class="label">
+          {row.key}
+          {i < rows.length - 1 && <span aria-hidden="true"> →</span>}
+        </dt>
+        <dd>{isTodo(row.value) ? <Tbd /> : row.value}</dd>
+      </div>
+    ))}
+  </dl>
+</article>
+
+<style>
+  .decision {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 1px solid var(--ink);
+    background: var(--paper-2);
+  }
+  .decision__head {
+    display: grid;
+    gap: 0.6rem;
+    padding: 1rem 1.1rem 1.1rem;
+    border-bottom: 1px solid var(--ink);
+  }
+  .decision__no {
+    color: var(--blue);
+  }
+  .decision__title {
+    font-size: var(--step-1);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  .decision__rows {
+    display: grid;
+    padding: 0.35rem 1.1rem 0.9rem;
+  }
+  .decision__row {
+    display: grid;
+    gap: 0.3rem;
+    padding-block: 0.75rem;
+  }
+  .decision__row + .decision__row {
+    border-top: 1px solid var(--rule);
+  }
+  .decision__row dt {
+    color: var(--blue);
+  }
+  .decision__row dd {
+    font-size: var(--step--1);
+    line-height: 1.55;
+  }
+</style>

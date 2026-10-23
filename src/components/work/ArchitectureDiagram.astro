@@ -1,0 +1,253 @@
+---
+/**
+ * Fig. 1 · Architecture. A static, complete diagram in the HTML (it reads fine with no JS);
+ * with motion, it pins briefly while an orange request dot travels the path node by node,
+ * inking a trail and revealing each caption (scripts/diagram.ts).
+ */
+import Label from '@/components/ui/Label.astro';
+import DiagramSvg from './DiagramSvg.astro';
+import { layoutDiagram } from '@/lib/diagram';
+import type { Diagram, InkCombo } from '@/data/projects';
+
+interface Props {
+  diagram: Diagram;
+  ink: InkCombo;
+  slug: string;
+}
+
+const { diagram, ink, slug } = Astro.props;
+const wide = layoutDiagram(diagram, 'wide');
+const tall = layoutDiagram(diagram, 'tall');
+const titleId = `fig-${slug}`;
+const byId = new Map(diagram.nodes.map((n) => [n.id, n]));
+const steps = diagram.path.map((id) => byId.get(id)).filter((n) => n !== undefined);
+const sides = diagram.edges.filter((e) => e.side);
+---
+
+<figure class="diagram" data-diagram>
+  <div class="diagram__canvas">
+    <DiagramSvg layout={wide} orientation="wide" ink={ink} titleId={titleId} />
+    <DiagramSvg layout={tall} orientation="tall" ink={ink} titleId={titleId} />
+  </div>
+
+  <figcaption class="diagram__caption">
+    <Label as="p" id={titleId}>
+      {diagram.title}
+    </Label>
+    <ul class="diagram__legend label" aria-hidden="true">
+      <li>
+        <span class="key key--service"></span>Service
+      </li>
+      <li>
+        <span class="key key--store"></span>Data store
+      </li>
+      <li>
+        <span class="key key--external"></span>External
+      </li>
+      <li>
+        <span class="key key--path"></span>Request path
+      </li>
+      <li>
+        <span class="key key--side"></span>Side channel
+      </li>
+    </ul>
+    <p class="label diagram__hint" aria-hidden="true">
+      Scroll to send a request through
+    </p>
+  </figcaption>
+
+  <!-- the same flow in words, for screen readers -->
+  <div class="sr-only">
+    <p>Request path, in order:</p>
+    <ol>
+      {steps.map((n) => (
+        <li>
+          {n.label} ({n.caption})
+        </li>
+      ))}
+    </ol>
+    {sides.length > 0 && (
+      <>
+        <p>Side channels:</p>
+        <ul>
+          {sides.map((e) => (
+            <li>
+              {byId.get(e.from)?.label} to {byId.get(e.to)?.label}
+            </li>
+          ))}
+        </ul>
+      </>
+    )}
+  </div>
+</figure>
+
+<script>
+  import { initDiagrams } from '@/scripts/diagram';
+
+  let stop: (() => void) | null = null;
+  document.addEventListener('astro:page-load', () => {
+    stop?.();
+    stop = initDiagrams();
+  });
+  document.addEventListener('astro:before-swap', () => {
+    stop?.();
+    stop = null;
+  });
+</script>
+
+<style>
+  .diagram {
+    position: relative;
+    padding: clamp(1rem, 2.5vw, 2rem);
+    border: 1px solid var(--ink);
+    background: var(--paper);
+  }
+
+  .diagram__canvas :global(.diagram__svg) {
+    width: 100%;
+    height: auto;
+  }
+  .diagram__canvas :global(.diagram__svg--tall) {
+    display: none;
+  }
+  @media (max-width: 899px) {
+    .diagram__canvas :global(.diagram__svg--wide) {
+      display: none;
+    }
+    .diagram__canvas :global(.diagram__svg--tall) {
+      display: block;
+      max-width: 26rem;
+      margin-inline: auto;
+    }
+  }
+
+  /* ── drawing ── */
+  .diagram :global(.edge) {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 3;
+    stroke-linejoin: miter;
+  }
+  .diagram :global(.edge--side) {
+    stroke: var(--blue);
+    stroke-width: 2;
+    stroke-dasharray: 6 7;
+  }
+  .diagram :global(.diagram__route) {
+    fill: none;
+    stroke: none;
+  }
+  .diagram :global(.diagram__trail) {
+    fill: none;
+    stroke: var(--orange);
+    stroke-width: 7;
+    opacity: 0;
+  }
+  .diagram :global(.node__base) {
+    fill: var(--paper);
+  }
+  .diagram :global(.node__ink) {
+    fill: var(--orange);
+    opacity: 0;
+    transition: opacity 0.35s var(--ease-out-expo);
+  }
+  .diagram :global(.node__line) {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 2;
+  }
+  /* a paper halo, so connections pass cleanly behind the words */
+  .diagram :global(.node__label),
+  .diagram :global(.node__caption) {
+    paint-order: stroke;
+    stroke: var(--paper);
+    stroke-width: 6px;
+    stroke-linejoin: round;
+  }
+  .diagram :global(.node__label) {
+    fill: var(--ink);
+    font-family: var(--font-sans);
+    font-weight: 700;
+    text-anchor: middle;
+  }
+  .diagram :global(.node__caption) {
+    fill: var(--blue);
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+    text-anchor: middle;
+    transition: opacity 0.4s var(--ease-out-expo);
+  }
+  .diagram :global(.diagram__dot) {
+    fill: var(--orange);
+    stroke: var(--ink);
+    stroke-width: 2;
+    opacity: 0;
+  }
+
+  /* With motion running: path captions and the ink wait for the request to arrive. */
+  .diagram:global(.is-live) :global(.diagram__trail),
+  .diagram:global(.is-live) :global(.diagram__dot) {
+    opacity: 1;
+  }
+  .diagram:global(.is-live) :global(.node[data-at] .node__caption) {
+    opacity: 0;
+  }
+  .diagram:global(.is-live) :global(.node.is-on .node__caption) {
+    opacity: 1;
+  }
+  .diagram:global(.is-live) :global(.node.is-on .node__ink) {
+    opacity: 1;
+  }
+
+  /* ── caption + legend ── */
+  .diagram__caption {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--rule);
+  }
+  .diagram__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+  }
+  .diagram__legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+  .key {
+    display: inline-block;
+    width: 0.8rem;
+    height: 0.8rem;
+    border: 1.5px solid var(--ink);
+  }
+  .key--store {
+    border-radius: 50%;
+  }
+  .key--external {
+    border: 0;
+    width: 0;
+    height: 0;
+    border-left: 0.45rem solid transparent;
+    border-right: 0.45rem solid transparent;
+    border-bottom: 0.8rem solid var(--ink);
+  }
+  .key--path,
+  .key--side {
+    width: 1.4rem;
+    height: 0;
+    border-width: 3px 0 0;
+  }
+  .key--side {
+    border-top: 2px dashed var(--blue);
+  }
+  .diagram__hint {
+    display: none;
+    color: var(--blue);
+  }
+  .diagram:global(.is-live) .diagram__hint {
+    display: block;
+  }
+</style>

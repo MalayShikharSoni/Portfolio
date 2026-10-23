@@ -1,0 +1,83 @@
+---
+/**
+ * One orientation of an architecture diagram, drawn with the Bauhaus primitives:
+ * services are squares, data stores are circles, external providers are triangles,
+ * connections are bars (solid: the request path; dashed: side channels).
+ */
+import NodeShape from './NodeShape.astro';
+import type { DiagramLayout } from '@/lib/diagram';
+import type { DiagramNodeKind, InkCombo } from '@/data/projects';
+
+interface Props {
+  layout: DiagramLayout;
+  orientation: 'wide' | 'tall';
+  ink: InkCombo;
+  titleId: string;
+}
+
+const { layout, orientation, ink, titleId } = Astro.props;
+const { width, height, size, label, caption, nodes, edges, route } = layout;
+const s = size / 2;
+
+/** Halftone ink per node kind; an overprint project prints in both inks. */
+const inkFor = (kind: DiagramNodeKind) => {
+  if (kind === 'external') return 'ink';
+  if (ink === 'orange') return 'orange';
+  if (ink === 'blue') return 'blue';
+  return kind === 'store' ? 'orange' : 'blue';
+};
+---
+
+<svg
+  class:list={['diagram__svg', `diagram__svg--${orientation}`, 'art']}
+  viewBox={`0 0 ${width} ${height}`}
+  role="img"
+  aria-labelledby={titleId}
+  data-orientation={orientation}
+>
+  <g class="diagram__edges">
+    {edges.map((e) => (
+      <path d={e.d} class:list={['edge', e.side && 'edge--side']} />
+    ))}
+  </g>
+
+  <!-- the request path: an invisible guide, and the orange trail the dot leaves behind -->
+  <path class="diagram__route" d={route}></path>
+  <path class="diagram__trail overprint" d={route}></path>
+
+  {nodes.map((n) => {
+    return (
+      <g
+        class:list={['node', `node--${n.kind}`]}
+        transform={`translate(${n.x} ${n.y})`}
+        data-at={n.at ?? undefined}
+      >
+        <NodeShape kind={n.kind} size={size} class="node__base" />
+        <NodeShape
+          kind={n.kind}
+          size={size}
+          class="node__tone"
+          fill={`url(#htf-${inkFor(n.kind)})`}
+        />
+        <NodeShape kind={n.kind} size={size} class="node__ink overprint" />
+        <NodeShape kind={n.kind} size={size} class="node__line" />
+        <text class="node__label" y={s + label + 10} style={`font-size: ${label}px`}>
+          {n.label}
+        </text>
+        <text
+          class="node__caption"
+          y={s + label + 12 + caption * 1.4}
+          style={`font-size: ${caption}px`}
+        >
+          {n.captionLines.map((line, i) => (
+            <tspan x="0" dy={i === 0 ? 0 : caption * 1.3}>
+              {line.toUpperCase()}
+            </tspan>
+          ))}
+        </text>
+      </g>
+    );
+  })}
+
+  <circle class="diagram__dot overprint" r={orientation === 'wide' ? 9 : 13} cx="0" cy="0"></circle>
+</svg>

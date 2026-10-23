@@ -1,0 +1,21 @@
+---
+/** Placeholder for content that is still to be written (see TODO(Malay) in src/data). */
+interface Props {
+  label?: string;
+}
+
+const { label = 'To be written' } = Astro.props;
+---
+
+<span class="tbd label">{label}</span>
+
+<style>
+  .tbd {
+    display: inline-block;
+    padding: 0.15rem 0.45rem;
+    border: 1px dashed var(--rule);
+    color: var(--ink);
+    opacity: 0.75;
+    white-space: nowrap;
+  }
+</style>

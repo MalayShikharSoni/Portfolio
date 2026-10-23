@@ -489,7 +489,7 @@ export const projects: Project[] = [
     diagram: {
       title: 'Fig. 1 · Module flow',
       cols: 5,
-      rows: 3,
+      rows: 2,
       nodes: [
         {
           id: 'browser',
@@ -497,17 +497,17 @@ export const projects: Project[] = [
           label: 'Browser',
           caption: 'JavaScript + GSAP',
           col: 0,
-          row: 1,
+          row: 0,
         },
-        { id: 'php', kind: 'service', label: 'PHP backend', caption: 'REST', col: 1, row: 1 },
-        { id: 'db', kind: 'store', label: 'MySQL', caption: 'Data', col: 1, row: 2 },
+        { id: 'php', kind: 'service', label: 'PHP backend', caption: 'REST', col: 1, row: 0 },
+        { id: 'db', kind: 'store', label: 'MySQL', caption: 'Data', col: 1, row: 1 },
         {
           id: 'vuln',
           kind: 'service',
           label: 'Vulnerable',
           caption: 'Sandbox 1: the exploit',
           col: 2,
-          row: 1,
+          row: 0,
         },
         {
           id: 'prevent',
@@ -515,7 +515,7 @@ export const projects: Project[] = [
           label: 'Prevention',
           caption: 'Sandbox 2: the fix',
           col: 3,
-          row: 1,
+          row: 0,
         },
         {
           id: 'secure',
@@ -523,7 +523,7 @@ export const projects: Project[] = [
           label: 'Secure',
           caption: 'Sandbox 3: secure simulation',
           col: 4,
-          row: 1,
+          row: 0,
         },
       ],
       edges: [

@@ -1,0 +1,301 @@
+---
+/**
+ * Case-study template: cover, Side A, tracklist, Fig. 1, Side B, screens, what's next,
+ * and the next tape. Every block is driven by the project's entry in src/data/projects.ts.
+ */
+import Base from './Base.astro';
+import Nav from '@/components/sections/Nav.astro';
+import Footer from '@/components/sections/Footer.astro';
+import CaseCover from '@/components/work/CaseCover.astro';
+import CaseHead from '@/components/work/CaseHead.astro';
+import Tracklist from '@/components/work/Tracklist.astro';
+import ArchitectureDiagram from '@/components/work/ArchitectureDiagram.astro';
+import DecisionCard from '@/components/work/DecisionCard.astro';
+import ScreenPlaceholder from '@/components/work/ScreenPlaceholder.astro';
+import TapeArt from '@/components/work/TapeArt.astro';
+import Tbd from '@/components/work/Tbd.astro';
+import Label from '@/components/ui/Label.astro';
+import Letters from '@/components/ui/Letters.astro';
+import ColorBar from '@/components/primitives/ColorBar.astro';
+import { isTodo } from '@/lib/todo';
+import type { Project } from '@/data/projects';
+
+interface Props {
+  project: Project;
+  next: Project;
+}
+
+const { project, next } = Astro.props;
+const desktopScreens = project.screens.filter((s) => s.kind === 'desktop');
+const mobileScreens = project.screens.filter((s) => s.kind === 'mobile');
+const nextNo = String(next.tape).padStart(2, '0');
+const todoNext = project.next.every((n) => isTodo(n));
+---
+
+<Base title={`${project.name} case study`} description={project.oneLiner} type="article">
+  <Nav />
+  <main id="main" class="case">
+    <CaseCover project={project} />
+
+    <!-- Side A · Overview -->
+    <section class="case__block" aria-labelledby="side-a">
+      <CaseHead label="Side A" title="Overview" id="side-a" />
+      <div class="page-grid case__body">
+        <div class="body-copy case__overview" data-reveal="fade">
+          {project.overview.map((p, i) => (
+            <p class:list={[i === 0 && 'case__lead']}>{p}</p>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Tracklist -->
+    <section class="case__block" aria-labelledby="tracklist">
+      <CaseHead label="Tracklist" title="Key features" id="tracklist" />
+      <div class="page-grid case__body">
+        <div class="case__wide">
+          <Tracklist items={project.tracklist} />
+        </div>
+      </div>
+    </section>
+
+    <!-- Fig. 1 · Architecture -->
+    {project.diagram && (
+      <section class="case__block" aria-labelledby="architecture">
+        <CaseHead label="Fig. 1" title="Architecture" id="architecture" />
+        <div class="page-grid case__body">
+          <div class="case__full">
+            <ArchitectureDiagram diagram={project.diagram} ink={project.ink} slug={project.slug} />
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Side B · Engineering decisions -->
+    <section class="case__block" aria-labelledby="side-b">
+      <CaseHead label="Side B" title="Engineering decisions" id="side-b" />
+      <div class="page-grid case__body">
+        <ul class="case__decisions" role="list" data-reveal="stagger">
+          {project.decisions.map((decision, i) => (
+            <li>
+              <DecisionCard decision={decision} index={i} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- Screens -->
+    <section class="case__block" aria-labelledby="screens">
+      <CaseHead label="Screens" title="On screen" id="screens" />
+      <div class="page-grid case__body">
+        <div class="case__screens">
+          <div class="case__desktop">
+            {desktopScreens.map((screen, i) => (
+              <ScreenPlaceholder
+                slug={project.slug}
+                screen={screen}
+                number={i + 1}
+                ink={project.ink}
+              />
+            ))}
+          </div>
+          <div class="case__mobile">
+            {mobileScreens.map((screen, i) => (
+              <ScreenPlaceholder
+                slug={project.slug}
+                screen={screen}
+                number={i + 1}
+                ink={project.ink}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- What I'd do next -->
+    <section class="case__block" aria-labelledby="next-steps">
+      <CaseHead label="B-side" title="What I’d do next" id="next-steps" />
+      <div class="page-grid case__body">
+        {todoNext ? (
+          <p class="case__text">
+            <Tbd />
+          </p>
+        ) : (
+          <ol class="case__next lift" data-reveal="fade">
+            {project.next.map((item, i) => (
+              <li>
+                <span class="label">{String(i + 1).padStart(2, '0')}</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ol>
+        )}
+      </div>
+    </section>
+
+    <!-- Next tape -->
+    <nav class="case__nexttape page-grid" aria-label="Next project">
+      <ColorBar class="case__bar" />
+      <a href={`/work/${next.slug}/`} class="nexttape" data-cursor>
+        <span class="nexttape__text">
+          <Label class="nexttape__label">Next tape · Tape {nextNo}</Label>
+          <span class="nexttape__name display ripple" aria-label={next.name}>
+            <Letters text={next.name} />
+          </span>
+          <span class="label nexttape__go">Read case study →</span>
+        </span>
+        <span class="nexttape__art" aria-hidden="true">
+          <TapeArt ink={next.ink} />
+        </span>
+      </a>
+    </nav>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .case__block {
+    padding-block: clamp(3.5rem, 7vw, 7rem) 0;
+  }
+  .case__body {
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    row-gap: 2rem;
+  }
+
+  .case__overview,
+  .case__text,
+  .case__wide,
+  .case__full,
+  .case__decisions,
+  .case__screens,
+  .case__next {
+    grid-column: 1 / -1;
+  }
+
+  .case__overview :global(.case__lead) {
+    font-size: var(--step-1);
+    font-weight: 500;
+    line-height: 1.45;
+  }
+
+  /* decisions: one column, then two */
+  .case__decisions {
+    display: grid;
+    gap: var(--gutter);
+  }
+
+  /* screens: desktop frames in a 2 × 2 grid, the phone beside them */
+  .case__screens {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.5rem) var(--gutter);
+  }
+  .case__desktop {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.5rem) var(--gutter);
+  }
+  .case__mobile {
+    max-width: 16rem;
+  }
+
+  .case__next {
+    border-top: 1px solid var(--ink);
+  }
+  .case__next li {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 1rem;
+    align-items: baseline;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--rule);
+    font-size: var(--step-1);
+    line-height: 1.4;
+  }
+  .case__next .label {
+    color: var(--blue);
+  }
+
+  /* ── next tape ── */
+  .case__nexttape {
+    row-gap: 1.5rem;
+    padding-block: clamp(4rem, 9vw, 8rem) clamp(3rem, 6vw, 5rem);
+  }
+  .case__nexttape :global(.case__bar) {
+    grid-column: 1 / -1;
+  }
+  .nexttape {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: 1.5rem;
+    align-items: end;
+    padding: clamp(1rem, 2.5vw, 1.75rem);
+    border: 1px solid var(--ink);
+    background: var(--paper-2);
+  }
+  .nexttape__text {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .nexttape :global(.nexttape__label) {
+    color: var(--blue);
+  }
+  .nexttape__name {
+    --wdth: 62;
+    --wght: 900;
+    font-size: clamp(3rem, 1rem + 8vw, 8rem);
+    line-height: 0.88;
+    transition: --wdth 0.5s var(--ease-out-expo);
+  }
+  .nexttape:hover .nexttape__name,
+  .nexttape:focus-visible .nexttape__name {
+    --wdth: 80;
+  }
+  .nexttape__go {
+    color: var(--blue);
+  }
+  .nexttape__art {
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+  }
+
+  @media (min-width: 768px) {
+    .case__overview,
+    .case__text,
+    .case__next {
+      grid-column: 3 / span 7;
+    }
+    .case__wide,
+    .case__decisions,
+    .case__screens,
+    .case__full {
+      grid-column: 3 / -1;
+    }
+    .case__decisions {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .case__desktop {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .nexttape {
+      grid-column: 3 / -1;
+      grid-template-columns: 1.3fr 1fr;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .case__full {
+      grid-column: 1 / -1;
+    }
+    .case__screens {
+      grid-template-columns: 1fr auto;
+      align-items: start;
+    }
+    .case__mobile {
+      width: clamp(11rem, 15vw, 15rem);
+    }
+  }
+</style>
