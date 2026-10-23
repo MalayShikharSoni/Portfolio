@@ -14,7 +14,10 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "astro": "astro"
+    "astro": "astro",
+    "csp": "node scripts/csp.mjs",
+    "csp:check": "node scripts/csp.mjs --check",
+    "verify": "astro check && eslint . && astro build && node scripts/csp.mjs --check"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

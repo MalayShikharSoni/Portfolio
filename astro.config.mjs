@@ -16,6 +16,13 @@ export default defineConfig({
       filter: (page) => !page.includes('/styleguide'),
     }),
   ],
+  vite: {
+    build: {
+      // never inline bundled scripts: the CSP (vercel.json) allows only same-origin scripts
+      // plus the hashed theme snippet in Base.astro
+      assetsInlineLimit: 0,
+    },
+  },
   fonts: [
     {
       name: 'Archivo',
