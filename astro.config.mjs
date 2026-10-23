@@ -2,8 +2,8 @@
 import { defineConfig, fontProviders } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-// TODO(Malay): confirm final domain (keep in sync with src/data/site.ts)
-const SITE = 'https://malayshikharsoni.me';
+// keep in sync with `domain` in src/data/site.ts
+const SITE = 'https://malayshikharsoni.dev';
 
 export default defineConfig({
   site: SITE,

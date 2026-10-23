@@ -1,7 +1,7 @@
 # Deploying the portfolio
 
-From this repo to a live site on your own `.me` domain: Vercel's free Hobby plan for
-hosting, and the free `.me` domain from the GitHub Student Developer Pack's Namecheap offer.
+From this repo to a live site on your own `.dev` domain: Vercel's free Hobby plan for
+hosting, and the free domain from the GitHub Student Developer Pack's Name.com offer.
 Allow about an hour, most of it waiting for DNS.
 
 The site is fully static (Astro static output). There's no server, no database and no
@@ -9,19 +9,23 @@ environment variables you must set.
 
 ---
 
-## 1. Claim the free `.me` domain
+## 1. Claim the free `.dev` domain
 
-1. Open **[GitHub Education](https://education.github.com/)** → **Student Developer Pack**
-   and sign in with the GitHub account that has student benefits.
-2. Find the **Namecheap** offer (a free `.me` domain for one year) and follow its link. You'll
-   be sent to Namecheap with the offer applied, after authorising with GitHub.
-3. Search for **`malayshikharsoni.me`** (or the name you prefer) and register it at $0.
-4. **Before you leave Namecheap, deal with renewal.** Only the first year is free.
-   Go to **Domain List** → your domain → turn **Auto-Renew** off, or note the renewal price
-   in your calendar a month before it's due. Domain renewals are not refundable.
+1. Open **[education.github.com/pack](https://education.github.com/pack)**, signed in with
+   the GitHub account that has student benefits.
+2. Find the **Name.com** offer (one free domain for the first year, `.dev` included) and
+   follow its link to Name.com's GitHub Students page.
+3. Search for **`malayshikharsoni.dev`** and register it at $0. Create a Name.com account when
+   asked, with a username and password you save somewhere safe, and a unique address (the
+   offer treats repeated addresses as duplicates). Name.com may ask for a card even though
+   the first year costs nothing.
+4. **Turn off auto-renew straight away.** Only the first year is free; with auto-renew on, the
+   card on file is charged the full renewal price. In Name.com: **My Domains** → your domain →
+   switch **Auto Renew** off, or note the renewal date in your calendar.
 
-> Offers change. If the Pack no longer lists Namecheap, any registrar works; steps 3 to 5 are
-> the same apart from where you edit DNS.
+`.dev` is HTTPS-only (it's on browsers' HSTS preload list). Vercel serves HTTPS automatically,
+so nothing extra is needed; the site just won't load over plain `http://` before Vercel has
+issued its certificate.
 
 ## 2. Push the repo to GitHub
 
@@ -53,23 +57,36 @@ build, CSP check). A green tick on the commit means it's safe to deploy.
 
 ## 4. Point the domain at Vercel
 
-1. In Vercel: **Project → Settings → Domains** → add **`malayshikharsoni.me`**, then add
-   **`www.malayshikharsoni.me`**.
-2. Vercel shows the DNS records each domain needs. Keep that page open.
-3. In Namecheap: **Domain List → Manage** (next to your domain) → **Advanced DNS**.
-4. **Delete Namecheap's default parking records** (usually a `CNAME` for `www` pointing to
-   `parkingpage.namecheap.com` and a `URL Redirect` record for `@`).
-5. Add **exactly the records Vercel shows you**. Typically that's:
+1. In Vercel, open the project's domain settings: **Settings → Domains** (in some dashboard
+   layouts it sits under **Settings → Networking**), or go to
+   `https://vercel.com/<team>/portfolio/settings/domains`.
+2. **Add Domain** → **`malayshikharsoni.dev`**. Accept the suggestion to add
+   **`www.malayshikharsoni.dev`** too, with `www` redirecting to the main domain.
+3. Connect the domain to Vercel in one of two ways:
 
-   | Type    | Host  | Value                                     |
-   | ------- | ----- | ----------------------------------------- |
-   | `A`     | `@`   | the IP address Vercel shows               |
-   | `CNAME` | `www` | the `…vercel-dns.com` target Vercel shows |
+   **Option A (simplest): use Vercel's nameservers.** Vercel then runs DNS for the domain and
+   configures everything itself.
 
-   Copy the values from Vercel rather than from this table; they can differ per project.
+   - In Vercel's domain settings, open the domain and choose the **Nameservers** method. Note
+     the two nameservers shown (usually `ns1.vercel-dns.com` and `ns2.vercel-dns.com`).
+   - In Name.com: **My Domains** → your domain → **Manage Nameservers** → remove the existing
+     ones → add Vercel's two → **Save**.
 
-6. Back in Vercel's **Domains** settings, set **`malayshikharsoni.me`** as the primary domain
-   and set **`www`** to **redirect** to it (308).
+   **Option B: keep Name.com's DNS and add records.**
+
+   - In Name.com: **My Domains** → your domain → **Manage DNS Records**. Delete any default
+     records for the root (blank host) and `www`.
+   - Add **exactly the records Vercel shows you**. Typically:
+
+     | Type    | Host            | Answer                                    |
+     | ------- | --------------- | ----------------------------------------- |
+     | `A`     | _(leave blank)_ | the IP address Vercel shows               |
+     | `CNAME` | `www`           | the `…vercel-dns.com` target Vercel shows |
+
+     Copy the values from Vercel rather than from this table; they can differ per project.
+
+4. Back in Vercel's domain settings, make sure **`malayshikharsoni.dev`** is the primary
+   domain and **`www`** redirects to it (308).
 
 ## 5. Wait for DNS and HTTPS, then verify
 
@@ -78,12 +95,12 @@ HTTPS certificate automatically once the records resolve; the Domains page turns
 
 Then check:
 
-- [ ] `https://malayshikharsoni.me` loads, with a padlock
-- [ ] `http://…` and `https://www.…` both end up at `https://malayshikharsoni.me/`
+- [ ] `https://malayshikharsoni.dev` loads, with a padlock
+- [ ] `http://…` and `https://www.…` both end up at `https://malayshikharsoni.dev/`
 - [ ] a case study, the 404 page (`/anything`) and `/resume.pdf` work
 - [ ] sharing the link (e.g. paste it into [opengraph.xyz](https://www.opengraph.xyz/)) shows
       the poster preview image
-- [ ] `https://malayshikharsoni.me/sitemap-index.xml` and `/robots.txt` load
+- [ ] `https://malayshikharsoni.dev/sitemap-index.xml` and `/robots.txt` load
 
 ## 6. Weekly rebuild (keeps the live stats fresh)
 
@@ -133,7 +150,8 @@ CI fails with a clear message if you forget.
   (step 3.4).
 - **The site loads but the theme toggle or animations don't work:** the CSP hash is stale.
   Run `npm run build && npm run csp`, commit `vercel.json`, push.
-- **Domain stuck on "Invalid Configuration" in Vercel:** a Namecheap parking record is
-  still there, or a value was mistyped. Compare Advanced DNS with what Vercel shows.
+- **Domain stuck on "Invalid Configuration" in Vercel:** a default record is still there
+  at Name.com, a value was mistyped, or nameserver changes haven't propagated yet (allow up to
+  48 hours). Compare Name.com's DNS or nameserver settings with what Vercel shows.
 - **Weekly rebuild fails:** the `VERCEL_DEPLOY_HOOK_URL` secret is missing or the hook was
   deleted in Vercel. Recreate it (step 6).
