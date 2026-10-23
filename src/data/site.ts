@@ -1,0 +1,69 @@
+/**
+ * Site-wide content. Edit this file to change copy without touching components.
+ */
+export interface SiteLinks {
+  github: string;
+  linkedin: string;
+  leetcode: string;
+}
+
+export interface Site {
+  name: string;
+  shortName: string;
+  role: string;
+  /** Hero positioning line. */
+  tagline: string;
+  description: string;
+  email: string;
+  links: SiteLinks;
+  domain: string;
+  status: string;
+  resume: string;
+  /** Mono meta line under the hero name. */
+  heroMeta: string[];
+  /** Footer location line. */
+  location: string;
+  bio: string[];
+  currently: { label: string; value: string }[];
+  /** Static fallbacks for the build-time live stats (see src/lib/stats.ts). */
+  stats: {
+    leetcodeSolved: number;
+    leetcodeTopPercent: number;
+  };
+}
+
+export const site: Site = {
+  name: 'Malay Shikhar Soni',
+  shortName: 'Malay',
+  role: 'Backend-leaning full-stack engineer',
+  tagline:
+    "Backend-leaning full-stack engineer. I build the parts you don't see — auth, real-time, data — and make sure they hold.",
+  description:
+    'Malay Shikhar Soni — backend-leaning full-stack engineer. Auth, real-time and data systems that hold up under real users.',
+  email: 'malayshikhar2004@gmail.com',
+  links: {
+    github: 'https://github.com/MalayShikharSoni',
+    linkedin: 'https://www.linkedin.com/in/malay-shikhar-soni',
+    leetcode: 'https://leetcode.com/u/TODO_LEETCODE_USERNAME', // TODO(Malay)
+  },
+  domain: 'https://malayshikharsoni.me', // TODO(Malay): confirm final domain
+  status: 'Open to SDE roles — Class of 2027', // TODO(Malay): confirm (full-time / internship / both)
+  resume: '/resume.pdf', // placeholder PDF until Malay provides the real one
+  heroMeta: ['B.Tech CSE — LPU — Class of 2027', 'Open to SDE roles', 'Based in India (IST)'],
+  location: 'Printed in Jalandhar, Punjab', // TODO(Malay): confirm the location line
+  // (draft) TODO(Malay): revise
+  bio: [
+    "I'm a final-year Computer Science student at Lovely Professional University who gravitates to the back of the stack: auth flows, real-time sync, permission models, and the code that decides who is allowed to do what. I like building systems that stay correct when real users, real money, or real attackers show up.",
+    "Outside of projects I've solved 600+ problems on LeetCode, because I enjoy the discipline of making something fast <em>and</em> right. I'm looking for an SDE role where I can own backend systems end to end.",
+  ],
+  // TODO(Malay): fill in
+  currently: [
+    { label: 'Learning', value: 'TODO' },
+    { label: 'Reading', value: 'TODO' },
+    { label: 'Building', value: 'this site' },
+  ],
+  stats: {
+    leetcodeSolved: 600,
+    leetcodeTopPercent: 10,
+  },
+};
