@@ -13,7 +13,6 @@ import ArchitectureDiagram from '@/components/work/ArchitectureDiagram.astro';
 import DecisionCard from '@/components/work/DecisionCard.astro';
 import ScreenPlaceholder from '@/components/work/ScreenPlaceholder.astro';
 import TapeArt from '@/components/work/TapeArt.astro';
-import Tbd from '@/components/work/Tbd.astro';
 import Label from '@/components/ui/Label.astro';
 import Letters from '@/components/ui/Letters.astro';
 import ColorBar from '@/components/primitives/ColorBar.astro';
@@ -29,7 +28,11 @@ const { project, next } = Astro.props;
 const desktopScreens = project.screens.filter((s) => s.kind === 'desktop');
 const mobileScreens = project.screens.filter((s) => s.kind === 'mobile');
 const nextNo = String(next.tape).padStart(2, '0');
-const todoNext = project.next.every((n) => isTodo(n));
+// Unwritten content (TODO(Malay)) is hidden rather than shown as a placeholder.
+const decisions = project.decisions.filter(
+  (d) => !isTodo(d.title) && ![d.context, d.decision, d.tradeoff].every((v) => isTodo(v)),
+);
+const nextSteps = project.next.filter((n) => !isTodo(n));
 ---
 
 <Base
@@ -77,18 +80,20 @@ const todoNext = project.next.every((n) => isTodo(n));
     )}
 
     <!-- Side B · Engineering decisions -->
-    <section class="case__block" aria-labelledby="side-b">
-      <CaseHead label="Side B" title="Engineering decisions" id="side-b" />
-      <div class="page-grid case__body">
-        <ul class="case__decisions" role="list" data-reveal="stagger">
-          {project.decisions.map((decision, i) => (
-            <li>
-              <DecisionCard decision={decision} index={i} />
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
+    {decisions.length > 0 && (
+      <section class="case__block" aria-labelledby="side-b">
+        <CaseHead label="Side B" title="Engineering decisions" id="side-b" />
+        <div class="page-grid case__body">
+          <ul class="case__decisions" role="list" data-reveal="stagger">
+            {decisions.map((decision, i) => (
+              <li>
+                <DecisionCard decision={decision} index={i} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
 
     <!-- Screens -->
     <section class="case__block" aria-labelledby="screens">
@@ -120,25 +125,21 @@ const todoNext = project.next.every((n) => isTodo(n));
     </section>
 
     <!-- What I'd do next -->
-    <section class="case__block" aria-labelledby="next-steps">
-      <CaseHead label="B-side" title="What I’d do next" id="next-steps" />
-      <div class="page-grid case__body">
-        {todoNext ? (
-          <p class="case__text">
-            <Tbd />
-          </p>
-        ) : (
+    {nextSteps.length > 0 && (
+      <section class="case__block" aria-labelledby="next-steps">
+        <CaseHead label="B-side" title="What I’d do next" id="next-steps" />
+        <div class="page-grid case__body">
           <ol class="case__next lift" data-reveal="fade">
-            {project.next.map((item, i) => (
+            {nextSteps.map((item, i) => (
               <li>
                 <span class="label">{String(i + 1).padStart(2, '0')}</span>
                 <span>{item}</span>
               </li>
             ))}
           </ol>
-        )}
-      </div>
-    </section>
+        </div>
+      </section>
+    )}
 
     <!-- Next tape -->
     <nav class="case__nexttape page-grid" aria-label="Next project">
@@ -170,7 +171,6 @@ const todoNext = project.next.every((n) => isTodo(n));
   }
 
   .case__overview,
-  .case__text,
   .case__wide,
   .case__full,
   .case__decisions,
@@ -267,7 +267,6 @@ const todoNext = project.next.every((n) => isTodo(n));
 
   @media (min-width: 768px) {
     .case__overview,
-    .case__text,
     .case__next {
       grid-column: 3 / span 7;
     }

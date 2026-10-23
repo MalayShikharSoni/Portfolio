@@ -134,7 +134,7 @@ const [nFirst, nMiddle, nLast] = site.name.split(' ');
         <div class="hero__badge" data-print="fade">
           <CircularText
             id="hero-badge"
-            text={`${site.status} · ${site.heroMeta[2]} · `.toUpperCase()}
+            text={`${site.role} · ${site.heroMeta.at(-1)} · `.toUpperCase()}
           />
         </div>
       </div>

@@ -1,10 +1,9 @@
 ---
 /**
  * 03 / 06 · About. A geometric "portrait" stands in for a photo: an abstract Bauhaus figure,
- * not a face. Orange is this section's ink. Then the bio and a mono "Currently" box.
+ * not a face. Orange is this section's ink. Then the bio.
  */
 import SectionHead from '@/components/ui/SectionHead.astro';
-import Label from '@/components/ui/Label.astro';
 import CropMarks from '@/components/primitives/CropMarks.astro';
 import Circle from '@/components/primitives/Circle.astro';
 import Square from '@/components/primitives/Square.astro';
@@ -53,23 +52,6 @@ const [lead, ...rest] = site.bio;
           <p set:html={p} />
         ))}
       </div>
-
-      <div class="currently" data-reveal="fade" data-reveal-delay="0.2">
-        <div class="currently__head">
-          <Label as="h3" class="currently__title" id="currently-title">
-            Currently
-          </Label>
-          <span class="currently__dot" aria-hidden="true"></span>
-        </div>
-        <dl aria-labelledby="currently-title">
-          {site.currently.map((item) => (
-            <div class="currently__row">
-              <dt class="label">{item.label}</dt>
-              <dd class="label">{item.value}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
     </div>
   </div>
 </section>
@@ -108,42 +90,6 @@ const [lead, ...rest] = site.bio;
   }
   .about__rest {
     margin-top: 1.5rem;
-  }
-
-  /* ── currently ── */
-  .currently {
-    margin-top: 2.5rem;
-    max-width: 30rem;
-    border: 1px solid var(--ink);
-    background: var(--paper-2);
-  }
-  .currently__head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.6rem 0.9rem;
-    border-bottom: 1px solid var(--ink);
-  }
-  .currently__title {
-    font-weight: 500;
-  }
-  .currently__dot {
-    width: 0.55rem;
-    height: 0.55rem;
-    border-radius: 50%;
-    background: var(--orange);
-  }
-  .currently__row {
-    display: grid;
-    grid-template-columns: 7rem 1fr;
-    gap: 1rem;
-    padding: 0.55rem 0.9rem;
-  }
-  .currently__row + .currently__row {
-    border-top: 1px solid var(--rule);
-  }
-  .currently__row dt {
-    color: var(--blue);
   }
 
   @media (min-width: 768px) {

@@ -62,7 +62,6 @@ export interface Project {
   dates: string;
   /** Short year span for the tape label, e.g. "2025–26". */
   years: string;
-  role: string;
   stack: string[];
   links: ProjectLinks;
   /** Side A: overview paragraphs. */
@@ -86,7 +85,6 @@ export const projects: Project[] = [
       'An employee management system with real-time collaboration, role-based access and gamified analytics.',
     dates: 'Nov 2025 to Mar 2026',
     years: '2025–26',
-    role: 'TODO(Malay): solo or team',
     stack: [
       'React.js',
       'Node.js',
@@ -104,7 +102,6 @@ export const projects: Project[] = [
       live: 'https://workwave-six.vercel.app/',
       github: 'https://github.com/MalayShikharSoni/WorkWave',
     },
-    // (draft) TODO(Malay): revise
     overview: [
       'WorkWave is an employee management system with real-time collaboration, role-based access and gamified analytics.',
       'Every request has to prove who it is and what it may touch: 35+ REST endpoints sit behind dual-token JWT auth and role-based access control.',
@@ -262,7 +259,6 @@ export const projects: Project[] = [
       'An agricultural auction marketplace connecting farmers directly with buyers through live bidding.',
     dates: 'Nov 2025 to Jan 2026',
     years: '2025–26',
-    role: 'TODO(Malay)',
     stack: [
       'React.js',
       'Redux',
@@ -278,7 +274,6 @@ export const projects: Project[] = [
       live: 'https://farmeasy-10ce.onrender.com/',
       github: 'https://github.com/MalayShikharSoni/FarmEasy',
     },
-    // (draft) TODO(Malay): revise
     overview: [
       'FarmEasy is an agricultural auction marketplace that connects farmers directly with buyers through live bidding.',
       'Buyers bid concurrently in live auction rooms over WebSockets, and the farmer can lock the price to close bidding. Listings pass a three-stage admin moderation pipeline before they go live.',
@@ -292,7 +287,6 @@ export const projects: Project[] = [
       'Dual-token JWT auth with email verification',
       'Event-driven, reputation-based farmer rating system',
     ],
-    // TODO(Malay): confirm the trade-offs
     decisions: [
       {
         title: 'Tamper-proof payments',
@@ -321,7 +315,6 @@ export const projects: Project[] = [
         tradeoff: 'TODO(Malay)',
       },
     ],
-    // TODO(Malay): placeholder
     next: ['Add atomic bid updates (conditional writes) and load-test concurrent bidding.'],
     diagram: {
       title: 'Fig. 1 · Bid flow',
@@ -459,13 +452,11 @@ export const projects: Project[] = [
       'An interactive cybersecurity education platform that simulates the OWASP Top 10 in sandboxed environments.',
     dates: 'Mar 2025 to Jul 2025',
     years: '2025',
-    role: 'TODO(Malay)',
     stack: ['PHP', 'MySQL', 'JavaScript', 'HTML', 'Tailwind CSS', 'GSAP'],
     links: {
       live: 'https://webnexus.rf.gd/',
       github: 'https://github.com/skavy359/Web-Nexus-Project',
     },
-    // (draft) TODO(Malay): revise
     overview: [
       'Web Nexus is an interactive cybersecurity education platform that simulates the OWASP Top 10 in sandboxed environments.',
       'Every vulnerability is taught in three modules: the vulnerability itself, how to prevent it, and a secure simulation, with syntax-highlighted code demos and attack visualizations.',
@@ -477,7 +468,6 @@ export const projects: Project[] = [
       'Syntax-highlighted code demos and attack visualizations',
       'Secure auth: bcrypt hashing, secure cookies, session-hijacking protection',
     ],
-    // TODO(Malay): placeholder cards, replace with real decisions
     decisions: [
       {
         title: 'Isolating vulnerable demos from the real app',
@@ -570,63 +560,61 @@ export const projects: Project[] = [
     ],
   },
 
-  // ── Also built (featured: false) ─────────────────────────────────────────────
-  // TODO(Malay): decide which to show. Uncomment an entry to list it under "Also built".
-  // {
-  //   slug: 'tasknova',
-  //   name: 'TaskNova',
-  //   tape: 4,
-  //   featured: false,
-  //   ink: 'blue',
-  //   oneLiner: 'A Java 17 / Spring Boot 3 task management system.',
-  //   dates: '',
-  //   years: '',
-  //   role: '',
-  //   stack: ['Java 17', 'Spring Boot 3'],
-  //   links: { github: '' },
-  //   overview: [],
-  //   tracklist: [],
-  //   decisions: [],
-  //   next: [],
-  //   screens: [],
-  // },
-  // {
-  //   slug: 'matchit-campus',
-  //   name: 'MatchIt Campus',
-  //   tape: 5,
-  //   featured: false,
-  //   ink: 'orange',
-  //   oneLiner:
-  //     'An Android (Kotlin) lost & found app with semantic text matching and campus location tagging.',
-  //   dates: '',
-  //   years: '',
-  //   role: '',
-  //   stack: ['Android', 'Kotlin'],
-  //   links: { github: '' },
-  //   overview: [],
-  //   tracklist: [],
-  //   decisions: [],
-  //   next: [],
-  //   screens: [],
-  // },
-  // {
-  //   slug: 'fest-ticketing',
-  //   name: 'Fest ticketing and event ops',
-  //   tape: 6,
-  //   featured: false,
-  //   ink: 'overprint',
-  //   oneLiner: 'A MongoDB + PyMongo app for college fest ticketing and event ops.',
-  //   dates: '',
-  //   years: '',
-  //   role: '',
-  //   stack: ['MongoDB', 'PyMongo'],
-  //   links: { github: '' },
-  //   overview: [],
-  //   tracklist: [],
-  //   decisions: [],
-  //   next: [],
-  //   screens: [],
-  // },
+  // ── Also built (featured: false): listed under the tapes, no case study ─────────────
+  {
+    slug: 'festflow',
+    name: 'FestFlow',
+    tape: 4,
+    featured: false,
+    ink: 'orange',
+    oneLiner:
+      'College-fest ticketing, check-in, volunteer scheduling and live analytics, built on MongoDB with raw PyMongo behind a Django web layer.',
+    dates: '',
+    years: '2026',
+    stack: ['MongoDB', 'PyMongo', 'Django', 'Python', 'Docker'],
+    links: { github: 'https://github.com/MalayShikharSoni/FestFlow' },
+    overview: [],
+    tracklist: [],
+    decisions: [],
+    next: [],
+    screens: [],
+  },
+  {
+    slug: 'tasknova',
+    name: 'TaskNova',
+    tape: 5,
+    featured: false,
+    ink: 'blue',
+    oneLiner:
+      'A task management platform on Spring Boot: a server-rendered web app plus a stateless, JWT-secured REST API, with role-based access and asynchronous audit logging.',
+    dates: '',
+    years: '2026',
+    stack: ['Java 17', 'Spring Boot 3', 'Spring Security', 'JWT', 'Thymeleaf', 'Docker'],
+    links: { github: 'https://github.com/MalayShikharSoni/TaskNova' },
+    overview: [],
+    tracklist: [],
+    decisions: [],
+    next: [],
+    screens: [],
+  },
+  {
+    slug: 'candidate-data-transformer',
+    name: 'Candidate data transformer',
+    tape: 6,
+    featured: false,
+    ink: 'overprint',
+    oneLiner:
+      'A deterministic pipeline that merges recruiter CSV and GitHub profile data into one canonical candidate profile, recording the source and confidence of every field.',
+    dates: '',
+    years: '2026',
+    stack: ['TypeScript', 'Node.js', 'GitHub API'],
+    links: { github: 'https://github.com/MalayShikharSoni/malay-eightfold-transformer' },
+    overview: [],
+    tracklist: [],
+    decisions: [],
+    next: [],
+    screens: [],
+  },
 ];
 
 export const featuredProjects = projects.filter((p) => p.featured);

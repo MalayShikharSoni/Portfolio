@@ -1,6 +1,8 @@
 ---
-/** Side B card: one engineering decision as context → decision → trade-off. */
-import Tbd from './Tbd.astro';
+/**
+ * Side B card: one engineering decision as context → decision → trade-off.
+ * Parts still marked TODO(Malay) are left out rather than shown as placeholders.
+ */
 import { isTodo } from '@/lib/todo';
 import type { Decision } from '@/data/projects';
 
@@ -14,7 +16,7 @@ const rows = [
   { key: 'Context', value: decision.context },
   { key: 'Decision', value: decision.decision },
   { key: 'Trade-off', value: decision.tradeoff },
-];
+].filter((row) => !isTodo(row.value));
 ---
 
 <article class="decision">
@@ -29,7 +31,7 @@ const rows = [
           {row.key}
           {i < rows.length - 1 && <span aria-hidden="true"> →</span>}
         </dt>
-        <dd>{isTodo(row.value) ? <Tbd /> : row.value}</dd>
+        <dd>{row.value}</dd>
       </div>
     ))}
   </dl>

@@ -10,7 +10,6 @@ import RegMark from '@/components/primitives/RegMark.astro';
 import Letters from '@/components/ui/Letters.astro';
 import Link from '@/components/ui/Link.astro';
 import Roll from '@/components/ui/Roll.astro';
-import { isTodo } from '@/lib/todo';
 import type { Project } from '@/data/projects';
 
 interface Props {
@@ -18,7 +17,7 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const { slug, name, tape, years, ink, oneLiner, dates, role, stack, links } = project;
+const { slug, name, tape, years, ink, oneLiner, dates, stack, links } = project;
 const tapeNo = String(tape).padStart(2, '0');
 const hasLinks = Boolean(links.live || links.github);
 ---
@@ -52,13 +51,9 @@ const hasLinks = Boolean(links.live || links.github);
         <p class="cover__oneliner">{oneLiner}</p>
 
         <dl class="cover__meta">
-          <div>
+          <div class="cover__meta-wide">
             <dt class="label">Dates</dt>
             <dd>{dates}</dd>
-          </div>
-          <div>
-            <dt class="label">Role</dt>
-            <dd>{isTodo(role) ? <Tbd label="To be confirmed" /> : role}</dd>
           </div>
           <div class="cover__meta-wide">
             <dt class="label">Stack</dt>
@@ -156,10 +151,6 @@ const hasLinks = Boolean(links.live || links.github);
     gap: 0.3rem;
     padding-block: 0.8rem;
     border-bottom: 1px solid var(--rule);
-  }
-  .cover__meta > div:nth-child(2) {
-    padding-left: 1rem;
-    border-left: 1px solid var(--rule);
   }
   .cover__meta-wide {
     grid-column: 1 / -1;

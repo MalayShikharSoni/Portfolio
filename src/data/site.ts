@@ -22,14 +22,12 @@ export interface Site {
   email: string;
   links: SiteLinks;
   domain: string;
-  status: string;
   resume: string;
   /** Mono meta line under the hero name. */
   heroMeta: string[];
   /** Footer location line. */
   location: string;
   bio: string[];
-  currently: { label: string; value: string }[];
   /**
    * Numbers strip. LeetCode values are refreshed at build time when possible
    * (src/lib/stats.ts); these are the fallbacks and the static facts.
@@ -65,20 +63,12 @@ export const site: Site = {
     leetcode: 'https://leetcode.com/u/malay_shikhar_soni/',
   },
   domain: 'https://malayshikharsoni.vercel.app', // switch to https://malayshikharsoni.dev once it's set up (DEPLOY.md)
-  status: 'Open to SDE roles · Class of 2027', // TODO(Malay): confirm (full-time / internship / both)
   resume: '/resume.pdf', // placeholder PDF until Malay provides the real one
-  heroMeta: ['B.Tech CSE · LPU · Class of 2027', 'Open to SDE roles', 'Based in India (IST)'],
-  location: 'Printed in Jalandhar, Punjab', // TODO(Malay): confirm the location line
-  // (draft) TODO(Malay): revise
+  heroMeta: ['B.Tech CSE · LPU · Class of 2027', 'Based in India (IST)'],
+  location: 'Printed in Jalandhar, Punjab',
   bio: [
     "I'm a final-year Computer Science student at Lovely Professional University who gravitates to the back of the stack: auth flows, real-time sync, permission models, and the code that decides who is allowed to do what. I like building systems that stay correct when real users, real money, or real attackers show up.",
     "Outside of projects I've solved 600+ problems on LeetCode, because I enjoy the discipline of making something fast <em>and</em> right. I'm looking for an SDE role where I can own backend systems end to end.",
-  ],
-  // TODO(Malay): fill in
-  currently: [
-    { label: 'Learning', value: 'TODO' },
-    { label: 'Reading', value: 'TODO' },
-    { label: 'Building', value: 'this site' },
   ],
   stats: {
     cgpa: 9.01,
