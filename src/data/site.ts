@@ -63,7 +63,7 @@ export const site: Site = {
     leetcode: 'https://leetcode.com/u/malay_shikhar_soni/',
   },
   domain: 'https://malayshikharsoni.vercel.app', // switch to https://malayshikharsoni.dev once it's set up (DEPLOY.md)
-  resume: '/resume.pdf', // placeholder PDF until Malay provides the real one
+  resume: '/resume.pdf',
   heroMeta: ['B.Tech CSE · LPU · Class of 2027', 'Based in India (IST)'],
   location: 'Printed in Jalandhar, Punjab',
   bio: [

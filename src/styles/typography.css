@@ -105,6 +105,10 @@
   .ripple .word {
     white-space: nowrap;
   }
+  /* A long name (stacksName in src/data/projects.ts) is set one word per line. */
+  .ripple.stacked .word {
+    display: block;
+  }
   .ripple:hover .ch {
     animation: wdth-wave 0.7s var(--ease-in-out) calc(var(--i, 0) * 28ms) both;
   }

@@ -10,7 +10,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
-import type { InkCombo } from '@/data/projects';
+import type { InkCombo, TapeArtVariant } from '@/data/projects';
 
 const W = 1200;
 const H = 630;
@@ -73,7 +73,8 @@ export type OgOptions = {
   lines: string[];
   /** Mono line at the bottom. */
   footer: string;
-  ink: InkCombo | 'hero';
+  /** The artwork: an ink's composition, a tape art variant, or the home page's. */
+  ink: InkCombo | TapeArtVariant | 'hero';
 };
 
 /** The print layer: crop marks, overprinting shapes and a colour bar, in plain SVG. */
@@ -122,6 +123,14 @@ function printLayer(ink: OgOptions['ink']): string {
       <rect x="700" y="120" width="260" height="260" fill="${INK.orange}" ${blend}/>
       <circle cx="960" cy="360" r="170" fill="${INK.blue}" ${blend}/>
       <polygon points="690,440 820,560 690,560" fill="url(#hto)" ${blend}/>`,
+    pipeline: `
+      <polygon points="700,110 700,500 900,305" fill="url(#htb)" ${blend}/>
+      <rect x="960" y="200" width="170" height="170" fill="${INK.blue}" ${blend}/>
+      <rect x="960" y="410" width="170" height="14" fill="${INK.blue}"/>
+      <rect x="960" y="440" width="170" height="14" fill="${INK.blue}"/>
+      <rect x="960" y="470" width="170" height="14" fill="${INK.blue}"/>
+      <rect x="700" y="273" width="430" height="20" fill="${INK.orange}" ${blend}/>
+      <circle cx="925" cy="283" r="34" fill="${INK.orange}" ${blend}/>`,
   };
 
   const bar = [INK.orange, 'url(#hto)', INK.blue, 'url(#htb)', INK.ink]

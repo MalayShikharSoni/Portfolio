@@ -45,7 +45,9 @@ raw text.
    `featured: false` lists it under "Also built" instead (three are already there, commented
    out: uncomment the ones you want to show).
 3. Pick an `ink`: `'blue'`, `'orange'` or `'overprint'`. It sets the tape artwork, the share
-   image and the diagram's colours.
+   image and the diagram's colours. When two tapes share an ink, give one an `art` variant
+   (for example `'pipeline'`, defined in `TapeArt.astro` and `src/lib/og.ts`) so their
+   artwork differs.
 4. For a case-study diagram, describe the nodes on a small grid (`col`, `row`), the `edges`
    between them, and the `path` the request dot travels. `kind` is `'service'` (square),
    `'store'` (circle) or `'external'` (triangle).

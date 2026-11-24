@@ -10,7 +10,7 @@ import RegMark from '@/components/primitives/RegMark.astro';
 import Letters from '@/components/ui/Letters.astro';
 import Link from '@/components/ui/Link.astro';
 import Roll from '@/components/ui/Roll.astro';
-import type { Project } from '@/data/projects';
+import { stacksName, type Project } from '@/data/projects';
 
 interface Props {
   project: Project;
@@ -37,7 +37,7 @@ const hasLinks = Boolean(links.live || links.github);
       <CropMarks offset={10} length={20} />
 
       <div class="cover__art" data-reveal="plates">
-        <TapeArt ink={ink} />
+        <TapeArt ink={ink} variant={project.art} />
       </div>
 
       <div class="cover__body">
@@ -45,7 +45,11 @@ const hasLinks = Boolean(links.live || links.github);
           <span class="label">Case study</span>
           <RegMark size={16} />
         </div>
-        <h1 id="cover-title" class="cover__title display ripple" data-reveal="misreg">
+        <h1
+          id="cover-title"
+          class:list={['cover__title display ripple', stacksName(name) && 'stacked']}
+          data-reveal="misreg"
+        >
           <Letters text={name} />
         </h1>
         <p class="cover__oneliner">{oneLiner}</p>

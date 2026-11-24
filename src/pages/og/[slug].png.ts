@@ -24,7 +24,7 @@ export const getStaticPaths = (() => {
         kicker: `Tape ${String(p.tape).padStart(2, '0')} · Case study · ${p.years}`,
         lines: [`${p.name}.`],
         footer: `${site.name} · ${host}`,
-        ink: p.ink,
+        ink: p.art ?? p.ink,
       } satisfies OgOptions,
     })),
   ];

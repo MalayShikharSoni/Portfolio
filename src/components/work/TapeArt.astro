@@ -9,14 +9,18 @@ import Square from '@/components/primitives/Square.astro';
 import Triangle from '@/components/primitives/Triangle.astro';
 import Bar from '@/components/primitives/Bar.astro';
 import Stripes from '@/components/primitives/Stripes.astro';
-import type { InkCombo } from '@/data/projects';
+import type { InkCombo, TapeArtVariant } from '@/data/projects';
 
 interface Props {
   ink: InkCombo;
+  /** A different composition for a tape that shares its ink with another one. */
+  variant?: TapeArtVariant | undefined;
   class?: string;
 }
 
-const { ink, class: className } = Astro.props;
+const { ink: projectInk, variant, class: className } = Astro.props;
+// a variant replaces the ink's default composition
+const ink = variant ? undefined : projectInk;
 ---
 
 <svg
@@ -26,6 +30,20 @@ const { ink, class: className } = Astro.props;
   aria-hidden="true"
   focusable="false"
 >
+  {variant === 'pipeline' && (
+    <>
+      <!-- two sources funnel into one record; the orange line is the pipeline running through -->
+      <g class="plate plate--blue overprint" data-plate="blue">
+        <Triangle x={36} y={36} width={136} height={228} point="right" ink="blue" fill="halftone" />
+        <Square x={236} y={86} size={128} ink="blue" />
+        <Stripes x={236} y={232} width={128} height={32} count={3} ink="blue" ratio={0.42} />
+      </g>
+      <g class="plate plate--orange overprint" data-plate="orange">
+        <Bar x={36} y={150} length={328} thickness={8} ink="orange" />
+        <Circle cx={204} cy={150} r={22} ink="orange" />
+      </g>
+    </>
+  )}
   {ink === 'blue' && (
     <>
       <g class="plate plate--blue overprint" data-plate="blue">

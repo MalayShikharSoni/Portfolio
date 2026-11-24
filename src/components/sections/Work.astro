@@ -11,7 +11,7 @@ import { featuredProjects, otherProjects } from '@/data/projects';
 ---
 
 <section id="work" class="section work" aria-labelledby="work-title">
-  <SectionHead index={2} total={6} kicker="Three tapes" title="Selected work" id="work-title" />
+  <SectionHead index={2} total={6} kicker="Four tapes" title="Selected work" id="work-title" />
 
   <div class="page-grid work__body">
     <p class="work__intro small-copy" data-reveal="fade">
@@ -77,20 +77,15 @@ import { featuredProjects, otherProjects } from '@/data/projects';
       /* the cassette tops already add air above the row */
       margin-top: -1.5rem;
     }
-    /* Swiss asymmetry: the second tape hangs lower */
-    .work__tapes > li:nth-child(2) {
+    /* Swiss asymmetry: the right-hand tape of each pair hangs lower */
+    .work__tapes > li:nth-child(even) {
       margin-top: clamp(3rem, 8vw, 7rem);
     }
   }
 
   @media (min-width: 1280px) {
     .work__tapes {
-      grid-column: 1 / -1;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      column-gap: clamp(1.5rem, 2.5vw, 2.75rem);
-    }
-    .work__tapes > li:nth-child(3) {
-      margin-top: clamp(1.5rem, 4vw, 3.5rem);
+      column-gap: clamp(2rem, 4vw, 4.5rem);
     }
   }
 

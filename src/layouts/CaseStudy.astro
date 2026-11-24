@@ -17,7 +17,7 @@ import Label from '@/components/ui/Label.astro';
 import Letters from '@/components/ui/Letters.astro';
 import ColorBar from '@/components/primitives/ColorBar.astro';
 import { isTodo } from '@/lib/todo';
-import type { Project } from '@/data/projects';
+import { stacksName, type Project } from '@/data/projects';
 
 interface Props {
   project: Project;
@@ -147,13 +147,13 @@ const nextSteps = project.next.filter((n) => !isTodo(n));
       <a href={`/work/${next.slug}/`} class="nexttape" data-cursor>
         <span class="nexttape__text">
           <Label class="nexttape__label">Next tape · Tape {nextNo}</Label>
-          <span class="nexttape__name display ripple">
+          <span class:list={['nexttape__name display ripple', stacksName(next.name) && 'stacked']}>
             <Letters text={next.name} />
           </span>
           <span class="label nexttape__go">Read case study →</span>
         </span>
         <span class="nexttape__art" aria-hidden="true">
-          <TapeArt ink={next.ink} />
+          <TapeArt ink={next.ink} variant={next.art} />
         </span>
       </a>
     </nav>

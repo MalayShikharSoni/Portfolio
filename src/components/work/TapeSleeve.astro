@@ -7,7 +7,7 @@
 import TapeArt from './TapeArt.astro';
 import RegMark from '@/components/primitives/RegMark.astro';
 import Roll from '@/components/ui/Roll.astro';
-import type { Project } from '@/data/projects';
+import { stacksName, type Project } from '@/data/projects';
 
 interface Props {
   project: Project;
@@ -20,6 +20,7 @@ const { slug, name, tape, ink, years, oneLiner, tracklist } = project;
 const tapeNo = String(tape).padStart(2, '0');
 const specLabel = `Tape ${tapeNo} · ${name} · ${years}`;
 const shellInk = ink === 'orange' ? 'orange' : 'blue';
+const stackTitle = stacksName(name);
 ---
 
 <article class:list={['tape', `tape--${ink}`, className]} data-cursor data-scramble-trigger>
@@ -69,11 +70,13 @@ const shellInk = ink === 'orange' ? 'orange' : 'blue';
     </div>
 
     <div class="tape__art">
-      <TapeArt ink={ink} />
+      <TapeArt ink={ink} variant={project.art} />
     </div>
 
     <div class="tape__body">
-      <Heading class="tape__title display">{name}</Heading>
+      <Heading class:list={['tape__title display', stackTitle && 'tape__title--stack']}>
+        {name}
+      </Heading>
       <p class="tape__oneliner">{oneLiner}</p>
 
       <p class="label tape__tl-label">Tracklist · key features</p>
@@ -188,6 +191,10 @@ const shellInk = ink === 'orange' ? 'orange' : 'blue';
     --wdth: var(--wdth-condensed);
     --wght: 900;
     transition: --wdth 0.45s var(--ease-out-expo);
+  }
+  .tape__title--stack {
+    white-space: normal;
+    line-height: 0.92;
   }
 
   .tape__oneliner {
